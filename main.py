@@ -15,9 +15,12 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import os
 import random
 import time
+from typing import List
 
+import config
 import gamify
 import quiz
 import utils
@@ -27,7 +30,8 @@ from constants import *
 
 def learn(words, new_terms) -> None:
     random.shuffle(new_terms)
-    print(f'{CLEAR}You are ready to:\nLEARN x{C.darkcyan}{min(NEW_CHUNK_SIZE, len(new_terms))}{C.end}\n\nPress enter to continue.\n')
+    print(
+        f'{CLEAR}You are ready to:\nLEARN x{C.darkcyan}{min(NEW_CHUNK_SIZE, len(new_terms))}{C.end}\n\nPress enter to continue.\n')
     input()
     study_indices = list(range(min(NEW_CHUNK_SIZE, len(new_terms))))
     for i in study_indices:
@@ -49,18 +53,19 @@ def learn(words, new_terms) -> None:
             if quiz.quiz(key):
                 study_indices.remove(i)
     print('You are done!')
-    utils.save_words(words, 'words.txt')
+    utils.save_words(words, config.config['set'])
 
 
 def review(words, review_terms) -> None:
     random.shuffle(review_terms)
-    print(f'{CLEAR}You are ready to:\nREVIEW x{C.darkcyan}{min(REVIEW_CHUNK_SIZE, len(review_terms))}{C.end}\n\nPress enter to continue.\n')
+    print(
+        f'{CLEAR}You are ready to:\nREVIEW x{C.darkcyan}{min(REVIEW_CHUNK_SIZE, len(review_terms))}{C.end}\n\nPress enter to continue.\n')
     input()
     for i in range(min(REVIEW_CHUNK_SIZE, len(review_terms))):
         key = review_terms[i]
         quiz.quiz(key)
     print('You are done!')
-    utils.save_words(words, 'words.txt')
+    utils.save_words(words, config.config['set'])
 
 
 def stats() -> None:
@@ -75,29 +80,74 @@ def wipe_progress(words) -> None:
     for key in words:
         key.last_covered = -1
         key.repetition_spot = 0
-    utils.save_words(words, 'words.txt')
+    utils.save_words(words, config.config['set'])
+
+
+def choose_set() -> None:
+    if not os.path.exists(config.get_set_directory()):
+        config.create_set_directory()
+
+    sets = os.listdir(config.get_set_directory())
+    print_sets = "\n".join(sets)
+
+    if len(sets) == 0:
+        print(f'\n{C.cyan}You Currently Have No Sets Available, Import or Create New to continue.{C.end}')
+    else:
+        print(f'{C.cyan}Study Sets{C.end}\n{print_sets}\n')
+        no_valid_set: bool = True
+        while no_valid_set:
+            word_set = input('Choose a set: ')
+            if not word_set.endswith('.txt'):
+                word_set += '.txt'
+            if word_set in sets:
+                config.config['set'] = word_set
+                no_valid_set = False
+            else:
+                print('Invaild Set, Please choose a valid set.')
 
 
 def main():
-    words = utils.load_words('words.txt')
-    new_terms, review_terms = utils.get_studyable(words)
-    cmd = input('[L]earn or [R]eview or [S]tats: ').lower().strip()
+    if config.config['set'] is None:
+        cmd = input('You have not chosen any sets to study.\n[C]hoose Set or Create a [N]ew Set: ').lower().strip()
 
-    if cmd == 'l':
-        learn(words, new_terms)
-    elif cmd == 'r':
-        review(words, review_terms)
-    elif cmd == 's':
-        stats()
-    elif cmd == '_wipe_progress':
-        wipe_progress(words)
-    else:
-        print('That is not an option.')
-        return
+        if cmd == 'c':
+            choose_set()
+        # elif cmd == 'n':
+        #     new_set()
+        else:
+            print('That is not an option.')
+            return
 
-    gamify.fix_level(print_stuff=True)
-    gamify.show_level()
-    gamify.save_gamify(gamify.gamify_data)
+    study: bool = True
+    words = utils.load_words(config.config['set'])
+
+    while study:
+        new_terms, review_terms = utils.get_studyable(words)
+        cmd = input('[C]hoose Set\n[L]earn or [R]eview or [S]tats or [E]xit: ').lower().strip()
+
+        if cmd == 'e':
+            return
+
+        if cmd == 'l':
+            wipe_progress(words)
+            learn(words, new_terms)
+        elif cmd == 'r':
+            review(words, review_terms)
+        elif cmd == 's':
+            stats()
+        elif cmd == 'c':
+            choose_set()
+        elif cmd == '_wipe_progress':
+            wipe_progress(words)
+        else:
+            print('That is not an option.')
+
+        gamify.fix_level(print_stuff=True)
+        if config.config['show_gamify']:
+            gamify.show_level()
+        gamify.save_gamify(gamify.gamify_data)
+        config.save_config(config.config)
+        print(CLEAR)
 
 
 if __name__ == '__main__':
