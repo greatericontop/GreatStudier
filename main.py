@@ -73,7 +73,7 @@ def stats() -> None:
 
 
 def wipe_progress(words) -> None:
-    # print(f'{C.red}Clearing ALL progress! Press enter to continue, only if you are sure.{C.end}')
+    print(f'{C.red}Clearing ALL progress! Press enter to continue, only if you are sure.{C.end}')
     input()
     for key in words:
         key.last_covered = -1
@@ -95,6 +95,8 @@ def choose_set() -> None:
         no_valid_set: bool = True
         while no_valid_set:
             word_set = input('Choose a set: ')
+            if word_set == '':
+                return
             if not word_set.endswith('.txt'):
                 word_set += '.txt'
             if word_set in sets:
@@ -106,13 +108,15 @@ def choose_set() -> None:
 
 
 def open_options() -> None:
-    options: str = f'Options\n'
+    options = 'Options\n'
     for i in config.config.keys():
         if i == 'set':
             continue
         options += f'{C.cyan}{i}{C.end}: {C.darkgreen}{config.config[i]}{C.end}\n'
     print(options)
     option_change = input('Please choose an option to change: ').lower()
+    if option_change == '':
+        return
     if option_change not in config.config.keys() or option_change == 'set':
         return print('That is not a valid option.')
     if type(config.config[option_change]) is bool:
@@ -159,10 +163,8 @@ def main():
             study = False
         elif cmd == 'l':
             learn(words, new_terms)
-            wipe_progress(words)
         elif cmd == 'r':
             review(words, review_terms)
-            wipe_progress(words)
         elif cmd == 's':
             stats()
         elif cmd == 'c':
@@ -171,8 +173,8 @@ def main():
         #     new_set()
         elif cmd == 'o':
             open_options()
-        # elif cmd == '_wipe_progress':
-        #     wipe_progress(words)
+        elif cmd == '_wipe_progress':
+            wipe_progress(words)
         else:
             print('That is not an option.')
 

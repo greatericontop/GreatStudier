@@ -2,9 +2,7 @@
 
 A free and open source studying software. 
 
-# Dependencies
-
----
+## Dependencies
 
 - Python 3.6+
 - `Levenshtein` module
