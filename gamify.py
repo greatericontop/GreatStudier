@@ -57,14 +57,14 @@ def prestige() -> str:
     if level >= 50:
         return f'{C.darkcyan}[{level}✶]{C.end}'
     if level >= 40:
-        return f'{C.darkgreen}[{level}✦]{C.end}'
+        return f'{C.darkgreen}[{level}✶]{C.end}'
     if level >= 30:
-        return f'{C.cyan}[{level}✹]{C.end}'
+        return f'{C.cyan}[{level}✶]{C.end}'
     if level >= 20:
-        return f'{C.darkyellow}[{level}✰]{C.end}'
+        return f'{C.darkyellow}[{level}✶]{C.end}'
     if level >= 10:
-        return f'{C.bwhite}[{level}⭑]{C.end}'
-    return f'{C.darkwhite}[{level}⋆]{C.end}'
+        return f'{C.bwhite}[{level}✶]{C.end}'
+    return f'{C.darkwhite}[{level}✶]{C.end}'
 
 
 def gamify_correct_answer(level: int = 0) -> None:
