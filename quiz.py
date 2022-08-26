@@ -25,7 +25,7 @@ from constants import *
 
 def quiz(key) -> bool:
     print(f'\n\nQUIZ: What is {C.cyan}{key.definition}{C.end}?')
-    guess = input('>')
+    guess = input(f'{C.darkblue}>{C.end} ')
     result = utils.validate(guess, key.word)
 
     if result == utils.ValidationResult.FULL_CORRECT:

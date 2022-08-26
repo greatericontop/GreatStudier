@@ -28,8 +28,7 @@ from constants import *
 
 def learn(words, new_terms) -> None:
     random.shuffle(new_terms)
-    print(
-        f'{CLEAR}You are ready to:\nLEARN x{C.darkcyan}{min(NEW_CHUNK_SIZE, len(new_terms))}{C.end}\n\nPress enter to continue.\n')
+    print(f'{CLEAR}You are ready to:\nLEARN x{C.darkcyan}{min(NEW_CHUNK_SIZE, len(new_terms))}{C.end}\n\nPress enter to continue.\n')
     input()
     study_indices = list(range(min(NEW_CHUNK_SIZE, len(new_terms))))
     for i in study_indices:
@@ -56,8 +55,7 @@ def learn(words, new_terms) -> None:
 
 def review(words, review_terms) -> None:
     random.shuffle(review_terms)
-    print(
-        f'{CLEAR}You are ready to:\nREVIEW x{C.darkcyan}{min(REVIEW_CHUNK_SIZE, len(review_terms))}{C.end}\n\nPress enter to continue.\n')
+    print(f'{CLEAR}You are ready to:\nREVIEW x{C.darkcyan}{min(REVIEW_CHUNK_SIZE, len(review_terms))}{C.end}\n\nPress enter to continue.\n')
     input()
     for i in range(min(REVIEW_CHUNK_SIZE, len(review_terms))):
         key = review_terms[i]
@@ -70,6 +68,7 @@ def stats() -> None:
     data = gamify.gamify_data
     print(f"{C.green}You have {data['correct_answers']} correct answers.{C.end}")
     print(f"{C.red}You have {data['wrong_answers']} wrong answers.{C.end}")
+    print(f"{C.green}You're currently level {gamify.prestige()}")
 
 
 def wipe_progress(words) -> None:
@@ -89,7 +88,7 @@ def choose_set() -> None:
     print_sets = "\n".join(sets)
 
     if len(sets) == 0:
-        print(f'\n{C.cyan}You Currently Have No Sets Available, Import or Create New to continue.{C.end}')
+        print(f'\n{C.yellow}You currently have no sets available. Import or create a new set to continue.{C.end}')
     else:
         print(f'{C.cyan}Study Sets{C.end}\n{print_sets}\n')
         no_valid_set: bool = True
@@ -101,10 +100,10 @@ def choose_set() -> None:
                 word_set += '.txt'
             if word_set in sets:
                 config.config['set'] = word_set
-                config.save_config(config.config)
                 no_valid_set = False
             else:
-                print('Invalid Set, Please choose a valid set.')
+                print(f'{C.red}Invalid Set! Please choose a valid set.{C.end}')
+    config.save_config(config.config)
 
 
 def open_options() -> None:
@@ -131,59 +130,62 @@ def open_options() -> None:
 
 
 def main():
-    print(f'GreatSudier Version {VERSION}')
-    while config.config['set'] is None:
-        cmd = input(
-            'You have not chosen any sets to study.\n[C]hoose Set or Create [N]ew Set or [O]ptions or [E]xit: ').lower().strip()
+    print(f'{C.green}GreatSudier Version {VERSION}{C.end}')
 
-        if cmd == 'e':
-            return
-
-        if cmd == 'c':
-            choose_set()
-        # elif cmd == 'n':
-        #     new_set()
-        elif cmd == 'o':
-            open_options()
+    while True:
+        if config.config['set'] is None:
+            learning_available = False
+            prompt = (f'{C.red}It seems you do not have a set chosen!{C.end}\n'
+                      '[C]hoose Set\n'
+                      '[N]ew Set\n'
+                      '[O]ptions\n'
+                      '[S]tats\n'
+                      '[Q]uit\n'
+                      f'{C.darkblue}>{C.end} ')
         else:
-            print('That is not an option.')
-            return
+            learning_available = True
+            prompt = ('[L]earn\n'
+                      '[R]eview\n'
+                      '[W]ipe Progress\n'
+                      '[C]hoose Set\n'
+                      '[N]ew Set\n'
+                      '[O]ptions\n'
+                      '[S]tats\n'
+                      '[Q]uit\n'
+                      f'{C.darkblue}>{C.end} ')
+            word_set = config.config['set']
+            words = utils.load_words(word_set)
+            print(f'Current set "{C.bwhite}{word_set}{C.end}"')
+            new_terms, review_terms = utils.get_studyable(words)
+        cmd = input(prompt).lower().strip()
 
-    study: bool = True
-
-    while study:
-        word_set = config.config['set']
-        words = utils.load_words(word_set)
-        print(f'Current set "{C.bwhite}{word_set}{C.end}"')
-        new_terms, review_terms = utils.get_studyable(words)
-        cmd = input(
-            '[C]hoose Set or Create [N]ew Set or [O]ptions\n[L]earn or [R]eview or [S]tats or [E]xit: ').lower().strip()
-
-        if cmd == 'e':
-            study = False
-        elif cmd == 'l':
+        if cmd in {'quit', 'q'}:
+            break
+        # begin learning available
+        if cmd in {'learn', 'l'} and learning_available:
             learn(words, new_terms)
-        elif cmd == 'r':
+        elif cmd in {'review', 'r'} and learning_available:
             review(words, review_terms)
-        elif cmd == 's':
-            stats()
-        elif cmd == 'c':
-            choose_set()
-        # elif cmd == 'n':
-        #     new_set()
-        elif cmd == 'o':
-            open_options()
-        elif cmd == '_wipe_progress':
+        elif cmd in {'_wipe_progress', 'w'} and learning_available:
             wipe_progress(words)
+        # end learning available
+        elif cmd in {'choose', 'c'}:
+            choose_set()
+        elif cmd in {'new', 'n'}:
+            print('[Sorry, this is unavailable at the moment.]')
+        elif cmd in {'options', 'o'}:
+            open_options()
+        elif cmd in {'stats', 's'}:
+            stats()
         else:
             print('That is not an option.')
 
-        gamify.fix_level(print_stuff=True)
-        if config.config['show_gamify']:
-            gamify.show_level()
-        gamify.save_gamify(gamify.gamify_data)
-        config.save_config(config.config)
-        print(CLEAR)
+    gamify.fix_level(print_stuff=True)
+    if config.config['show_gamify']:
+        gamify.show_level()
+    # SAVE STUFF
+    gamify.save_gamify(gamify.gamify_data)
+    config.save_config(config.config)
 
 
 if __name__ == '__main__':
