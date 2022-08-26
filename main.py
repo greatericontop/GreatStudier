@@ -107,7 +107,7 @@ def choose_set() -> None:
 
 
 def main():
-    if config.config['set'] is None:
+    while config.config['set'] is None:
         cmd = input('You have not chosen any sets to study.\n[C]hoose Set or Create [N]ew Set or [O]ptions or [E]xit: ').lower().strip()
 
         if cmd == 'e':
