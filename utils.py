@@ -20,6 +20,7 @@ import enum
 import time
 import Levenshtein
 
+import config
 from constants import *
 
 
@@ -53,7 +54,7 @@ class KeyData:
 
 
 def load_words(name: str):
-    with open(name, 'r') as f:
+    with open(f'{config.get_set_directory()}{name}', 'r') as f:
         contents = f.read().split('\n')
     tokenized = []
     for line in contents:
@@ -75,7 +76,7 @@ def load_words(name: str):
 
 
 def save_words(keys: list, out: str):
-    with open(out, 'w') as f:
+    with open(f'{config.get_set_directory()}{out}', 'w') as f:
         data = []
         for key in keys:
             data.append(f'{key.word}, {key.definition}, {key.last_covered}, {key.repetition_spot}')

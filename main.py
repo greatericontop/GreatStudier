@@ -75,7 +75,7 @@ def stats() -> None:
 
 
 def wipe_progress(words) -> None:
-    print(f'{C.red}Clearing ALL progress! Press enter to continue, only if you are sure.{C.end}')
+    # print(f'{C.red}Clearing ALL progress! Press enter to continue, only if you are sure.{C.end}')
     input()
     for key in words:
         key.last_covered = -1
@@ -108,28 +108,34 @@ def choose_set() -> None:
 
 def main():
     if config.config['set'] is None:
-        cmd = input('You have not chosen any sets to study.\n[C]hoose Set or Create a [N]ew Set: ').lower().strip()
+        cmd = input('You have not chosen any sets to study.\n[C]hoose Set or Create [N]ew Set or [O]ptions or [E]xit: ').lower().strip()
+
+        if cmd == 'e':
+            return
 
         if cmd == 'c':
             choose_set()
         # elif cmd == 'n':
         #     new_set()
+        # elif cmd == 'o':
+        #     open_options()
         else:
             print('That is not an option.')
             return
 
     study: bool = True
-    words = utils.load_words(config.config['set'])
 
     while study:
+        word_set = config.config['set']
+        words = utils.load_words(word_set)
+        print(f'Current set {word_set}')
         new_terms, review_terms = utils.get_studyable(words)
-        cmd = input('[C]hoose Set\n[L]earn or [R]eview or [S]tats or [E]xit: ').lower().strip()
+        cmd = input('[C]hoose Set or Create [N]ew Set or [O]ptions\n[L]earn or [R]eview or [S]tats or [E]xit: ').lower().strip()
 
         if cmd == 'e':
-            return
+            study = False
 
         if cmd == 'l':
-            wipe_progress(words)
             learn(words, new_terms)
         elif cmd == 'r':
             review(words, review_terms)
@@ -137,8 +143,12 @@ def main():
             stats()
         elif cmd == 'c':
             choose_set()
-        elif cmd == '_wipe_progress':
-            wipe_progress(words)
+        # elif cmd == 'n':
+        #     new_set()
+        # elif cmd == 'o':
+        #     open_options()
+        # elif cmd == '_wipe_progress':
+        #     wipe_progress(words)
         else:
             print('That is not an option.')
 
@@ -147,6 +157,7 @@ def main():
             gamify.show_level()
         gamify.save_gamify(gamify.gamify_data)
         config.save_config(config.config)
+        wipe_progress(words)
         print(CLEAR)
 
 
