@@ -97,7 +97,7 @@ def choose_set() -> None:
             word_set = input('Choose a set: ')
             if not word_set.endswith('.txt'):
                 word_set += '.txt'
-            if word_set in sets and utils.validate_file(word_set):
+            if word_set in sets:
                 config.config['set'] = word_set
                 config.save_config(config.config)
                 no_valid_set = False

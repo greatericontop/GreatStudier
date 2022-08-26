@@ -53,15 +53,6 @@ class KeyData:
     repetition_spot: int
 
 
-def validate_file(name: str) -> bool:
-    with open(f'{config.get_set_directory()}{name}', 'r') as f:
-        contents = f.readlines()[0]
-    if contents.startswith('#gstudier'):
-        return True
-    else:
-        return False
-
-
 def load_words(name: str) -> list:
     with open(f'{config.get_set_directory()}{name}', 'r') as f:
         contents = f.read().split('\n')
