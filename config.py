@@ -24,7 +24,7 @@ def load_config() -> dict:
         with open(os.path.expanduser('~/.greatstudier_config.py'), 'r') as f:
             return ast.literal_eval(f.read())
     except FileNotFoundError:
-        return {'set': None, 'set_directory': 'GreatStudier/', 'show_gamify': True}
+        return {'set': None, 'set_directory': None, 'show_gamify': True}
 
 
 def save_config(data: dict) -> None:
@@ -32,8 +32,10 @@ def save_config(data: dict) -> None:
         f.write(f'# Data for GreatStudier\n# Please do not touch this!\n\n{repr(data)}')
 
 
-def get_set_directory() -> os.path:
-    return os.path.expanduser(f'~/{load_config()["set_directory"]}')
+def get_set_directory() -> str:
+    if config['set_directory'] is None:
+        return os.path.expanduser(f'~/GreatStudier/')
+    return config['set_directory']
 
 
 def create_set_directory() -> None:
