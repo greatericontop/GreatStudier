@@ -53,7 +53,16 @@ class KeyData:
     repetition_spot: int
 
 
-def load_words(name: str):
+def validate_file(name: str) -> bool:
+    with open(f'{config.get_set_directory()}{name}', 'r') as f:
+        contents = f.readlines()[0]
+    if contents.startswith('#gstudier'):
+        return True
+    else:
+        return False
+
+
+def load_words(name: str) -> list:
     with open(f'{config.get_set_directory()}{name}', 'r') as f:
         contents = f.read().split('\n')
     tokenized = []
@@ -75,7 +84,7 @@ def load_words(name: str):
     return tokenized
 
 
-def save_words(keys: list, out: str):
+def save_words(keys: list, out: str) -> None:
     with open(f'{config.get_set_directory()}{out}', 'w') as f:
         data = []
         for key in keys:
@@ -83,7 +92,7 @@ def save_words(keys: list, out: str):
         f.write('\n'.join(data))
 
 
-def get_studyable(keys: list):
+def get_studyable(keys: list) -> tuple:
     new = []
     review = []
     for key in keys:
@@ -101,7 +110,7 @@ class ValidationResult(enum.Enum):
     INCORRECT = 2
 
 
-def validate(guess, answer):
+def validate(guess, answer) -> ValidationResult:
     guess = guess.lower()
     answer = answer.lower()
     if guess == answer:

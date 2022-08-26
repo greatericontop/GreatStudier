@@ -17,8 +17,6 @@
 
 import os
 import random
-import time
-from typing import List
 
 import config
 import gamify
@@ -99,11 +97,12 @@ def choose_set() -> None:
             word_set = input('Choose a set: ')
             if not word_set.endswith('.txt'):
                 word_set += '.txt'
-            if word_set in sets:
+            if word_set in sets and utils.validate_file(word_set):
                 config.config['set'] = word_set
+                config.save_config(config.config)
                 no_valid_set = False
             else:
-                print('Invaild Set, Please choose a valid set.')
+                print('Invalid Set, Please choose a valid set.')
 
 
 def open_options() -> None:
@@ -115,7 +114,7 @@ def open_options() -> None:
     print(options)
     option_change = input('Please choose an option to change: ').lower()
     if option_change not in config.config.keys() or option_change == 'set':
-        return print('That is not a vaild option.')
+        return print('That is not a valid option.')
     if type(config.config[option_change]) is bool:
         config.config[option_change] = not config.config[option_change]
     else:
@@ -124,7 +123,11 @@ def open_options() -> None:
     config.save_config(config.config)
 
 
+# def new_set() -> None:
+
+
 def main():
+    print(f'GreatSudier Version {VERSION}')
     while config.config['set'] is None:
         cmd = input(
             'You have not chosen any sets to study.\n[C]hoose Set or Create [N]ew Set or [O]ptions or [E]xit: ').lower().strip()
@@ -154,11 +157,12 @@ def main():
 
         if cmd == 'e':
             study = False
-
-        if cmd == 'l':
+        elif cmd == 'l':
             learn(words, new_terms)
+            wipe_progress(words)
         elif cmd == 'r':
             review(words, review_terms)
+            wipe_progress(words)
         elif cmd == 's':
             stats()
         elif cmd == 'c':
@@ -177,7 +181,6 @@ def main():
             gamify.show_level()
         gamify.save_gamify(gamify.gamify_data)
         config.save_config(config.config)
-        wipe_progress(words)
         print(CLEAR)
 
 
