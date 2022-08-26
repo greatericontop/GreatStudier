@@ -106,9 +106,28 @@ def choose_set() -> None:
                 print('Invaild Set, Please choose a valid set.')
 
 
+def open_options() -> None:
+    options: str = f'Options\n'
+    for i in config.config.keys():
+        if i == 'set':
+            continue
+        options += f'{C.cyan}{i}{C.end}: {C.darkgreen}{config.config[i]}{C.end}\n'
+    print(options)
+    option_change = input('Please choose an option to change: ').lower()
+    if option_change not in config.config.keys() or option_change == 'set':
+        return print('That is not a vaild option.')
+    if type(config.config[option_change]) is bool:
+        config.config[option_change] = not config.config[option_change]
+    else:
+        new_option = input('What do you want to change it to (enter full path for set_directory): ')
+        config.config[option_change] = new_option
+    config.save_config(config.config)
+
+
 def main():
     while config.config['set'] is None:
-        cmd = input('You have not chosen any sets to study.\n[C]hoose Set or Create [N]ew Set or [O]ptions or [E]xit: ').lower().strip()
+        cmd = input(
+            'You have not chosen any sets to study.\n[C]hoose Set or Create [N]ew Set or [O]ptions or [E]xit: ').lower().strip()
 
         if cmd == 'e':
             return
@@ -117,8 +136,8 @@ def main():
             choose_set()
         # elif cmd == 'n':
         #     new_set()
-        # elif cmd == 'o':
-        #     open_options()
+        elif cmd == 'o':
+            open_options()
         else:
             print('That is not an option.')
             return
@@ -128,9 +147,10 @@ def main():
     while study:
         word_set = config.config['set']
         words = utils.load_words(word_set)
-        print(f'Current set {word_set}')
+        print(f'Current set "{C.bwhite}{word_set}{C.end}"')
         new_terms, review_terms = utils.get_studyable(words)
-        cmd = input('[C]hoose Set or Create [N]ew Set or [O]ptions\n[L]earn or [R]eview or [S]tats or [E]xit: ').lower().strip()
+        cmd = input(
+            '[C]hoose Set or Create [N]ew Set or [O]ptions\n[L]earn or [R]eview or [S]tats or [E]xit: ').lower().strip()
 
         if cmd == 'e':
             study = False
@@ -145,8 +165,8 @@ def main():
             choose_set()
         # elif cmd == 'n':
         #     new_set()
-        # elif cmd == 'o':
-        #     open_options()
+        elif cmd == 'o':
+            open_options()
         # elif cmd == '_wipe_progress':
         #     wipe_progress(words)
         else:

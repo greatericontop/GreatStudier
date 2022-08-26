@@ -35,6 +35,8 @@ def save_config(data: dict) -> None:
 def get_set_directory() -> str:
     if config['set_directory'] is None:
         return os.path.expanduser(f'~/GreatStudier/')
+    if not config['set_directory'].endswith('/'):
+        config['set_directory'] += '/'
     return config['set_directory']
 
 
