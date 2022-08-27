@@ -163,12 +163,9 @@ def new_set() -> None:
         print()
     if len(data) != 0:
         data_join = '\n'.join(data)
-        try:
-            with open(os.path.join(config.get_set_directory(), file_name), 'w') as f:
-                f.write(f'## * greatstudier *, {set_name}\n{data_join}')
-            print(f'{C.green}Set successfully created!{C.end}')
-        except OSError:
-            print(f'{C.red}Unable to create file {os.path.join(config.get_set_directory(), file_name)}{C.end}')
+        with open(os.path.join(config.get_set_directory(), file_name), 'w') as f:
+            f.write(f'## * greatstudier *, {set_name}\n{data_join}')
+        print(f'{C.green}Set successfully created!{C.end}')
 
 
 def main():
