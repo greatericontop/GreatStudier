@@ -165,7 +165,7 @@ def new_set() -> None:
         data_join = '\n'.join(data)
         with open(os.path.join(config.get_set_directory(), file_name), 'w') as f:
             f.write(f'## * greatstudier *, {set_name}\n{data_join}')
-        print(f'{C.green}Set successfully created!{C.end}')
+        print(f'{CLEAR}{C.green}Set successfully created!{C.end}')
 
 
 def edit_mode(set_name, words) -> None:
@@ -185,6 +185,7 @@ def edit_mode(set_name, words) -> None:
         if edit_def != '':
             words[int(edit_num)].definition = edit_def
     utils.save_words(words, config.config['set'])
+    print(f'{CLEAR}All changes saved!')
 
 
 def main():
@@ -204,7 +205,7 @@ def main():
             prompt = ('[L]earn\n'
                       '[R]eview\n'
                       '[W]ipe Progress\n'
-                      '[T]erms'
+                      '[T]erms\n'
                       '[C]hoose Set\n'
                       '[N]ew Set\n'
                       '[O]ptions\n'
