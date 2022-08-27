@@ -26,7 +26,7 @@ motd = [
     'eeeeeee',
     'Quizlet Sucks',
     '20220825!',
-    'Made using Python',
+    'Made with Python',
     'New stuff soon\u2122',
     'Down with Big Brother!',
     'I would like to interject for a moment!',

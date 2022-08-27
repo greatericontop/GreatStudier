@@ -10,3 +10,8 @@ A free and open source studying software.
 ## Usage
 
 Run `main.py` in the root directory of the project.
+
+Default directory for sets is `~/GreatStudier/`. You can change this in the configurations. **NOTE MAKE SURE TO TYPE TO FULL PATH TO THE DIRECTORY OR IT MIGHT BREAK.**
+
+It is suggested to edit the options file though the cli.
+

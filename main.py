@@ -38,7 +38,6 @@ def learn(words, new_terms) -> None:
             if input().lower() == key.word.lower():
                 break
     print(f'{CLEAR}Ready for the quiz?')
-    input()
     quiz_number = 0
     while study_indices:
         quiz_number += 1
@@ -67,7 +66,7 @@ def stats() -> None:
     data = gamify.gamify_data
     print(f"{C.green}You have {data['correct_answers']} correct answers.{C.end}")
     print(f"{C.red}You have {data['wrong_answers']} wrong answers.{C.end}")
-    print(f"{C.green}You're currently level {gamify.prestige()}")
+    print(f"{C.green}You're currently level {gamify.prestige()}\n\n")
 
 
 def wipe_progress(words) -> None:
@@ -77,6 +76,7 @@ def wipe_progress(words) -> None:
         key.last_covered = -1
         key.repetition_spot = 0
     utils.save_words(words, config.config['set'])
+    print(CLEAR)
 
 
 def choose_set() -> None:
@@ -94,7 +94,7 @@ def choose_set() -> None:
         while no_valid_set:
             word_set = input('Choose a set: ')
             if word_set == '':
-                return
+                break
             if not word_set.endswith('.txt'):
                 word_set += '.txt'
             if word_set in sets:
@@ -103,40 +103,46 @@ def choose_set() -> None:
             else:
                 print(f'{C.red}Invalid Set! Please choose a valid set.{C.end}')
     config.save_config(config.config)
+    print(CLEAR)
 
 
-def open_options() -> None:
-    options = 'Options\n'
+def open_settings() -> None:
+    settings = 'Settings\n'
     for i in config.config.keys():
         if i == 'set':
             continue
-        options += f'{C.cyan}{i}{C.end}: {C.darkgreen}{config.config[i]}{C.end}\n'
-    print(options)
-    option_change = input('Please choose an option to change: ').lower()
-    if option_change == '':
-        return
-    if option_change not in config.config.keys() or option_change == 'set':
-        return print('That is not a valid option.')
-    if type(config.config[option_change]) is bool:
-        config.config[option_change] = not config.config[option_change]
+        settings += f'{C.cyan}{i}{C.end}: {C.darkgreen}{config.config[i]}{C.end}\n'
+    print(settings)
+    settings_change = input('Please choose an option to change: ').lower()
+    if settings_change == '':
+        return print(CLEAR)
+    if settings_change not in config.config.keys() or settings_change == 'set':
+        return print(f'{CLEAR}That is not a valid option.')
+    if type(config.config[settings_change]) is bool:
+        config.config[settings_change] = not config.config[settings_change]
     else:
         new_option = input('What do you want to change it to (enter full path for set_directory): ')
-        config.config[option_change] = new_option
+        config.config[settings_change] = new_option
     config.save_config(config.config)
+    print(CLEAR)
 
 
-# def new_set() -> None:
+def new_set() -> None:
+    # WORK IN PROGRESS #
+    print(f'---WORK IN PROGRESS---\n{CLEAR}{C.green}GreatSudier study set creator.{C.end}\n')
+    set_name = input('Name of the set: ')
+
 
 
 def main():
-    print(f'{C.green}GreatStudier Version {VERSION}{C.end}\n{motd.pick_random_motd()}{C.end}')
+    print(f'{C.green}GreatStudier Version {VERSION}{C.end}\n{motd.pick_random_motd()}{C.end}\n')
     while True:
         if config.config['set'] is None:
             learning_available = False
             prompt = (f'{C.red}It seems you do not have a set chosen!{C.end}\n'
                       '[C]hoose Set\n'
                       '[N]ew Set\n'
-                      '[O]ptions\n'
+                      '[Se]ttings\n'
                       '[S]tats\n'
                       '[Q]uit\n'
                       f'{C.darkblue}>{C.end} ')
@@ -147,7 +153,7 @@ def main():
                       '[W]ipe Progress\n'
                       '[C]hoose Set\n'
                       '[N]ew Set\n'
-                      '[O]ptions\n'
+                      '[Se]ttings\n'
                       '[S]tats\n'
                       '[Q]uit\n'
                       f'{C.darkblue}>{C.end} ')
@@ -164,19 +170,19 @@ def main():
             learn(words, new_terms)
         elif cmd in {'review', 'r'} and learning_available:
             review(words, review_terms)
-        elif cmd in {'_wipe_progress', 'w'} and learning_available:
+        elif cmd in {'wipe', '_wipe_progress', 'w'} and learning_available:
             wipe_progress(words)
         # end learning available
         elif cmd in {'choose', 'c'}:
             choose_set()
         elif cmd in {'new', 'n'}:
-            print('[Sorry, this is unavailable at the moment.]')
-        elif cmd in {'options', 'o'}:
-            open_options()
+            new_set()
+        elif cmd in {'settings', 'se'}:
+            open_settings()
         elif cmd in {'stats', 's'}:
             stats()
         else:
-            print('That is not an option.')
+            print('That is not an option.\n')
         print(f'{C.green}GreatStudier{C.end}')
 
     gamify.fix_level(print_stuff=True)
