@@ -130,17 +130,19 @@ def new_set() -> None:
     print(f'---WORK IN PROGRESS---\n{CLEAR}{C.green}GreatSudier study set creator.{C.end}\n')
     set_name = input('Name of the set: ')
     file_name = input('Please enter a simple file name: ')
+    if set_name == '' or file_name == '':
+        return print('Canceled.')
     for i in ILLEGAL_FILENAME_CHARS:
         file_name.replace(i, '_')
     create_set = True
     data = []
     while create_set:
-        print('To exit creating a new set, type [:q]')
+        print('To exit creating a new set, press [Enter] without entering anything.')
         term = input('Enter a term: ')
-        if term == ':q':
+        if term == '':
             break
         definition = input('Enter a definition: ')
-        if definition == ':q':
+        if definition == '':
             break
         data.append(f'{term}, {definition}, -1, 0')
     data_join = '\n'.join(data)
@@ -156,7 +158,7 @@ def main():
             prompt = (f'{C.red}It seems you do not have a set chosen!{C.end}\n'
                       '[C]hoose Set\n'
                       '[N]ew Set\n'
-                      '[Se]ttings\n'
+                      '[O]ptions\n'
                       '[S]tats\n'
                       '[Q]uit\n'
                       f'{C.darkblue}>{C.end} ')
@@ -167,7 +169,7 @@ def main():
                       '[W]ipe Progress\n'
                       '[C]hoose Set\n'
                       '[N]ew Set\n'
-                      '[Se]ttings\n'
+                      '[O]ptions\n'
                       '[S]tats\n'
                       '[Q]uit\n'
                       f'{C.darkblue}>{C.end} ')
@@ -192,7 +194,7 @@ def main():
             choose_set()
         elif cmd in {'new', 'n'}:
             new_set()
-        elif cmd in {'settings', 'se'}:
+        elif cmd in {'options', 'o'}:
             open_settings()
         elif cmd in {'stats', 's'}:
             stats()
