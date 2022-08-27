@@ -138,8 +138,7 @@ def open_settings() -> None:
 
 
 def new_set() -> None:
-    # WORK IN PROGRESS #
-    print(f'---WORK IN PROGRESS---\n{CLEAR}{C.green}GreatSudier study set creator.{C.end}\n')
+    print(f'{CLEAR}{C.green}GreatStudier study set creator.{C.end}\n')
     set_name = input('Name of the set: ')
     file_name = input('Please enter a simple file name: ')
     if set_name == '' or file_name == '':
@@ -148,8 +147,8 @@ def new_set() -> None:
         file_name.replace(i, '_')
     create_set = True
     data = []
+    print(f'{C.green}Press [Enter] without entering anything to exit.{C.end}')
     while create_set:
-        print('To exit creating a new set, press [Enter] without entering anything.')
         term = input('Enter a term: ')
         if term == '':
             break
@@ -157,6 +156,7 @@ def new_set() -> None:
         if definition == '':
             break
         data.append(f'{term}, {definition}, -1, 0')
+        print()
     data_join = '\n'.join(data)
     with open(os.path.join(config.get_set_directory(), file_name), 'w') as f:
         f.write(f'## * greatstudier *, {set_name}\n{data_join}')
