@@ -17,6 +17,8 @@
 
 import os
 import random
+import signal
+import sys
 
 import config
 import gamify
@@ -25,6 +27,16 @@ import quiz
 import utils
 from utils import C
 from constants import *
+
+
+def terminate_handler(signal, frame):
+    print('Exiting...')
+    gamify.save_gamify(gamify.gamify_data)
+    config.save_config(config.config)
+    sys.exit(0)
+
+
+signal.signal(signal.SIGINT, terminate_handler)
 
 
 def learn(words, new_terms) -> None:
