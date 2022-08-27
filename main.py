@@ -31,7 +31,7 @@ from constants import *
 
 
 def terminate_handler(signal, frame):
-    print('Exiting...')
+    print('\nExiting...')
     gamify.save_gamify(gamify.gamify_data)
     config.save_config(config.config)
     sys.exit(0)
@@ -121,7 +121,7 @@ def choose_set() -> None:
 
 
 def open_settings() -> None:
-    settings = 'Settings\n'
+    settings = 'Options\n'
     for i in config.config.keys():
         if i == 'set' or i == 'set_name':
             continue
@@ -130,8 +130,8 @@ def open_settings() -> None:
     settings_change = input('Please choose an option to change: ').lower()
     if settings_change == '':
         return print(CLEAR)
-    if settings_change not in config.config.keys() or settings_change == 'set':
-        return print(f'{CLEAR}That is not a valid option.')
+    if settings_change not in config.config.keys() or settings_change == 'set' or settings_change == 'set__name':
+        return print(f'{C.red}That is not a valid option.{C.end}')
     if type(config.config[settings_change]) is bool:
         config.config[settings_change] = not config.config[settings_change]
     else:
@@ -168,6 +168,25 @@ def new_set() -> None:
         print(f'{C.green}Set successfully created!{C.end}')
 
 
+def edit_mode(set_name, words) -> None:
+    print('---This mode is currently under construction, some features may not be working as intended.---')
+    print(f'{C.bwhite}{set_name}{C.end}\n\n{C.yellow}Number: Term = Definition{C.end}')
+    while True:
+        for i in range(len(words)):
+            print(f'{i}: "{words[i].word}" = "{words[i].definition}"')
+        print()
+        edit_num = input('Enter the number you want to edit (Blank to quit): ')
+        if edit_num == '':
+            break
+        edit_term = input('Enter the new term (Blank to keep term): ')
+        edit_def = input('Enter the new definition (Blank to keep definition): ')
+        if edit_term != '':
+            words[int(edit_num)].word = edit_term
+        if edit_def != '':
+            words[int(edit_num)].definition = edit_def
+    utils.save_words(words, config.config['set'])
+
+
 def main():
     print(f'{C.green}GreatStudier Version {VERSION}{C.end}\n{motd.pick_random_motd()}{C.end}\n')
     while True:
@@ -199,6 +218,7 @@ def main():
         cmd = input(prompt).lower().strip()
 
         if cmd in {'quit', 'q'}:
+            print('Exiting...')
             break
         # begin learning available
         if cmd in {'learn', 'l'} and learning_available:
@@ -207,6 +227,8 @@ def main():
             review(words, review_terms)
         elif cmd in {'wipe', '_wipe_progress', 'w'} and learning_available:
             wipe_progress(words)
+        elif cmd in {'edit', 'ed'} and learning_available:
+            edit_mode(set_name, words)
         # end learning available
         elif cmd in {'choose', 'c'}:
             choose_set()

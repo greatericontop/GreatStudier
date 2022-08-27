@@ -5,6 +5,8 @@ A free and open source studying software.
 - [Requirements](#requirements)
 - [Usage](#usage)
   - [Sets](#sets)
+  - [Learn](#learn)
+  - [Review](#review)
 - [License](#license)
 
 ## Requirements
@@ -23,6 +25,14 @@ It is suggested to edit the options file though the CLI.
 ### Sets
 
 Study sets are stored in a file with the header of `## * greatstudier *`. 
+
+### Learn
+
+Learn mode is a mode where you type out the term shown on screen. After typing all of the terms in the set, there will be a quiz.
+
+## Review
+
+Review mode is used for long term memory, you will be quizzed over the materials in the set after a certain amount of time.
 
 ## License
 
