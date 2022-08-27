@@ -17,7 +17,6 @@
 
 import os
 import random
-import readline
 import signal
 import sys
 
@@ -32,7 +31,7 @@ from constants import *
 
 
 def terminate_handler(signal, frame):
-    print('\nExiting...')
+    print(f'{C.red}Caught Control-C, exiting.')
     gamify.save_gamify(gamify.gamify_data)
     config.save_config(config.config)
     sys.exit(0)
@@ -87,7 +86,7 @@ def stats() -> None:
 
 
 def wipe_progress(words) -> None:
-    print(f'{C.red}Clearing ALL progress! Press enter to continue, only if you are sure.{C.end}')
+    print(f'{C.red}Clearing ALL progress for this set! Continue only if you are sure.{C.end}')
     input()
     for key in words:
         key.last_covered = -1
@@ -124,14 +123,14 @@ def choose_set() -> None:
 def open_settings() -> None:
     settings = 'Options\n'
     for i in config.config.keys():
-        if i == 'set' or i == 'set_name':
+        if i == 'set':
             continue
         settings += f'{C.cyan}{i}{C.end}: {C.darkgreen}{config.config[i]}{C.end}\n'
     print(settings)
     settings_change = input('Please choose an option to change: ').lower()
     if settings_change == '':
         return print(CLEAR)
-    if settings_change not in config.config.keys() or settings_change == 'set' or settings_change == 'set__name':
+    if settings_change not in config.config.keys():  # you can manually change the set if you really want to
         return print(f'{C.red}That is not a valid option.{C.end}')
     if type(config.config[settings_change]) is bool:
         config.config[settings_change] = not config.config[settings_change]
@@ -169,12 +168,12 @@ def new_set() -> None:
         print(f'{CLEAR}{C.green}Set successfully created!{C.end}')
 
 
-def edit_mode(set_name, words) -> None:
+def edit_mode(words) -> None:
     print('---This mode is currently under construction, some features may not be working as intended.---')
-    print(f'{C.bwhite}{set_name}{C.end}\n\n{C.yellow}Number: Term = Definition{C.end}')
     while True:
+        print(f'\n{C.yellow}Terms\nNumber: Term = Definition{C.end}')
         for i in range(len(words)):
-            print(f'{i}: "{words[i].word}" = "{words[i].definition}"')
+            print(f'{i}: "{words[i].word}" -> "{words[i].definition}"')
         print()
         edit_num = input('Enter the number you want to edit (Blank to quit): ')
         if edit_num == '':
@@ -217,8 +216,7 @@ def main():
                       f'{C.darkblue}>{C.end} ')
             word_set = config.config['set']
             words = utils.load_words(word_set)
-            set_name = config.config['set_name']
-            print(f'Current set "{C.bwhite}{set_name}{C.end}" ({word_set})')
+            print(f'Current set {C.bwhite}{word_set}{C.end}')
             new_terms, review_terms = utils.get_studyable(words)
         cmd = input(prompt).lower().strip()
 
@@ -233,7 +231,7 @@ def main():
         elif cmd in {'wipe', '_wipe_progress', 'w'} and learning_available:
             wipe_progress(words)
         elif cmd in {'terms', 't'} and learning_available:
-            edit_mode(set_name, words)
+            edit_mode(words)
         elif cmd in {'upload', 'u'} and learning_available:
             url, deletion = uploads.upload_set(words, config.config['set'])
             print(f'{C.cyan}{url}{C.end} - Uploaded! {C.black}({deletion}){C.end}')
