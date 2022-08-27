@@ -15,6 +15,7 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import os
 import random
 
 from utils import C
@@ -23,19 +24,30 @@ from utils import C
 motd = [
     'Suckless!',
     'Free Software!',
+    'Proprietary!',
     'eeeeeee',
-    'Quizlet Sucks',
+    'Quizlet Sucks!',
     '20220825!',
-    'Made with Python',
+    'Made with Python!',
     'New stuff soon\u2122',
     'Down with Big Brother!',
     'I would like to interject for a moment!',
     f'{C.red}C{C.darkyellow}o{C.yellow}l{C.green}o{C.darkgreen}r{C.cyan}m{C.blue}a{C.darkblue}t{C.darkmagenta}i{C.magenta}c{C.darkred}!{C.end}',
     'Now in 256 Colors!',
     'Remember to turn off your computer before 03:14:07 UTC on 1/19/2038.',
-    'Study hard',
-    'You are an idiot ah hahahahahaha',
-    'Never gonna give you up...'
+    'Study hard!',
+    'You are an idiot ah hahahahahahahahahahahaha!',
+    'Never gonna give you up!',
+    'Everything is a file!',
+    "It's pronounced char!",
+    "No, Neo. I'm telling you that when you're ready, you won't have to.",
+    'IlIllIIIlIllIIllIllIllI!',
+    'As seen on TV!',
+    'Skill issue!',
+    'Where brain?',
+    'January 1, 1970!',
+    'I use Arch BTW!',
+    f'{os.getpid()}!',
 ]
 
 

@@ -54,6 +54,10 @@ class KeyData:
     repetition_spot: int
 
 
+# def file_check(name: str) -> bool:
+    
+
+
 def load_words(name: str) -> list:
     with open(os.path.join(config.get_set_directory(), name), 'r') as f:
         contents = f.read().split('\n')

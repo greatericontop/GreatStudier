@@ -131,7 +131,10 @@ def new_set() -> None:
     # WORK IN PROGRESS #
     print(f'---WORK IN PROGRESS---\n{CLEAR}{C.green}GreatSudier study set creator.{C.end}\n')
     set_name = input('Name of the set: ')
-
+    file_name = input('Please enter a simple file name: ')
+    for i in ILLEGAL_FILENAME_CHARS:
+        file_name.replace(i, '_')
+    os.mkdir(os.path.join(config.get_set_directory(), file_name))
 
 
 def main():

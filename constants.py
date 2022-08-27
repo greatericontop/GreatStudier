@@ -42,3 +42,15 @@ NEW_CHUNK_SIZE = 5
 REVIEW_CHUNK_SIZE = 18
 AFTER_WRONG_RETURN_REP_TO = 2
 CLEAR = '\033[H\033[2J\033[3J'  # this ansi sequence *should* clear the screen
+
+ILLEGAL_FILENAME_CHARS = [
+    '/',
+    '<',
+    '>',
+    ':',
+    '"',
+    '\\',
+    '|',
+    '?',
+    '*',
+]
