@@ -204,6 +204,7 @@ def main():
             prompt = ('[L]earn\n'
                       '[R]eview\n'
                       '[W]ipe Progress\n'
+                      '[T]erms'
                       '[C]hoose Set\n'
                       '[N]ew Set\n'
                       '[O]ptions\n'
@@ -227,7 +228,7 @@ def main():
             review(words, review_terms)
         elif cmd in {'wipe', '_wipe_progress', 'w'} and learning_available:
             wipe_progress(words)
-        elif cmd in {'edit', 'ed'} and learning_available:
+        elif cmd in {'terms', 't'} and learning_available:
             edit_mode(set_name, words)
         # end learning available
         elif cmd in {'choose', 'c'}:
