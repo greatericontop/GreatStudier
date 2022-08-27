@@ -54,8 +54,8 @@ class KeyData:
     repetition_spot: int
 
 
-# def file_check(name: str) -> bool:
-    
+def file_check(contents: list[str]) -> bool:
+    return contents[0].lower().startswith('## * greatstudier *')
 
 
 def load_words(name: str) -> list:
