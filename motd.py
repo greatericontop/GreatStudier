@@ -31,6 +31,11 @@ motd = [
     'Down with Big Brother!',
     'I would like to interject for a moment!',
     f'{C.red}C{C.darkyellow}o{C.yellow}l{C.green}o{C.darkgreen}r{C.cyan}m{C.blue}a{C.darkblue}t{C.darkmagenta}i{C.magenta}c{C.darkred}!{C.end}',
+    'Now in 256 Colors!',
+    'Remember to turn off your computer before 03:14:07 UTC on 1/19/2038.',
+    'Study hard',
+    'You are an idiot ah hahahahahaha',
+    'Never gonna give you up...'
 ]
 
 
