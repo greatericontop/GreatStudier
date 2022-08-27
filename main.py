@@ -25,6 +25,7 @@ import config
 import gamify
 import motd
 import quiz
+import uploads
 import utils
 from utils import C
 from constants import *
@@ -164,7 +165,7 @@ def new_set() -> None:
     if len(data) != 0:
         data_join = '\n'.join(data)
         with open(os.path.join(config.get_set_directory(), file_name), 'w') as f:
-            f.write(f'## * greatstudier *, {set_name}\n{data_join}')
+            f.write(f'## * greatstudier *\n{data_join}')
         print(f'{CLEAR}{C.green}Set successfully created!{C.end}')
 
 
@@ -206,6 +207,8 @@ def main():
                       '[R]eview\n'
                       '[W]ipe Progress\n'
                       '[T]erms\n'
+                      '[U]pload (NotImplemented)\n'
+                      '[D]ownload (NotImplemented)\n'
                       '[C]hoose Set\n'
                       '[N]ew Set\n'
                       '[O]ptions\n'
@@ -231,6 +234,9 @@ def main():
             wipe_progress(words)
         elif cmd in {'terms', 't'} and learning_available:
             edit_mode(set_name, words)
+        elif cmd in {'upload', 'u'} and learning_available:
+            url, deletion = uploads.upload_set(words, config.config['set'])
+            print(f'{C.cyan}{url}{C.end} - Uploaded! {C.black}({deletion}){C.end}')
         # end learning available
         elif cmd in {'choose', 'c'}:
             choose_set()

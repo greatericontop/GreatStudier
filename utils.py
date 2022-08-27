@@ -67,7 +67,7 @@ def load_words(name: str) -> list:
         contents = f.read().split('\n')
     if not file_check(contents):
         raise InvalidFileFormatError(f'Expected first line "## * greatstudier *"; got "{contents[0].lower()}" instead')
-    config.config['set_name'] = contents[0].split(', ')[1]
+    config.config['set_name'] = name
     tokenized = []
     for line in contents:
         if len(line) == 0 or line.startswith('#'):
@@ -94,7 +94,7 @@ def save_words(keys: list, output_file: str) -> None:
         for key in keys:
             data.append(f'{key.word}, {key.definition}, {key.last_covered}, {key.repetition_spot}')
         data_join = '\n'.join(data)
-        f.write(f'## * greatstudier *, {set_name}\n{data_join}')
+        f.write(f'## * greatstudier *\n{data_join}')
 
 
 def get_studyable(keys: list) -> tuple:
