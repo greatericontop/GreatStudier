@@ -17,6 +17,7 @@
 
 import os
 import random
+import readline
 import signal
 import sys
 
@@ -76,8 +77,11 @@ def review(words, review_terms) -> None:
 
 def stats() -> None:
     data = gamify.gamify_data
+    print(f'{C.green}Statistics{C.end}')
     print(f"{C.green}You have {data['correct_answers']} correct answers.{C.end}")
     print(f"{C.red}You have {data['wrong_answers']} wrong answers.{C.end}")
+    if data['wrong_answers'] != 0:
+        print(f"Correctness ratio: {data['correct_answers'] / data['wrong_answers']:.2f}")
     print(f"{C.green}You're currently level {gamify.prestige()}\n\n")
 
 
@@ -159,9 +163,12 @@ def new_set() -> None:
         print()
     if len(data) != 0:
         data_join = '\n'.join(data)
-        with open(os.path.join(config.get_set_directory(), file_name), 'w') as f:
-            f.write(f'## * greatstudier *, {set_name}\n{data_join}')
-        print(f'{C.green}Set successfully created!{C.end}')
+        try:
+            with open(os.path.join(config.get_set_directory(), file_name), 'w') as f:
+                f.write(f'## * greatstudier *, {set_name}\n{data_join}')
+            print(f'{C.green}Set successfully created!{C.end}')
+        except OSError:
+            print(f'{C.red}Unable to create file {os.path.join(config.get_set_directory(), file_name)}{C.end}')
 
 
 def main():
