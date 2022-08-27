@@ -162,16 +162,13 @@ def new_set() -> None:
         data.append(f'{term}, {definition}, -1, 0')
         print()
     if len(data) != 0:
-        data_join = '\n'.join(data)
-        with open(os.path.join(config.get_set_directory(), file_name), 'w') as f:
-            f.write(f'## * greatstudier *\n{data_join}')
+        utils.save_words(data, config.config['set'])
         print(f'{CLEAR}{C.green}Set successfully created!{C.end}')
 
 
 def edit_mode(words) -> None:
-    print('---This mode is currently under construction, some features may not be working as intended.---')
     while True:
-        print(f'\n{C.yellow}Terms\nNumber: Term = Definition{C.end}')
+        print(f'\n{C.yellow}Terms\nNumber: Term -> Definition{C.end}')
         for i in range(len(words)):
             print(f'{i}: "{words[i].word}" -> "{words[i].definition}"')
         print()
@@ -185,7 +182,7 @@ def edit_mode(words) -> None:
         if edit_def != '':
             words[int(edit_num)].definition = edit_def
     utils.save_words(words, config.config['set'])
-    print(f'{CLEAR}All changes saved!')
+    print(f'{CLEAR}{C.green}All changes saved!{C.end}')
 
 
 def main():
@@ -205,10 +202,10 @@ def main():
             prompt = ('[L]earn\n'
                       '[R]eview\n'
                       '[W]ipe Progress\n'
-                      '[T]erms\n'
                       '[U]pload (NotImplemented)\n'
                       '[D]ownload (NotImplemented)\n'
                       '[C]hoose Set\n'
+                      '[M]odify Set\n'
                       '[N]ew Set\n'
                       '[O]ptions\n'
                       '[S]tats\n'
@@ -230,7 +227,7 @@ def main():
             review(words, review_terms)
         elif cmd in {'wipe', '_wipe_progress', 'w'} and learning_available:
             wipe_progress(words)
-        elif cmd in {'terms', 't'} and learning_available:
+        elif cmd in {'modify', 'm'} and learning_available:
             edit_mode(words)
         elif cmd in {'upload', 'u'} and learning_available:
             url, deletion = uploads.upload_set(words, config.config['set'])
