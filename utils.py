@@ -67,7 +67,6 @@ def load_words(name: str) -> list:
         contents = f.read().split('\n')
     if not file_check(contents):
         raise InvalidFileFormatError(f'Expected first line "## * greatstudier *"; got "{contents[0].lower()}" instead')
-    config.config['set_name'] = name
     tokenized = []
     for line in contents:
         if len(line) == 0 or line.startswith('#'):
@@ -89,7 +88,6 @@ def load_words(name: str) -> list:
 
 def save_words(keys: list, output_file: str) -> None:
     with open(os.path.join(config.get_set_directory(), output_file), 'w') as f:
-        set_name = config.config['set_name']
         data = []
         for key in keys:
             data.append(f'{key.word}, {key.definition}, {key.last_covered}, {key.repetition_spot}')
