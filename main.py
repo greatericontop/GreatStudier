@@ -20,6 +20,7 @@ import random
 
 import config
 import gamify
+import motd
 import quiz
 import utils
 from utils import C
@@ -28,8 +29,7 @@ from constants import *
 
 def learn(words, new_terms) -> None:
     random.shuffle(new_terms)
-    print(f'{CLEAR}You are ready to:\nLEARN x{C.darkcyan}{min(NEW_CHUNK_SIZE, len(new_terms))}{C.end}\n\nPress enter to continue.\n')
-    input()
+    print(f'{CLEAR}You are ready to:\nLEARN x{C.darkcyan}{min(NEW_CHUNK_SIZE, len(new_terms))}{C.end}\n')
     study_indices = list(range(min(NEW_CHUNK_SIZE, len(new_terms))))
     for i in study_indices:
         key = new_terms[i]
@@ -55,8 +55,7 @@ def learn(words, new_terms) -> None:
 
 def review(words, review_terms) -> None:
     random.shuffle(review_terms)
-    print(f'{CLEAR}You are ready to:\nREVIEW x{C.darkcyan}{min(REVIEW_CHUNK_SIZE, len(review_terms))}{C.end}\n\nPress enter to continue.\n')
-    input()
+    print(f'{CLEAR}You are ready to:\nREVIEW x{C.darkcyan}{min(REVIEW_CHUNK_SIZE, len(review_terms))}{C.end}\n')
     for i in range(min(REVIEW_CHUNK_SIZE, len(review_terms))):
         key = review_terms[i]
         quiz.quiz(key)
@@ -130,8 +129,7 @@ def open_options() -> None:
 
 
 def main():
-    print(f'{C.green}GreatSudier Version {VERSION}{C.end}')
-
+    print(f'{C.green}GreatStudier Version {VERSION}{C.end}\n{motd.pick_random_motd()}{C.end}')
     while True:
         if config.config['set'] is None:
             learning_available = False
@@ -179,6 +177,7 @@ def main():
             stats()
         else:
             print('That is not an option.')
+        print(f'{C.green}GreatStudier{C.end}')
 
     gamify.fix_level(print_stuff=True)
     if config.config['show_gamify']:
