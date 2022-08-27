@@ -157,9 +157,10 @@ def new_set() -> None:
             break
         data.append(f'{term}, {definition}, -1, 0')
         print()
-    data_join = '\n'.join(data)
-    with open(os.path.join(config.get_set_directory(), file_name), 'w') as f:
-        f.write(f'## * greatstudier *, {set_name}\n{data_join}')
+    if len(data) != 0:
+        data_join = '\n'.join(data)
+        with open(os.path.join(config.get_set_directory(), file_name), 'w') as f:
+            f.write(f'## * greatstudier *, {set_name}\n{data_join}')
 
 
 def main():
