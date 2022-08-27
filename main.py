@@ -161,6 +161,7 @@ def new_set() -> None:
         data_join = '\n'.join(data)
         with open(os.path.join(config.get_set_directory(), file_name), 'w') as f:
             f.write(f'## * greatstudier *, {set_name}\n{data_join}')
+        print(f'{C.green}Set successfully created!{C.end}')
 
 
 def main():
