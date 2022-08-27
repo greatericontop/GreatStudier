@@ -95,8 +95,6 @@ def choose_set() -> None:
             word_set = input('Choose a set: ')
             if word_set == '':
                 break
-            if not word_set.endswith('.txt'):
-                word_set += '.txt'
             if word_set in sets:
                 config.config['set'] = word_set
                 no_valid_set = False
@@ -109,7 +107,7 @@ def choose_set() -> None:
 def open_settings() -> None:
     settings = 'Settings\n'
     for i in config.config.keys():
-        if i == 'set':
+        if i == 'set' or i == 'set_name':
             continue
         settings += f'{C.cyan}{i}{C.end}: {C.darkgreen}{config.config[i]}{C.end}\n'
     print(settings)
@@ -134,7 +132,20 @@ def new_set() -> None:
     file_name = input('Please enter a simple file name: ')
     for i in ILLEGAL_FILENAME_CHARS:
         file_name.replace(i, '_')
-    os.mkdir(os.path.join(config.get_set_directory(), file_name))
+    create_set = True
+    data = []
+    while create_set:
+        print('To exit creating a new set, type [:q]')
+        term = input('Enter a term: ')
+        if term == ':q':
+            break
+        definition = input('Enter a definition: ')
+        if definition == ':q':
+            break
+        data.append(f'{term}, {definition}, -1, 0')
+    data_join = '\n'.join(data)
+    with open(os.path.join(config.get_set_directory(), file_name), 'w') as f:
+        f.write(f'## * greatstudier *, {set_name}\n{data_join}')
 
 
 def main():
@@ -162,7 +173,8 @@ def main():
                       f'{C.darkblue}>{C.end} ')
             word_set = config.config['set']
             words = utils.load_words(word_set)
-            print(f'Current set "{C.bwhite}{word_set}{C.end}"')
+            set_name = config.config['set_name']
+            print(f'Current set "{C.bwhite}{set_name}{C.end}" ({word_set})')
             new_terms, review_terms = utils.get_studyable(words)
         cmd = input(prompt).lower().strip()
 

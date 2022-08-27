@@ -46,6 +46,10 @@ class C:
     end = '\033[0;0m'
 
 
+class InvalidFileFormatError(RuntimeError):
+    pass
+
+
 @dataclasses.dataclass
 class KeyData:
     word: str
@@ -61,6 +65,9 @@ def file_check(contents: list[str]) -> bool:
 def load_words(name: str) -> list:
     with open(os.path.join(config.get_set_directory(), name), 'r') as f:
         contents = f.read().split('\n')
+    if not file_check(contents):
+        raise InvalidFileFormatError(f'Expected first line "## * greatstudier *"; got "{contents[0].lower()}" instead')
+    config.config['set_name'] = contents[0].split(', ')[1]
     tokenized = []
     for line in contents:
         if len(line) == 0 or line.startswith('#'):
@@ -82,10 +89,12 @@ def load_words(name: str) -> list:
 
 def save_words(keys: list, output_file: str) -> None:
     with open(os.path.join(config.get_set_directory(), output_file), 'w') as f:
+        set_name = config.config['set_name']
         data = []
         for key in keys:
             data.append(f'{key.word}, {key.definition}, {key.last_covered}, {key.repetition_spot}')
-        f.write('\n'.join(data))
+        data_join = '\n'.join(data)
+        f.write(f'## * greatstudier *, {set_name}\n{data_join}')
 
 
 def get_studyable(keys: list) -> tuple:

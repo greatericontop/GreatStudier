@@ -24,7 +24,7 @@ def load_config() -> dict:
         with open(os.path.expanduser('~/.greatstudier_config.py'), 'r') as f:
             return ast.literal_eval(f.read())
     except FileNotFoundError:
-        return {'set': None, 'set_directory': None, 'show_gamify': True}
+        return {'set': None, 'set_name': None, 'set_directory': None, 'show_gamify': True}
 
 
 def save_config(data: dict) -> None:
