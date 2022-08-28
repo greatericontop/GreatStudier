@@ -16,6 +16,7 @@ A free and open source studying software.
 
 - Python 3.9 (or higher), although 3.6 will probably work.
 - `Levenshtein` module: Install using `pip install Levenshtein` or the equivalent (`python3 -m pip`, `pip3`, etc.) for your system.
+- `Requests` module: Install using `pip install requests` or the equivalent (`python3 -m pip`, `pip3`, etc.) for your system.
 
 ---
 
