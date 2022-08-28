@@ -30,7 +30,7 @@ from utils import C
 from constants import *
 
 
-def terminate_handler(signal, frame):
+def terminate_handler(sig, frame):
     print(f'{C.red}Caught Control-C, exiting.')
     gamify.save_gamify(gamify.gamify_data)
     config.save_config(config.config)
@@ -100,7 +100,7 @@ def choose_set() -> None:
         config.create_set_directory()
 
     sets = os.listdir(config.get_set_directory())
-    print_sets = "\n".join(sets)
+    print_sets = '\n'.join(sets)
 
     if len(sets) == 0:
         print(f'\n{C.yellow}You currently have no sets available. Import or create a new set to continue.{C.end}')
@@ -144,25 +144,20 @@ def open_settings() -> None:
 def new_set() -> None:
     print(f'{CLEAR}{C.green}GreatStudier study set creator.{C.end}\n')
     set_name = input('Name of the set: ')
-    file_name = input('Please enter a simple file name: ')
-    if set_name == '' or file_name == '':
-        return print('Canceled.')
-    for i in ILLEGAL_FILENAME_CHARS:
-        file_name.replace(i, '_')
-    create_set = True
+    for c in ILLEGAL_FILENAME_CHARS:
+        set_name.replace(c, '_')
     data = []
     print(f'{C.green}Press [Enter] without entering anything to exit.{C.end}')
-    while create_set:
+    while True:
         term = input('Enter a term: ')
-        if term == '':
-            break
         definition = input('Enter a definition: ')
-        if definition == '':
+        if not (term and definition):
+            print('Finishing!')
             break
-        data.append(f'{term}, {definition}, -1, 0')
+        data.append(utils.KeyData(term, definition, -1, 0))
         print()
-    if len(data) != 0:
-        utils.save_words(data, config.config['set'])
+    if data:
+        utils.save_words(data, set_name)
         print(f'{CLEAR}{C.green}Set successfully created!{C.end}')
 
 
@@ -186,7 +181,7 @@ def edit_mode(words) -> None:
 
 
 def main():
-    print(f'{C.green}GreatStudier Version {VERSION}{C.end}\n{motd.pick_random_motd()}{C.end}\n')
+    print(f'{C.green}GreatStudier Version {VERSION}{C.end}\n{motd.random()}{C.end}\n')
     while True:
         if config.config['set'] is None:
             learning_available = False

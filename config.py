@@ -33,10 +33,10 @@ def save_config(data: dict) -> None:
 
 
 def get_set_directory() -> str:
+    """Return the directory for the set (path is expanded) as a string."""
     if config['set_directory'] is None:
         return os.path.expanduser('~/GreatStudier/')
-    config['set_directory'] = os.path.expanduser(config['set_directory'])
-    return config['set_directory']
+    return os.path.expanduser(config['set_directory'])
 
 
 def create_set_directory() -> None:

@@ -18,6 +18,7 @@
 import dataclasses
 import enum
 import os
+import pathlib as pl
 import time
 import Levenshtein
 
@@ -63,7 +64,8 @@ def file_check(contents: list[str]) -> bool:
 
 
 def load_words(name: str) -> list:
-    with open(os.path.join(config.get_set_directory(), name), 'r') as f:
+    path = pl.Path(config.get_set_directory()) / name
+    with path.open('r') as f:
         contents = f.read().split('\n')
     if not file_check(contents):
         raise InvalidFileFormatError(f'Expected first line "## * greatstudier *"; got "{contents[0].lower()}" instead')
@@ -86,8 +88,9 @@ def load_words(name: str) -> list:
     return tokenized
 
 
-def save_words(keys: list, output_file: str) -> None:
-    with open(os.path.join(config.get_set_directory(), output_file), 'w') as f:
+def save_words(keys: list, output_file_name: str) -> None:
+    path = pl.Path(config.get_set_directory()) / output_file_name
+    with path.open('w') as f:
         data = []
         for key in keys:
             data.append(f'{key.word}, {key.definition}, {key.last_covered}, {key.repetition_spot}')

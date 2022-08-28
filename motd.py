@@ -16,7 +16,7 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import os
-import random
+import random as _random
 
 from utils import C
 
@@ -51,6 +51,6 @@ motd = [
 ]
 
 
-def pick_random_motd() -> str:
-    return random.choice(motd)
+def random() -> str:
+    return _random.choice(motd)
 
