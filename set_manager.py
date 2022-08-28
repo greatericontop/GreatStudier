@@ -47,28 +47,6 @@ def choose_set() -> None:
     print(CLEAR)
 
 
-def open_settings() -> None:
-    settings = 'Options\n'
-    for i in config.config.keys():
-        if i == 'set':
-            continue
-        settings += f'{C.cyan}{i}{C.end}: {C.darkgreen}{config.config[i]}{C.end}\n'
-    print(settings)
-    print(f'{C.darkgreen}Press [Enter] to exit.{C.end}')
-    settings_change = input('Please choose an option to change: ').lower()
-    if not settings_change:
-        return print(CLEAR)
-    if settings_change not in config.config.keys():  # you can manually change the set if you really want to
-        return print(f'{C.red}That is not a valid option.{C.end}')
-    if type(config.config[settings_change]) is bool:
-        config.config[settings_change] = not config.config[settings_change]
-    else:
-        new_option = input('What do you want to change it to (enter full path for set_directory): ')
-        config.config[settings_change] = new_option
-    config.save_config(config.config)
-    print(f'{CLEAR}{C.green}All changes saved!')
-
-
 def new_set() -> None:
     print(f'{CLEAR}{C.green}GreatStudier study set creator.{C.end}\n')
     set_name = input('Name of the set: ')

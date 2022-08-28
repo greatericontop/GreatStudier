@@ -26,7 +26,7 @@ import motd
 import quiz
 import uploads
 import utils
-from set_manager import choose_set, open_settings, new_set, edit_mode
+from set_manager import choose_set, new_set, edit_mode
 from utils import C
 from constants import *
 
@@ -108,6 +108,30 @@ def download_set():
         if not dest:
             dest = name
         utils.save_data(result, dest)
+
+
+def open_settings() -> None:
+    settings = 'Options\n'
+    for key, value in config.config.items():
+        if key == 'set':
+            continue
+        if key == 'paste_api_key' and value is not None:
+            value = value[:4] + '**********'
+        settings += f'{C.darkgreen}{key}{C.end} = {C.darkgreen}{value}{C.end}\n'
+    print(settings)
+    print('Leave blank to exit.\n')
+    settings_change = input('Please choose an option to change: ').lower()
+    if not settings_change:
+        return print(CLEAR)
+    if settings_change not in config.config.keys():  # you can manually change the set if you really want to
+        return print(f'{C.red}That is not a valid option.{C.end}')
+    if type(config.config[settings_change]) is bool:
+        config.config[settings_change] = not config.config[settings_change]
+    else:
+        new_option = input('What do you want to change it to (enter full path for set_directory): ')
+        config.config[settings_change] = new_option
+    config.save_config(config.config)
+    print(f'{CLEAR}{C.green}All changes saved!')
 
 
 def main():
