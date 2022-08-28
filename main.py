@@ -77,7 +77,7 @@ def review(words, review_terms) -> None:
 
 def stats() -> None:
     data = gamify.gamify_data
-    print(f'{C.green}Statistics{C.end}')
+    print(f'{CLEAR}{C.green}Statistics{C.end}')
     print(f"{C.green}You have {data['correct_answers']} correct answers.{C.end}")
     print(f"{C.red}You have {data['wrong_answers']} wrong answers.{C.end}")
     if data['wrong_answers'] != 0:
@@ -105,15 +105,14 @@ def choose_set() -> None:
     if len(sets) == 0:
         print(f'\n{C.yellow}You currently have no sets available. Import or create a new set to continue.{C.end}')
     else:
-        print(f'{C.cyan}Study Sets{C.end}\n{print_sets}\n')
-        no_valid_set: bool = True
-        while no_valid_set:
+        print(f'{CLEAR}{C.cyan}Available Study Sets{C.end}\n{print_sets}\n{C.darkgreen}Press [Enter] to exit.{C.end}\n')
+        while True:
             word_set = input('Choose a set: ')
-            if word_set == '':
+            if not word_set:
                 break
             if word_set in sets:
                 config.config['set'] = word_set
-                no_valid_set = False
+                break
             else:
                 print(f'{C.red}Invalid Set! Please choose a valid set.{C.end}')
     config.save_config(config.config)
@@ -127,8 +126,9 @@ def open_settings() -> None:
             continue
         settings += f'{C.cyan}{i}{C.end}: {C.darkgreen}{config.config[i]}{C.end}\n'
     print(settings)
+    print(f'{C.darkgreen}Press [Enter] to exit.{C.end}')
     settings_change = input('Please choose an option to change: ').lower()
-    if settings_change == '':
+    if not settings_change:
         return print(CLEAR)
     if settings_change not in config.config.keys():  # you can manually change the set if you really want to
         return print(f'{C.red}That is not a valid option.{C.end}')
@@ -138,16 +138,18 @@ def open_settings() -> None:
         new_option = input('What do you want to change it to (enter full path for set_directory): ')
         config.config[settings_change] = new_option
     config.save_config(config.config)
-    print(CLEAR)
+    print(f'{CLEAR}{C.green}All changes saved!')
 
 
 def new_set() -> None:
     print(f'{CLEAR}{C.green}GreatStudier study set creator.{C.end}\n')
     set_name = input('Name of the set: ')
+    if not set_name:
+        return print(f'{CLEAR}Aborted.')
     for c in ILLEGAL_FILENAME_CHARS:
         set_name.replace(c, '_')
     data = []
-    print(f'{C.green}Press [Enter] without entering anything to exit.{C.end}')
+    print(f'{C.darkgreen}Press [Enter] to exit.{C.end}')
     while True:
         term = input('Enter a term: ')
         definition = input('Enter a definition: ')
@@ -156,20 +158,22 @@ def new_set() -> None:
             break
         data.append(utils.KeyData(term, definition, -1, 0))
         print()
+    print(CLEAR)
     if data:
         utils.save_words(data, set_name)
-        print(f'{CLEAR}{C.green}Set successfully created!{C.end}')
+        print(f'{C.green}Set successfully created!{C.end}')
 
 
 def edit_mode(words) -> None:
-    print(f'\n{C.yellow}Terms\nNumber: Term -> Definition{C.end}')
+    print(f'{CLEAR}{C.yellow}Terms\n{C.magenta}Number{C.end}: {C.green}Term{C.end} -> {C.darkblue}Definition{C.end}')
+    print('--------------------------')
     for i in range(len(words)):
-        print(f'{i}: "{words[i].word}" -> "{words[i].definition}"')
+        print(f'{C.magenta}{i}{C.end}: {C.green}"{words[i].word}"{C.end} -> {C.darkblue}"{words[i].definition}"{C.end}')
     print()
-    mode = input('Enter a mode [+] add terms, [-] remove terms, or [e]dit terms: ')
-    if mode == '':
-        return
-    print(f'{C.green}Press [Enter] without entering anything to exit.{C.end}')
+    mode = input(f'{C.darkgreen}Enter a mode [+] add terms, [-] remove terms, or [e]dit terms: {C.end}')
+    if not mode:
+        return print(CLEAR)
+    print(f'{C.darkgreen}Press [Enter] to exit.{C.end}')
     if mode in {'e', 'edit'}:
         while True:
             edit_num = input('Enter the number you want to edit (Blank to quit): ')
@@ -211,7 +215,7 @@ def edit_mode(words) -> None:
 
 
 def main():
-    print(f'{C.green}GreatStudier Version {VERSION}{C.end}\n{motd.random()}{C.end}\n')
+    print(f'{CLEAR}{C.green}GreatStudier Version {VERSION}{C.end}\n{motd.random()}{C.end}\n')
     while True:
         if config.config['set'] is None:
             learning_available = False
@@ -238,7 +242,7 @@ def main():
                       f'{C.darkblue}>{C.end} ')
             word_set = config.config['set']
             words = utils.load_words(word_set)
-            print(f'Current set {C.bwhite}{word_set}{C.end}')
+            print(f'{C.blue}Current set{C.end}: {C.bwhite}{word_set}{C.end}')
             new_terms, review_terms = utils.get_studyable(words)
         cmd = input(prompt).lower().strip()
 
@@ -267,7 +271,7 @@ def main():
         elif cmd in {'stats', 's'}:
             stats()
         else:
-            print('That is not an option.\n')
+            print(f'{CLEAR}That is not an option.\n')
         print(f'{C.green}GreatStudier{C.end}')
 
     gamify.fix_level(print_stuff=True)

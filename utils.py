@@ -73,7 +73,7 @@ def load_words(name: str) -> list:
     for line in contents:
         if len(line) == 0 or line.startswith('#'):
             continue
-        data = [x.strip() for x in line.split(',')]
+        data = [x.strip() for x in line.split('::')]
         # data[0]: Key
         # data[1]: Definition
         # data[2]: Last covered
@@ -93,7 +93,7 @@ def save_words(keys: list, output_file_name: str) -> None:
     with path.open('w') as f:
         data = []
         for key in keys:
-            data.append(f'{key.word}, {key.definition}, {key.last_covered}, {key.repetition_spot}')
+            data.append(f'{key.word} :: {key.definition} :: {key.last_covered} :: {key.repetition_spot}')
         data_join = '\n'.join(data)
         f.write(f'## * greatstudier *\n{data_join}')
 
