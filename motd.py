@@ -50,6 +50,7 @@ motd = [
     f'{os.getpid()}!',
     'The more you ask, the longer I will take to update!',
     'No more p2w!',
+    'Finally here!',
 ]
 
 
