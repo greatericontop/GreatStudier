@@ -105,7 +105,7 @@ def choose_set() -> None:
     if len(sets) == 0:
         print(f'\n{C.yellow}You currently have no sets available. Import or create a new set to continue.{C.end}')
     else:
-        print(f'{CLEAR}{C.cyan}Available Study Sets{C.end}\n{print_sets}\n{C.darkgreen}Press [Enter] to exit.{C.end}\n')
+        print(f'{CLEAR}{C.darkcyan}Available Study Sets{C.end}\n{print_sets}\n\n{C.darkgreen}Press [Enter] to exit.{C.end}')
         while True:
             word_set = input('Choose a set: ')
             if not word_set:
