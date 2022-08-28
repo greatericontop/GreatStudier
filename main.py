@@ -116,19 +116,19 @@ def main():
     while True:
         if config.config['set'] is None:
             learning_available = False
-            prompt = (f'{C.red}It seems you do not have a set chosen!{C.end}\n'
-                      '[D]ownload Set\n'
-                      '[C]hoose Set          [N]ew Set\n'
-                      '[O]ptions             [S]tats\n'
-                      '[Q]uit\n'
+            prompt = (f'{C.darkred}It seems you do not have a set chosen!{C.end}\n'
+                      f'{C.no}[L]earn{C.end}               {C.no}[R]eview{C.end}\n'
+                      f'{C.no}[U]pload Set{C.end}          [D]ownload Set\n'
+                      f'[C]hoose Set          [N]ew Set             {C.no}[M]odify Set{C.end}\n'
+                      f'[O]ptions             [S]tats               {C.no}[W]ipe Progress{C.end}\n'
+                      f'[Q]uit\n'
                       f'{C.darkblue}>{C.end} ')
         else:
             learning_available = True
-            prompt = ('[L]earn               [R]eview\n'          
-                      '[W]ipe Progress\n'
+            prompt = ('[L]earn               [R]eview\n'
                       '[U]pload Set          [D]ownload Set\n'
                       '[C]hoose Set          [N]ew Set             [M]odify Set\n'
-                      '[O]ptions             [S]tats\n'
+                      '[O]ptions             [S]tats               [W]ipe Progress\n'
                       '[Q]uit\n'
                       f'{C.darkblue}>{C.end} ')
             word_set = config.config['set']

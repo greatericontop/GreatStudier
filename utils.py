@@ -28,6 +28,8 @@ from constants import *
 
 class C:
     bwhite = '\033[1;97m'
+    no = '\033[9;91m'
+    #
     white = '\033[0;97m'
     yellow = '\033[0;93m'
     green = '\033[0;92m'
