@@ -16,6 +16,7 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import ast
+import math
 import os
 
 from utils import C
@@ -97,6 +98,16 @@ def gamify_wrong_answer() -> None:
     """Register a wrong."""
     gamify_data['wrong_answers'] += 1
     gamify_data['xp'] += 1
+
+
+def get_skill() -> int:
+    """Return the 'skill score'"""
+    correct = gamify_data['correct_answers']
+    wrong = gamify_data['wrong_answers']
+    veteran_bonus = math.sqrt(correct-wrong) * 0.2
+    expected_wrong = max(wrong, 30)
+    ratio = (correct / expected_wrong) + veteran_bonus
+    return int(100 * ratio)
 
 
 gamify_data = load_gamify()

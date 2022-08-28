@@ -82,7 +82,8 @@ def stats() -> None:
     print(f"{C.green}You have {data['correct_answers']} correct answers.{C.end}")
     print(f"{C.red}You have {data['wrong_answers']} wrong answers.{C.end}")
     if data['wrong_answers'] != 0:
-        print(f"Correctness ratio: {data['correct_answers'] / data['wrong_answers']:.2f}")
+        print(f"Answer Ratio: {data['correct_answers'] / data['wrong_answers']:.2f}")
+    print(f'{C.cyan}Skill Score: {gamify.get_skill()}{C.end}')
     print(f"{C.green}You're currently level {gamify.prestige()}\n\n")
 
 
