@@ -143,9 +143,8 @@ def open_settings() -> None:
 
 def new_set() -> None:
     print(f'{CLEAR}{C.green}GreatStudier study set creator.{C.end}\n')
-    set_name = input('Name of the set: ')
-    file_name = input('Please enter a simple file name: ')
-    if set_name == '' or file_name == '':
+    file_name = input('Name of the set: ')
+    if file_name == '':
         return print('Canceled.')
     for i in ILLEGAL_FILENAME_CHARS:
         file_name.replace(i, '_')
@@ -167,20 +166,44 @@ def new_set() -> None:
 
 
 def edit_mode(words) -> None:
-    while True:
-        print(f'\n{C.yellow}Terms\nNumber: Term -> Definition{C.end}')
-        for i in range(len(words)):
-            print(f'{i}: "{words[i].word}" -> "{words[i].definition}"')
-        print()
-        edit_num = input('Enter the number you want to edit (Blank to quit): ')
-        if edit_num == '':
-            break
-        edit_term = input('Enter the new term (Blank to keep term): ')
-        edit_def = input('Enter the new definition (Blank to keep definition): ')
-        if edit_term != '':
-            words[int(edit_num)].word = edit_term
-        if edit_def != '':
-            words[int(edit_num)].definition = edit_def
+    print(f'\n{C.yellow}Terms\nNumber: Term -> Definition{C.end}')
+    for i in range(len(words)):
+        print(f'{i}: "{words[i].word}" -> "{words[i].definition}"')
+    print()
+    mode = input('Enter a mode [+] add terms, [-] remove terms, or [e]dit terms: ')
+    if mode == '':
+        return
+    if mode in {'e', 'edit'}:
+        while True:
+            edit_num = input('Enter the number you want to edit (Blank to quit): ')
+            if edit_num == '':
+                break
+            edit_term = input('Enter the new term (Blank to keep term): ')
+            edit_def = input('Enter the new definition (Blank to keep definition): ')
+            if edit_term != '':
+                words[int(edit_num)].word = edit_term
+            if edit_def != '':
+                words[int(edit_num)].definition = edit_def
+    elif mode in {'+', 'add'}:
+        while True:
+            term = input('Enter a term: ')
+            if term == '':
+                break
+            definition = input('Enter a definition: ')
+            if definition == '':
+                break
+            words[len(words)] = term, definition, -1, 0
+            print()
+    elif mode in {'-', 'remove'}:
+        while True:
+            remove_num = input('Enter the number you want to remove (Blank to quit): ')
+            if remove_num == '':
+                break
+            print(f'Are you sure you want to remove term {C.bwhite}{words[remove_num].word}{C.end}[Y/n]. ')
+            if input().lower() != 'y':
+                print('Aborted!')
+                break
+            del words[remove_num]
     utils.save_words(words, config.config['set'])
     print(f'{CLEAR}{C.green}All changes saved!{C.end}')
 
