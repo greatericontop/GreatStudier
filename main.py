@@ -110,7 +110,9 @@ def download_set():
 
 
 def main():
-    print(f'{CLEAR}{C.green}GreatStudier Version {VERSION}{C.end}\n{motd.random()}{C.end}\n')
+    print(f'{CLEAR}{C.green}GreatStudier Version {VERSION}{C.end}\n'
+          f'{motd.random()}\n'
+          f'{gamify.dashboard()}\n')
     while True:
         # TODO: put these in some logical order
         if config.config['set'] is None:
@@ -173,8 +175,8 @@ def main():
             print(f'{CLEAR}That is not an option.\n')
         print(f'{C.green}GreatStudier{C.end}')
 
-    gamify.fix_level(print_stuff=True)
     if config.config['show_gamify']:
+        gamify.fix_level(print_stuff=True)
         gamify.show_level()
     # SAVE STUFF
     gamify.save_gamify(gamify.gamify_data)
