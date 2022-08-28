@@ -162,22 +162,53 @@ def new_set() -> None:
 
 
 def edit_mode(words) -> None:
-    while True:
-        print(f'\n{C.yellow}Terms\nNumber: Term -> Definition{C.end}')
-        for i in range(len(words)):
-            print(f'{i}: "{words[i].word}" -> "{words[i].definition}"')
-        print()
-        edit_num = input('Enter the number you want to edit (Blank to quit): ')
-        if edit_num == '':
-            break
-        edit_term = input('Enter the new term (Blank to keep term): ')
-        edit_def = input('Enter the new definition (Blank to keep definition): ')
-        if edit_term != '':
-            words[int(edit_num)].word = edit_term
-        if edit_def != '':
-            words[int(edit_num)].definition = edit_def
+    print(f'\n{C.yellow}Terms\nNumber: Term -> Definition{C.end}')
+    for i in range(len(words)):
+        print(f'{i}: "{words[i].word}" -> "{words[i].definition}"')
+    print()
+    mode = input('Enter a mode [+] add terms, [-] remove terms, or [e]dit terms: ')
+    if mode == '':
+        return
+    print(f'{C.green}Press [Enter] without entering anything to exit.{C.end}')
+    if mode in {'e', 'edit'}:
+        while True:
+            edit_num = input('Enter the number you want to edit (Blank to quit): ')
+            if edit_num == '':
+                break
+            edit_term = input('Enter the new term (Blank to keep term): ')
+            edit_def = input('Enter the new definition (Blank to keep definition): ')
+            if edit_term != '':
+                words[int(edit_num)].word = edit_term
+            if edit_def != '':
+                words[int(edit_num)].definition = edit_def
+            print()
+        print(CLEAR)
+    elif mode in {'+', 'add'}:
+        while True:
+            term = input('Enter a term: ')
+            if term == '':
+                break
+            definition = input('Enter a definition: ')
+            if definition == '':
+                break
+            words.append(utils.KeyData(word=term, definition=definition, last_covered=-1, repetition_spot=0))
+            print()
+        print(CLEAR)
+    elif mode in {'-', 'remove'}:
+        while True:
+            if len(words) == 1:
+                print(f'{CLEAR}{C.yellow}You may not remove a set with 1 term.{C.end}')
+                break
+            remove_num = input('Enter the number you want to remove (Blank to quit): ')
+            if remove_num == '':
+                break
+            remove_confirm = input(f'Are you sure you want to remove term {C.bwhite}{words[int(remove_num)].word}{C.end} [Y/n]. ')
+            if remove_confirm != 'y':
+                print('Aborted!')
+                break
+            del words[int(remove_num)]
     utils.save_words(words, config.config['set'])
-    print(f'{CLEAR}{C.green}All changes saved!{C.end}')
+    print(f'{C.green}All changes saved!{C.end}')
 
 
 def main():
