@@ -37,13 +37,13 @@ def choose_set() -> None:
         while True:
             word_set = input('Choose a set: ')
             if not word_set:
+                config.config['set'] = None
                 break
             if word_set in sets:
                 config.config['set'] = word_set
                 break
             else:
                 print(f'{C.red}Invalid Set! Please choose a valid set.{C.end}')
-    config.save_config(config.config)
     print(CLEAR)
 
 

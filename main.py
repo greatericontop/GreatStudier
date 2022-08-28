@@ -114,28 +114,21 @@ def main():
           f'{motd.random()}\n'
           f'{gamify.dashboard()}\n')
     while True:
-        # TODO: put these in some logical order
         if config.config['set'] is None:
             learning_available = False
             prompt = (f'{C.red}It seems you do not have a set chosen!{C.end}\n'
-                      '[C]hoose Set\n'
-                      '[N]ew Set\n'
-                      '[O]ptions\n'
-                      '[S]tats\n'
+                      '[D]ownload Set\n'
+                      '[C]hoose Set          [N]ew Set\n'
+                      '[O]ptions             [S]tats\n'
                       '[Q]uit\n'
                       f'{C.darkblue}>{C.end} ')
         else:
             learning_available = True
-            prompt = ('[L]earn\n'
-                      '[R]eview\n'
+            prompt = ('[L]earn               [R]eview\n'          
                       '[W]ipe Progress\n'
-                      '[U]pload\n'
-                      '[D]ownload\n'
-                      '[C]hoose Set\n'
-                      '[M]odify Set\n'
-                      '[N]ew Set\n'
-                      '[O]ptions\n'
-                      '[S]tats\n'
+                      '[U]pload Set          [D]ownload Set\n'
+                      '[C]hoose Set          [N]ew Set             [M]odify Set\n'
+                      '[O]ptions             [S]tats\n'
                       '[Q]uit\n'
                       f'{C.darkblue}>{C.end} ')
             word_set = config.config['set']
