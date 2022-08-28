@@ -214,6 +214,19 @@ def edit_mode(words) -> None:
     print(f'{C.green}All changes saved!{C.end}')
 
 
+def download_set():
+    link = input('Link: ')
+    try:
+        result, name = uploads.download_set(link)
+    except RuntimeError as e:
+        print(f'{C.yellow}{e}{C.end}')
+    else:
+        dest = input('Save to (leave blank for default name): ')
+        if not dest:
+            dest = name
+        utils.save_data(result, dest)
+
+
 def main():
     print(f'{CLEAR}{C.green}GreatStudier Version {VERSION}{C.end}\n{motd.random()}{C.end}\n')
     while True:
@@ -232,7 +245,7 @@ def main():
                       '[R]eview\n'
                       '[W]ipe Progress\n'
                       '[U]pload\n'
-                      '[D]ownload (NotImplemented)\n'
+                      '[D]ownload\n'
                       '[C]hoose Set\n'
                       '[M]odify Set\n'
                       '[N]ew Set\n'
@@ -263,6 +276,8 @@ def main():
             url, deletion = uploads.upload_set(words, config.config['set'])
             print(f'{CLEAR}{C.cyan}{url}{C.end} - Uploaded! {C.black}({deletion}){C.end}')
         # end learning available
+        elif cmd in {'download', 'd'}:
+            download_set()
         elif cmd in {'choose', 'c'}:
             choose_set()
         elif cmd in {'new', 'n'}:

@@ -19,12 +19,28 @@ import ast
 import os
 
 
+def update_with_defaults(original_config: dict = None) -> dict:
+    """Update a config dict IN PLACE with default values, and return it as well."""
+    if original_config is None:
+        original_config = {}
+    # add default values if they don't already exist
+    if 'set' not in original_config:
+        original_config['set'] = None
+    if 'set_directory' not in original_config:
+        original_config['set_directory'] = None
+    if 'show_gamify' not in original_config:
+        original_config['show_gamify'] = True
+    if 'paste_api_key' not in original_config:
+        original_config['paste_api_key'] = None
+    return original_config
+
+
 def load_config() -> dict:
     try:
         with open(os.path.expanduser('~/.greatstudier_config.py'), 'r') as f:
-            return ast.literal_eval(f.read())
+            return update_with_defaults(ast.literal_eval(f.read()))
     except FileNotFoundError:
-        return {'set': None, 'set_directory': None, 'show_gamify': True}
+        return update_with_defaults()
 
 
 def save_config(data: dict) -> None:

@@ -89,13 +89,17 @@ def load_words(name: str) -> list:
 
 
 def save_words(keys: list, output_file_name: str) -> None:
+    data = []
+    for key in keys:
+        data.append(f'{key.word} :: {key.definition} :: {key.last_covered} :: {key.repetition_spot}')
+    data_to_dump = '\n'.join(data)
+    save_data(f'## * greatstudier *\n{data_to_dump}', output_file_name)
+
+
+def save_data(data: str, output_file_name: str) -> None:
     path = pl.Path(config.get_set_directory()) / output_file_name
     with path.open('w') as f:
-        data = []
-        for key in keys:
-            data.append(f'{key.word} :: {key.definition} :: {key.last_covered} :: {key.repetition_spot}')
-        data_join = '\n'.join(data)
-        f.write(f'## * greatstudier *\n{data_join}')
+        f.write(data)
 
 
 def get_studyable(keys: list) -> tuple:

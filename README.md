@@ -7,12 +7,17 @@ A free and open source studying software.
   - [Sets](#sets)
   - [Learn](#learn)
   - [Review](#review)
+- [Sharing](#sharing)
 - [License](#license)
+
+---
 
 ## Requirements
 
 - Python 3.9 (or higher), although 3.6 will probably work.
 - `Levenshtein` module: Install using `pip install Levenshtein` or the equivalent (`python3 -m pip`, `pip3`, etc.) for your system.
+
+---
 
 ## Usage
 
@@ -30,9 +35,19 @@ Study sets are stored in a file with the header of `## * greatstudier *`.
 
 Learn mode is a mode where you type out the term shown on screen. After typing all of the terms in the set, there will be a quiz.
 
-## Review
+### Review
 
 Review mode is used for long term memory, you will be quizzed over the materials in the set after a certain amount of time.
+
+---
+
+## Sharing
+
+GreatStudier uses [`paste.gg`](https://paste.gg) and its API for uploading and downloading sets.
+
+You can set a custom API key in the config (go to `settings`, then `API keys`) to link any GreatStudier uploads to your account.
+
+---
 
 ## License
 
