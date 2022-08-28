@@ -104,10 +104,10 @@ def get_skill() -> int:
     """Return the 'skill score'"""
     correct = gamify_data['correct_answers']
     wrong = gamify_data['wrong_answers']
-    veteran_bonus = math.sqrt(correct-wrong) * 0.2
-    expected_wrong = max(wrong, 30)
-    ratio = (correct / expected_wrong) + veteran_bonus
-    return int(100 * ratio)
+    average = correct / (correct + wrong)
+    stdev = math.sqrt(wrong*average**2 + correct*(average-1)**2)
+    sem = stdev / math.sqrt(correct + wrong)
+    return int(3000 * (average - 1.2*sem))
 
 
 gamify_data = load_gamify()
