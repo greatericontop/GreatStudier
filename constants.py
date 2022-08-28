@@ -16,7 +16,7 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-VERSION = 'b1.2.0'
+VERSION = 'b1.3.0'
 
 
 SPACED_REPETITION = [

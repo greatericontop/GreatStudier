@@ -17,6 +17,7 @@
 
 import os
 import random
+import readline ## DO NOT REMOVE, THIS ALLOWS ARROW KEYS TO WORK
 import signal
 import sys
 
@@ -173,6 +174,7 @@ def edit_mode(words) -> None:
     mode = input('Enter a mode [+] add terms, [-] remove terms, or [e]dit terms: ')
     if mode == '':
         return
+    print(f'{C.green}Press [Enter] without entering anything to exit.{C.end}')
     if mode in {'e', 'edit'}:
         while True:
             edit_num = input('Enter the number you want to edit (Blank to quit): ')
@@ -184,6 +186,8 @@ def edit_mode(words) -> None:
                 words[int(edit_num)].word = edit_term
             if edit_def != '':
                 words[int(edit_num)].definition = edit_def
+            print()
+        print(CLEAR)
     elif mode in {'+', 'add'}:
         while True:
             term = input('Enter a term: ')
@@ -192,20 +196,24 @@ def edit_mode(words) -> None:
             definition = input('Enter a definition: ')
             if definition == '':
                 break
-            words[len(words)] = term, definition, -1, 0
+            words.append(utils.KeyData(word=term, definition=definition, last_covered=-1, repetition_spot=0))
             print()
+        print(CLEAR)
     elif mode in {'-', 'remove'}:
         while True:
+            if len(words) == 1:
+                print(f'{CLEAR}{C.yellow}You may not remove a set with 1 term.{C.end}')
+                break
             remove_num = input('Enter the number you want to remove (Blank to quit): ')
             if remove_num == '':
                 break
-            print(f'Are you sure you want to remove term {C.bwhite}{words[remove_num].word}{C.end}[Y/n]. ')
-            if input().lower() != 'y':
+            remove_confirm = input(f'Are you sure you want to remove term {C.bwhite}{words[int(remove_num)].word}{C.end} [Y/n]. ')
+            if remove_confirm != 'y':
                 print('Aborted!')
                 break
-            del words[remove_num]
+            del words[int(remove_num)]
     utils.save_words(words, config.config['set'])
-    print(f'{CLEAR}{C.green}All changes saved!{C.end}')
+    print(f'{C.green}All changes saved!{C.end}')
 
 
 def main():
@@ -254,7 +262,7 @@ def main():
             edit_mode(words)
         elif cmd in {'upload', 'u'} and learning_available:
             url, deletion = uploads.upload_set(words, config.config['set'])
-            print(f'{C.cyan}{url}{C.end} - Uploaded! {C.black}({deletion}){C.end}')
+            print(f'{CLEAR}{C.cyan}{url}{C.end} - Uploaded! {C.black}({deletion}){C.end}')
         # end learning available
         elif cmd in {'choose', 'c'}:
             choose_set()
