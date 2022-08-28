@@ -55,7 +55,7 @@ def new_set() -> None:
     for c in ILLEGAL_FILENAME_CHARS:
         set_name.replace(c, '_')
     data = []
-    print(f'{C.darkgreen}Press [Enter] to exit.{C.end}')
+    print('Leave blank to exit.\n')
     while True:
         term = input('Enter a term: ')
         definition = input('Enter a definition: ')
@@ -76,10 +76,10 @@ def edit_mode(words) -> None:
     for i in range(len(words)):
         print(f'{C.magenta}{i}{C.end}: {C.green}"{words[i].word}"{C.end} -> {C.darkblue}"{words[i].definition}"{C.end}')
     print()
-    mode = input(f'{C.darkgreen}Enter a mode [+] add terms, [-] remove terms, or [e]dit terms: {C.end}')
+    mode = input(f'{C.darkgreen}Enter a mode [+] add terms, [-] remove terms, [e]dit terms, [r]ename set: {C.end}')
     if not mode:
         return print(CLEAR)
-    print(f'{C.darkgreen}Press [Enter] to exit.{C.end}')
+    print('Leave blank to exit.\n')
     if mode in {'e', 'edit'}:
         while True:
             edit_num = input('Enter the number you want to edit (Blank to quit): ')
@@ -116,5 +116,11 @@ def edit_mode(words) -> None:
                 print('Aborted!')
                 break
             del words[int(remove_num)]
+    elif mode in {'rename', 'r'}:
+        rename = input('Enter a new name for the set: ')
+        for c in ILLEGAL_FILENAME_CHARS:
+            rename.replace(c, '_')
+        os.rename(os.path.join(os.path.expanduser(config.get_set_directory()), config.config['set']), os.path.join(config.get_set_directory(), rename))
+        config.config['set'] = rename
     utils.save_words(words, config.config['set'])
     print(f'{C.green}All changes saved!{C.end}')
