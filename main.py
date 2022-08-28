@@ -17,7 +17,6 @@
 
 import os
 import random
-import readline ## DO NOT REMOVE, THIS ALLOWS ARROW KEYS TO WORK
 import signal
 import sys
 
