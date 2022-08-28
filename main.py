@@ -231,7 +231,7 @@ def main():
             prompt = ('[L]earn\n'
                       '[R]eview\n'
                       '[W]ipe Progress\n'
-                      '[U]pload (NotImplemented)\n'
+                      '[U]pload\n'
                       '[D]ownload (NotImplemented)\n'
                       '[C]hoose Set\n'
                       '[M]odify Set\n'
@@ -259,8 +259,9 @@ def main():
         elif cmd in {'modify', 'm'} and learning_available:
             edit_mode(words)
         elif cmd in {'upload', 'u'} and learning_available:
+            print('Uploading...')
             url, deletion = uploads.upload_set(words, config.config['set'])
-            print(f'{C.cyan}{url}{C.end} - Uploaded! {C.black}({deletion}){C.end}')
+            print(f'{CLEAR}{C.cyan}{url}{C.end} - Uploaded! {C.black}({deletion}){C.end}')
         # end learning available
         elif cmd in {'choose', 'c'}:
             choose_set()

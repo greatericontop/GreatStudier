@@ -29,7 +29,7 @@ def upload_set(data: list[KeyData], name: str) -> tuple[str, str]:
     """Upload the given data and name to paste.gg, and return a tuple of the url to it and key to delete it."""
     text = []
     for key in data:
-        text.append(f'{key.word}, {key.definition}, -1, 0')
+        text.append(f'{key.word} :: {key.definition} :: -1 :: 0')
     text = '## * greatstudier * upload *\n' + '\n'.join(text)
     resp = requests.post('https://api.paste.gg/v1/pastes',
                          json={
