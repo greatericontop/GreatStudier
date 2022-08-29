@@ -98,8 +98,10 @@ def wipe_progress(words) -> None:
     print(CLEAR)
 
 
-def download_set():
+def download_set() -> None:
     link = input('Link: ')
+    if not link:
+        return print(f'{CLEAR}Aborted!')
     try:
         result, name = uploads.download_set(link)
     except RuntimeError as e:
@@ -109,6 +111,7 @@ def download_set():
         if not dest:
             dest = name
         utils.save_data(result, dest)
+        print(f'{CLEAR}{C.green}Set downloaded successfully.{C.end}')
 
 
 def open_settings() -> None:
@@ -186,7 +189,6 @@ def main():
         elif cmd in {'download', 'd'}:
             try:
                 download_set()
-                print(f'{C.green}Set downloaded successfully.{C.end}')
             except requests.exceptions.ConnectionError:
                 print(f'{CLEAR}{C.red}Connection error, unable to connect to paste.gg{C.end}')
         elif cmd in {'choose', 'c'}:
