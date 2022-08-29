@@ -43,6 +43,8 @@ signal.signal(signal.SIGINT, terminate_handler)
 
 
 def learn(words, new_terms) -> None:
+    if len(new_terms) == 0:
+        return print(f'{CLEAR}You have no new terms to learn.')
     random.shuffle(new_terms)
     print(f'{CLEAR}{C.green}LEARN: Type each term once to continue.{C.end}\n')
     print(f'You are ready to:\nLEARN x{C.darkcyan}{min(NEW_CHUNK_SIZE, len(new_terms))}{C.end}\n')
@@ -69,6 +71,8 @@ def learn(words, new_terms) -> None:
 
 
 def review(words, review_terms) -> None:
+    if len(review_terms) == 0:
+        return print(f'{CLEAR}You have no terms to review.')
     random.shuffle(review_terms)
     print(f'{CLEAR}You are ready to:\nREVIEW x{C.darkcyan}{min(REVIEW_CHUNK_SIZE, len(review_terms))}{C.end}\n')
     for i in range(min(REVIEW_CHUNK_SIZE, len(review_terms))):
