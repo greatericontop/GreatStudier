@@ -52,6 +52,8 @@ motd = [
     'No more p2w!',
     'Finally here!',
     'Boop!',
+    'Free as in Freedom!',
+    'ALL WRONGS RESERVED!',
 ]
 
 
