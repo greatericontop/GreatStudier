@@ -102,12 +102,16 @@ def gamify_wrong_answer() -> None:
 
 def get_skill() -> int:
     """Return the 'skill score'"""
-    correct = gamify_data['correct_answers']
-    wrong = gamify_data['wrong_answers']
-    average = correct / (correct + wrong)
-    stdev = math.sqrt(wrong*average**2 + correct*(average-1)**2)
-    sem = stdev / math.sqrt(correct + wrong)
-    return int(3000 * (average - 1.2*sem))
+    correct = gamify_data['correct_answers']  # "positive rating"
+    wrong = gamify_data['wrong_answers']  # "negative rating"
+    n = correct + wrong
+    # Wilson Lower Bound
+    p_hat = 1.0 * correct / n
+    Z = 2.652  # z_alpha/2, alpha=0.004, 99.6% (yes this is overdone) right-tailed confidence
+    radicand = (p_hat*(1-p_hat) + Z*Z/(4*n)) / n
+    top = p_hat + (Z*Z)/(2*n) - Z*math.sqrt(radicand)
+    bottom = 1 + Z*Z/n
+    return int(3200 * (top / bottom))
 
 
 gamify_data = load_gamify()
