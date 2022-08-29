@@ -33,7 +33,7 @@ def choose_set() -> None:
     if len(sets) == 0:
         print(f'\n{C.yellow}You currently have no sets available. Import or create a new set to continue.{C.end}')
     else:
-        print(f'{CLEAR}{C.darkcyan}Available Study Sets{C.end}\n{print_sets}\n\n{C.darkgreen}Press [Enter] to exit.{C.end}')
+        print(f'{CLEAR}{C.darkcyan}Available Study Sets{C.end}\n{print_sets}\n\n{C.darkgreen}Leave blank to exit.{C.end}')
         while True:
             word_set = input('Choose a set: ')
             if not word_set:
@@ -49,13 +49,13 @@ def choose_set() -> None:
 
 def new_set() -> None:
     print(f'{CLEAR}{C.green}GreatStudier study set creator.{C.end}\n')
+    print('Leave blank to exit.\n')
     set_name = input('Name of the set: ')
     if not set_name:
         return print(f'{CLEAR}Aborted.')
     for c in ILLEGAL_FILENAME_CHARS:
         set_name.replace(c, '_')
     data = []
-    print('Leave blank to exit.\n')
     while True:
         term = input('Enter a term: ')
         definition = input('Enter a definition: ')

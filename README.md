@@ -42,6 +42,10 @@ Review mode is used for long term memory, you will be quizzed over the materials
 
 To overwrite an answer as true, type `*`.
 
+### Study
+
+Study mode is used for short term memory. Use this mode if you need to remember something before a test.
+
 ---
 
 ## Sharing

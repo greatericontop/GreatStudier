@@ -66,7 +66,7 @@ def learn(words, new_terms) -> None:
             key = new_terms[i]
             if quiz.quiz(key):
                 study_indices.remove(i)
-    print('You are done!')
+    print(f'{CLEAR}You are done!')
     utils.save_words(words, config.config['set'])
 
 
@@ -78,7 +78,7 @@ def review(words, review_terms) -> None:
     for i in range(min(REVIEW_CHUNK_SIZE, len(review_terms))):
         key = review_terms[i]
         quiz.quiz(key)
-    print('You are done!')
+    print(f'{CLEAR}You are done!')
     utils.save_words(words, config.config['set'])
 
 
@@ -91,6 +91,7 @@ def study(words) -> None:
     print(f'{CLEAR}You are ready to:\nSTUDY x{C.darkcyan}{total}{C.end}\n')
     for i, word in enumerate(words):
         quiz.quiz(word, extra=f'#{i+1}/{total} ', overwrite_knowledge_level=0)
+    print(CLEAR)
 
 
 def stats() -> None:
@@ -219,7 +220,7 @@ def main():
         elif cmd in {'stats', 'st'}:
             stats()
         else:
-            print(f'{CLEAR}That is not an option.\n')
+            print(f'{CLEAR}That is not an option.')
         print(f'{C.green}GreatStudier{C.end}')
 
     if config.config['show_gamify']:
