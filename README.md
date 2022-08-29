@@ -40,6 +40,8 @@ Learn mode is a mode where you type out the term shown on screen. After typing a
 
 Review mode is used for long term memory, you will be quizzed over the materials in the set after a certain amount of time.
 
+To overwrite an answer as true, type `*`.
+
 ---
 
 ## Sharing
