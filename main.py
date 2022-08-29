@@ -15,8 +15,8 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import os
 import random
+import requests
 import signal
 import sys
 
@@ -177,11 +177,18 @@ def main():
             edit_mode(words)
         elif cmd in {'upload', 'u'} and learning_available:
             print('Uploading...')
-            url, deletion = uploads.upload_set(words, config.config['set'])
-            print(f'{CLEAR}{C.cyan}{url}{C.end} - Uploaded! {C.black}({deletion}){C.end}')
+            try:
+                url, deletion = uploads.upload_set(words, config.config['set'])
+                print(f'{CLEAR}{C.cyan}{url}{C.end} - Uploaded! {C.black}({deletion}){C.end}')
+            except requests.exceptions.ConnectionError:
+                print(f'{CLEAR}{C.red}Connection error, unable to connect to paste.gg{C.end}')
         # end learning available
         elif cmd in {'download', 'd'}:
-            download_set()
+            try:
+                download_set()
+                print(f'{C.green}Set downloaded successfully.{C.end}')
+            except requests.exceptions.ConnectionError:
+                print(f'{CLEAR}{C.red}Connection error, unable to connect to paste.gg{C.end}')
         elif cmd in {'choose', 'c'}:
             choose_set()
         elif cmd in {'new', 'n'}:
