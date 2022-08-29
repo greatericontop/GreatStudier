@@ -43,7 +43,8 @@ signal.signal(signal.SIGINT, terminate_handler)
 
 def learn(words, new_terms) -> None:
     random.shuffle(new_terms)
-    print(f'{CLEAR}You are ready to:\nLEARN x{C.darkcyan}{min(NEW_CHUNK_SIZE, len(new_terms))}{C.end}\n')
+    print(f'{CLEAR}{C.green}LEARN: Type each term once to continue.{C.end}\n')
+    print(f'You are ready to:\nLEARN x{C.darkcyan}{min(NEW_CHUNK_SIZE, len(new_terms))}{C.end}\n')
     study_indices = list(range(min(NEW_CHUNK_SIZE, len(new_terms))))
     for i in study_indices:
         key = new_terms[i]
