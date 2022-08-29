@@ -48,7 +48,7 @@ To overwrite an answer as true, type `*`.
 
 GreatStudier uses [`paste.gg`](https://paste.gg) and its API for uploading and downloading sets.
 
-You can set a custom API key in the config (go to `settings`, then `API keys`) to link any GreatStudier uploads to your account.
+You can set a custom API key in the config (go to `options`, then `API keys`) to link any GreatStudier uploads to your account.
 
 ---
 

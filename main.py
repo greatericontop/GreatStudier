@@ -144,7 +144,7 @@ def open_settings() -> None:
 
 
 def main():
-    os.system('') # enables windows ANSI escape
+    os.system('')  # enables windows ANSI escape
     print(f'{CLEAR}{C.green}GreatStudier Version {VERSION}{C.end}\n'
           f'{motd.random()}\n'
           f'{gamify.dashboard()}\n')
