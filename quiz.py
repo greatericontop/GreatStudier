@@ -23,8 +23,10 @@ from utils import C
 from constants import *
 
 
-def quiz(key) -> bool:
-    print(f'\n\nQUIZ: What is {C.cyan}{key.definition}{C.end}?')
+def quiz(key, extra: str = '', overwrite_knowledge_level: int = None) -> bool:
+    if overwrite_knowledge_level is None:
+        overwrite_knowledge_level = key.repetition_spot + 1
+    print(f'\n\n{extra}QUIZ: What is {C.cyan}{key.definition}{C.end}?')
     guess = input(f'{C.darkblue}>{C.end} ')
     result = utils.validate(guess, key.word)
 
@@ -33,7 +35,7 @@ def quiz(key) -> bool:
         input()
         key.last_covered = int(time.time())
         key.repetition_spot += 1
-        gamify.gamify_correct_answer(key.repetition_spot)
+        gamify.gamify_correct_answer(overwrite_knowledge_level)
         return True
 
     elif result == utils.ValidationResult.MOSTLY_CORRECT:
@@ -41,7 +43,7 @@ def quiz(key) -> bool:
         if input() != '*':
             key.last_covered = int(time.time())
             key.repetition_spot += 1
-            gamify.gamify_correct_answer(key.repetition_spot)
+            gamify.gamify_correct_answer(overwrite_knowledge_level)
             return True
         else:
             print(f'{C.magenta}You have overwritten your answer to {C.red}WRONG{C.end}')
@@ -55,7 +57,7 @@ def quiz(key) -> bool:
             print(f'{C.magenta}You have overwritten your answer to {C.green}CORRECT{C.end}')
             key.last_covered = int(time.time())
             key.repetition_spot += 1
-            gamify.gamify_correct_answer(key.repetition_spot)
+            gamify.gamify_correct_answer(overwrite_knowledge_level)
             return True
         else:
             key.repetition_spot = min(AFTER_WRONG_RETURN_REP_TO, key.repetition_spot)

@@ -82,6 +82,17 @@ def review(words, review_terms) -> None:
     utils.save_words(words, config.config['set'])
 
 
+def study(words) -> None:
+    if not words:
+        print('Nothing to do!')
+        return
+    random.shuffle(words)
+    total = len(words)
+    print(f'{CLEAR}You are ready to:\nSTUDY x{C.darkcyan}{total}{C.end}\n')
+    for i, word in enumerate(words):
+        quiz.quiz(word, extra=f'#{i+1}/{total} ', overwrite_knowledge_level=0)
+
+
 def stats() -> None:
     data = gamify.gamify_data
     print(f'{CLEAR}{C.green}Statistics{C.end}')
@@ -152,19 +163,19 @@ def main():
         if config.config['set'] is None:
             learning_available = False
             prompt = (f'{C.darkred}It seems you do not have a set chosen!{C.end}\n'
-                      f'{C.no}[L]earn{C.end}               {C.no}[R]eview{C.end}\n'
+                      f'{C.no}[L]earn{C.end}               {C.no}[R]eview{C.end}              {C.no}[S]tudy{C.end}\n'
                       f'{C.no}[U]pload Set{C.end}          [D]ownload Set\n'
                       f'[C]hoose Set          [N]ew Set             {C.no}[M]odify Set{C.end}\n'
-                      f'[O]ptions             [S]tats               {C.no}[W]ipe Progress{C.end}\n'
+                      f'[O]ptions             [St]ats               {C.no}[W]ipe Progress{C.end}\n'
                       f'[Q]uit\n'
                       f'{C.darkblue}>{C.end} ')
         else:
             learning_available = True
-            prompt = ('[L]earn               [R]eview\n'
-                      '[U]pload Set          [D]ownload Set\n'
-                      '[C]hoose Set          [N]ew Set             [M]odify Set\n'
-                      '[O]ptions             [S]tats               [W]ipe Progress\n'
-                      '[Q]uit\n'
+            prompt = (f'[L]earn               [R]eview              [S]tudy\n'
+                      f'[U]pload Set          [D]ownload Set\n'
+                      f'[C]hoose Set          [N]ew Set             [M]odify Set\n'
+                      f'[O]ptions             [St]ats               [W]ipe Progress\n'
+                      f'[Q]uit\n'
                       f'{C.darkblue}>{C.end} ')
             word_set = config.config['set']
             words = utils.load_words(word_set)
@@ -180,6 +191,8 @@ def main():
             learn(words, new_terms)
         elif cmd in {'review', 'r'} and learning_available:
             review(words, review_terms)
+        elif cmd in {'study', 's'} and learning_available:
+            study(words)
         elif cmd in {'wipe', '_wipe_progress', 'w'} and learning_available:
             wipe_progress(words)
         elif cmd in {'modify', 'm'} and learning_available:
@@ -203,7 +216,7 @@ def main():
             new_set()
         elif cmd in {'options', 'o'}:
             open_settings()
-        elif cmd in {'stats', 's'}:
+        elif cmd in {'stats', 'st'}:
             stats()
         else:
             print(f'{CLEAR}That is not an option.\n')
