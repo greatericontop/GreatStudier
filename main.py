@@ -15,6 +15,7 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import os
 import random
 import requests
 import signal
@@ -32,7 +33,7 @@ from constants import *
 
 
 def terminate_handler(sig, frame):
-    print(f'{C.red}Caught Control-C, exiting.')
+    print(f'\n{C.red}Caught Control-C, exiting.')
     gamify.save_gamify(gamify.gamify_data)
     config.save_config(config.config)
     sys.exit(0)
@@ -139,6 +140,7 @@ def open_settings() -> None:
 
 
 def main():
+    os.system('') # enables windows ANSI escape
     print(f'{CLEAR}{C.green}GreatStudier Version {VERSION}{C.end}\n'
           f'{motd.random()}\n'
           f'{gamify.dashboard()}\n')
