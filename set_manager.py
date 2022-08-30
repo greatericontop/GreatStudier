@@ -82,15 +82,18 @@ def edit_mode(words) -> None:
     print('Leave blank to exit.\n')
     if mode in {'e', 'edit'}:
         while True:
-            edit_num = input('Enter the number you want to edit (Blank to quit): ')
-            if not edit_num:
+            try:
+                edit_num = int(input('Enter the number you want to edit (Blank to quit): '))
+            except ValueError:
+                break
+            if not edit_num or edit_num >= len(words):
                 break
             edit_term = input('Enter the new term (Blank to keep term): ')
             edit_def = input('Enter the new definition (Blank to keep definition): ')
             if edit_term:
-                words[int(edit_num)].word = edit_term
+                words[edit_num].word = edit_term
             if edit_def:
-                words[int(edit_num)].definition = edit_def
+                words[edit_num].definition = edit_def
             print()
         print(CLEAR)
     elif mode in {'+', 'add'}:
@@ -101,14 +104,17 @@ def edit_mode(words) -> None:
             if len(words) == 1:
                 print(f'{CLEAR}{C.yellow}You may not remove a set with 1 term.{C.end}')
                 break
-            remove_num = input('Enter the number you want to remove (Blank to quit): ')
-            if not remove_num:
+            try:
+                remove_num = int(input('Enter the number you want to remove (Blank to quit): '))
+            except ValueError:
                 break
-            remove_confirm = input(f'Are you sure you want to remove term {C.bwhite}{words[int(remove_num)].word}{C.end} [Y/n]. ')
+            if not remove_num or remove_num >= len(words):
+                break
+            remove_confirm = input(f'Are you sure you want to remove term {C.bwhite}{words[remove_num].word}{C.end} [Y/n]. ')
             if remove_confirm.lower() == 'n':
                 print('Aborted!')
                 break
-            del words[int(remove_num)]
+            del words[remove_num]
     elif mode in {'rename', 'r'}:
         new_name = input('Enter a new name for the set: ')
         for c in ILLEGAL_FILENAME_CHARS:
