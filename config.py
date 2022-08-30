@@ -44,7 +44,9 @@ def load_config() -> dict:
 
 
 def save_config(data: dict) -> None:
-    with pl.Path('~/.greatstudier_config.py').expanduser().open('w') as f:
+    path = pl.Path('~/.greatstudier_config.py').expanduser()
+    with path.open('w') as f:
+        path.chmod(0o600)
         f.write(f'# Data for GreatStudier\n# Please do not touch this!\n\n{repr(data)}')
 
 
