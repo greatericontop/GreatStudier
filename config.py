@@ -16,7 +16,7 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import ast
-import os
+import pathlib as pl
 
 
 def update_with_defaults(original_config: dict = None) -> dict:
@@ -37,26 +37,32 @@ def update_with_defaults(original_config: dict = None) -> dict:
 
 def load_config() -> dict:
     try:
-        with open(os.path.expanduser('~/.greatstudier_config.py'), 'r') as f:
+        with pl.Path('~/.greatstudier_config.py').expanduser().open('r') as f:
             return update_with_defaults(ast.literal_eval(f.read()))
     except FileNotFoundError:
         return update_with_defaults()
 
 
 def save_config(data: dict) -> None:
-    with open(os.path.expanduser('~/.greatstudier_config.py'), 'w') as f:
+    with pl.Path('~/.greatstudier_config.py').expanduser().open('w') as f:
         f.write(f'# Data for GreatStudier\n# Please do not touch this!\n\n{repr(data)}')
 
 
-def get_set_directory() -> str:
+def get_set_directory() -> pl.Path:
     """Return the directory for the set (path is expanded) as a string."""
     if config['set_directory'] is None:
-        return os.path.expanduser('~/GreatStudier/')
-    return os.path.expanduser(config['set_directory'])
+        return pl.Path('~/GreatStudier/').expanduser()
+    return pl.Path(config['set_directory']).expanduser()
 
 
-def create_set_directory() -> None:
-    os.mkdir(get_set_directory())
+def create_set_directory_if_none() -> None:
+    get_set_directory().mkdir(mode=0o700, exist_ok=True)
+
+
+def reload_config() -> None:
+    """Reload and fix any inconsistencies in the current config (call this when loading as well)."""
+    create_set_directory_if_none()
 
 
 config = load_config()
+reload_config()

@@ -15,23 +15,31 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import os
-
 import config
 import utils
 from utils import C
 from constants import *
 
 
-def choose_set() -> None:
-    if not os.path.exists(config.get_set_directory()):
-        config.create_set_directory()
+def add_term_interactively(word_data: list) -> None:
+    """Add terms (interactively) to :word_data: and modify it IN PLACE."""
+    while True:
+        term = input('Enter a term: ')
+        definition = input('Enter a definition: ')
+        if not (term and definition):
+            print('Finishing!')
+            break
+        word_data.append(utils.KeyData(term, definition, -1, 0))
+        print()
 
-    sets = os.listdir(config.get_set_directory())
+
+def choose_set() -> None:
+    sets = [p.name for p in config.get_set_directory().iterdir() if p.is_file()]
     print_sets = '\n'.join(sets)
 
     if len(sets) == 0:
         print(f'\n{C.yellow}You currently have no sets available. Import or create a new set to continue.{C.end}')
+        input()
     else:
         print(f'{CLEAR}{C.darkcyan}Available Study Sets{C.end}\n{print_sets}\n\n{C.darkgreen}Leave blank to exit.{C.end}')
         while True:
@@ -44,7 +52,6 @@ def choose_set() -> None:
                 break
             else:
                 print(f'{C.red}Invalid Set! Please choose a valid set.{C.end}')
-    print(CLEAR)
 
 
 def new_set() -> None:
@@ -56,14 +63,7 @@ def new_set() -> None:
     for c in ILLEGAL_FILENAME_CHARS:
         set_name.replace(c, '_')
     data = []
-    while True:
-        term = input('Enter a term: ')
-        definition = input('Enter a definition: ')
-        if not (term and definition):
-            print('Finishing!')
-            break
-        data.append(utils.KeyData(term, definition, -1, 0))
-        print()
+    add_term_interactively(data)
     print(CLEAR)
     if data:
         utils.save_words(data, set_name)
@@ -94,14 +94,7 @@ def edit_mode(words) -> None:
             print()
         print(CLEAR)
     elif mode in {'+', 'add'}:
-        while True:
-            term = input('Enter a term: ')
-            definition = input('Enter a definition: ')
-            if not (term and definition):
-                print('Finishing!')
-                break
-            words.append(utils.KeyData(term, definition, -1, 0))
-            print()
+        add_term_interactively(words)
         print(CLEAR)
     elif mode in {'-', 'remove'}:
         while True:
@@ -112,15 +105,17 @@ def edit_mode(words) -> None:
             if not remove_num:
                 break
             remove_confirm = input(f'Are you sure you want to remove term {C.bwhite}{words[int(remove_num)].word}{C.end} [Y/n]. ')
-            if remove_confirm.lower() != 'y':
+            if remove_confirm.lower() == 'n':
                 print('Aborted!')
                 break
             del words[int(remove_num)]
     elif mode in {'rename', 'r'}:
-        rename = input('Enter a new name for the set: ')
+        new_name = input('Enter a new name for the set: ')
         for c in ILLEGAL_FILENAME_CHARS:
-            rename.replace(c, '_')
-        os.rename(os.path.join(os.path.expanduser(config.get_set_directory()), config.config['set']), os.path.join(config.get_set_directory(), rename))
-        config.config['set'] = rename
+            new_name.replace(c, '_')
+        old_set_path = config.get_set_directory() / config.config['set']
+        new_set_path = config.get_set_directory() / new_name
+        old_set_path.rename(new_set_path)
+        config.config['set'] = new_name
     utils.save_words(words, config.config['set'])
     print(f'{C.green}All changes saved!{C.end}')

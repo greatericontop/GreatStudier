@@ -17,6 +17,7 @@
 
 import os
 import random
+import readline as _readline  # unused, but it patches input
 import requests
 import signal
 import sys
@@ -33,13 +34,14 @@ from constants import *
 
 
 def terminate_handler(sig, frame):
-    print(f'\n{C.red}Caught Control-C, exiting.')
+    print(f'\n{C.red}Exiting...')
     gamify.save_gamify(gamify.gamify_data)
     config.save_config(config.config)
     sys.exit(0)
 
 
 signal.signal(signal.SIGINT, terminate_handler)
+signal.signal(signal.SIGTERM, terminate_handler)
 
 
 def learn(words, new_terms) -> None:
@@ -149,8 +151,9 @@ def open_settings() -> None:
     if type(config.config[settings_change]) is bool:
         config.config[settings_change] = not config.config[settings_change]
     else:
-        new_option = input('What do you want to change it to (enter full path for set_directory): ')
+        new_option = input('What do you want to change it to: ')
         config.config[settings_change] = new_option
+    config.reload_config()
     config.save_config(config.config)
     print(f'{CLEAR}{C.green}All changes saved!')
 

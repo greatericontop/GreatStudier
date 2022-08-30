@@ -16,7 +16,7 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-VERSION = '1.0.0-rc1'
+VERSION = '1.0.0-rc2'
 
 
 SPACED_REPETITION = [
@@ -53,4 +53,11 @@ ILLEGAL_FILENAME_CHARS = [
     '|',
     '?',
     '*',
+    '&',
+    '#',
+    '{',
+    '}',
+    '=',
+    '@',
+    '`',
 ]

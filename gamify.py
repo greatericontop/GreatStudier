@@ -18,6 +18,7 @@
 import ast
 import math
 import os
+import pathlib as pl
 
 from utils import C
 
@@ -28,7 +29,7 @@ LEVEL_XP = 2000
 def load_gamify() -> dict:
     """Load the gamify files."""
     try:
-        with open(os.path.expanduser('~/.greatstudier_gamify.py'), 'r') as f:
+        with pl.Path('~/.greatstudier_gamify.py').expanduser().open('r') as f:
             return ast.literal_eval(f.read())
     except FileNotFoundError:
         return {'level': 1, 'xp': 0, 'correct_answers': 0, 'wrong_answers': 0}
@@ -36,7 +37,7 @@ def load_gamify() -> dict:
 
 def save_gamify(data: dict) -> None:
     """Save the data provided to the gamify file."""
-    with open(os.path.expanduser('~/.greatstudier_gamify.py'), 'w') as f:
+    with pl.Path('~/.greatstudier_gamify.py').expanduser().open('w') as f:
         f.write(f'# Data for GreatStudier\n# Please do not touch this!\n\n{repr(data)}')
 
 
