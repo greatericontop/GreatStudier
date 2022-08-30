@@ -17,7 +17,6 @@
 
 import os
 import random
-import readline as _readline  # unused, but it patches input
 import requests
 import signal
 import sys
@@ -31,6 +30,13 @@ import utils
 from set_manager import choose_set, new_set, edit_mode
 from utils import C
 from constants import *
+
+try:
+    # Linux only, patches input to allow "fancy" editing
+    # Will fail on Windows and OS X
+    import readline as _readline
+except ModuleNotFoundError:
+    pass
 
 
 def terminate_handler(sig, frame):
