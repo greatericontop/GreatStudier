@@ -106,6 +106,8 @@ def get_skill() -> int:
     correct = gamify_data['correct_answers']  # "positive rating"
     wrong = gamify_data['wrong_answers']  # "negative rating"
     n = correct + wrong
+    if n == 0:
+        return 0
     # Wilson Lower Bound
     p_hat = 1.0 * correct / n
     Z = 2.652  # z_alpha/2, alpha=0.004, 99.6% (yes this is overdone) right-tailed confidence

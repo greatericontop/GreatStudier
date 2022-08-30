@@ -165,6 +165,7 @@ def open_settings() -> None:
 
 
 def main():
+    # TODO: fix visually unappealing CLI
     os.system('')  # enables windows ANSI escape
     print(f'{CLEAR}{C.green}GreatStudier Version {VERSION}{C.end}\n'
           f'{motd.random()}\n'
