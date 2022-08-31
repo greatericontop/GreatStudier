@@ -46,7 +46,7 @@ def quiz(key, extra: str = '', overwrite_knowledge_level: int = None) -> bool:
             gamify.gamify_correct_answer(overwrite_knowledge_level)
             return True
         else:
-            print(f'{C.magenta}You have overwritten your answer to {C.red}WRONG{C.end}')
+            print(f'You have overwritten your answer to {C.red}WRONG{C.end}')
             key.repetition_spot = min(AFTER_WRONG_RETURN_REP_TO, key.repetition_spot)
             gamify.gamify_wrong_answer()
             return False
@@ -54,7 +54,7 @@ def quiz(key, extra: str = '', overwrite_knowledge_level: int = None) -> bool:
     else:
         print(f"{C.red}Sorry, that's incorrect! It actually was: {C.white}{key.word}{C.end}")
         if input() == '*':
-            print(f'{C.magenta}You have overwritten your answer to {C.green}CORRECT{C.end}')
+            print(f'You have overwritten your answer to {C.green}CORRECT{C.end}')
             key.last_covered = int(time.time())
             key.repetition_spot += 1
             gamify.gamify_correct_answer(overwrite_knowledge_level)
