@@ -22,7 +22,7 @@ import pathlib as pl
 from utils import C
 
 
-LEVEL_XP = 2000
+LEVEL_XP = 20000
 
 
 def load_gamify() -> dict:
@@ -58,28 +58,39 @@ def prestige() -> str:
     """Return the prestige (with color)."""
     level = gamify_data['level']
     if level >= 100:
+        star = '❂'
         l1, l2, l3 = str(level)
-        return f'{C.red}[{C.yellow}{l1}{C.green}{l2}{C.darkcyan}{l3}{C.blue}✶{C.darkmagenta}]{C.end}'
+        return f'{C.red}[{C.yellow}{l1}{C.green}{l2}{C.darkcyan}{l3}{C.blue}{star}{C.darkmagenta}]{C.end}'
     if level >= 90:
+        star = '✦'
         l1, l2 = str(level)
-        return f'{C.cyan}[{C.darkcyan}{l1}{C.blue}{l2}{C.darkblue}✶{C.darkmagenta}]{C.end}'
+        return f'{C.cyan}[{C.darkcyan}{l1}{C.blue}{l2}{C.darkblue}{star}{C.darkmagenta}]{C.end}'
     if level >= 80:
-        return f'{C.darkred}[{C.red}{level}{C.darkyellow}✶{C.yellow}]{C.end}'
+        star = '✪'
+        return f'{C.darkred}[{C.red}{level}{C.darkyellow}{star}{C.yellow}]{C.end}'
     if level >= 70:
-        return f'{C.cyan}[{level}✶]{C.end}'
+        star = '✸'
+        return f'{C.cyan}[{level}{star}]{C.end}'
     if level >= 60:
-        return f'{C.magenta}[{level}✶]{C.end}'
+        star = '✭'
+        return f'{C.magenta}[{level}{star}]{C.end}'
     if level >= 50:
-        return f'{C.darkred}[{level}✶]{C.end}'
+        star = '✵'
+        return f'{C.darkred}[{level}{star}]{C.end}'
     if level >= 40:
-        return f'{C.blue}[{level}✶]{C.end}'
+        star = '✶'
+        return f'{C.blue}[{level}{star}]{C.end}'
     if level >= 30:
-        return f'{C.darkgreen}[{level}✶]{C.end}'
+        star = '✰'
+        return f'{C.darkgreen}[{level}{star}]{C.end}'
     if level >= 20:
-        return f'{C.darkyellow}[{level}✶]{C.end}'
+        star = '✬'
+        return f'{C.darkyellow}[{level}{star}]{C.end}'
     if level >= 10:
-        return f'{C.bwhite}[{level}✶]{C.end}'
-    return f'{C.darkwhite}[{level}✶]{C.end}'
+        star = '★'
+        return f'{C.bwhite}[{level}{star}]{C.end}'
+    star = '⭑'
+    return f'{C.darkwhite}[{level}{star}]{C.end}'
 
 
 def dashboard() -> str:
