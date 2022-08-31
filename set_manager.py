@@ -15,6 +15,8 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import time
+
 import config
 import utils
 from utils import C
@@ -71,8 +73,18 @@ def new_set() -> None:
 def edit_mode(words) -> None:
     print(f'{CLEAR}{C.yellow}Terms\n{C.magenta}Number{C.end}: {C.green}Term{C.end} -> {C.darkblue}Definition{C.end}')
     print('--------------------------')
-    for i in range(len(words)):
-        print(f'{C.magenta}{i}{C.end}: {C.green}"{words[i].word}"{C.end} -> {C.darkblue}"{words[i].definition}"{C.end}')
+    for i, key in enumerate(words):
+        if key.repetition_spot == 0:
+            extra_info = 'not learned'
+        else:
+            timeleft = int(key.last_covered + SPACED_REPETITION[key.repetition_spot] - time.time())
+            if timeleft <= 0:
+                extra_info = 'ready'
+            elif timeleft <= 86400:
+                extra_info = f'in {timeleft//3600 % 24}h {timeleft//60 % 60}m'
+            else:
+                extra_info = f'in {timeleft//86400}d {timeleft//3600 % 24}h {timeleft//60 % 60}m'
+        print(f'{C.magenta}{i}{C.end}: {C.green}"{key.word}"{C.end} -> {C.darkblue}"{key.definition}"{C.end} ({extra_info})')
     mode = input(f'{C.darkgreen}Enter a mode [+] add terms, [-] remove terms, [e]dit terms, [r]ename set: {C.end}')
     if not mode:
         print(f'{C.red}That is not an option.{C.end}')
