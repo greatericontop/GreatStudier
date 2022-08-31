@@ -114,7 +114,7 @@ def stats() -> None:
     if data['wrong_answers'] != 0:
         print(f"Answer Ratio: {data['correct_answers'] / data['wrong_answers']:.2f}")
     print(f'{C.cyan}Skill Score: {gamify.get_skill()}{C.end}')
-    print(f"{C.green}You're currently level {gamify.prestige()}\n\n")
+    print(f"{C.green}You're currently level {gamify.dashboard()}\n\n")
 
 
 def wipe_progress(words) -> None:
