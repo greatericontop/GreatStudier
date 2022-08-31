@@ -16,7 +16,7 @@ A free and open source studying software.
 
 - Python 3.9 (or higher), although 3.6 will probably work.
 - `Levenshtein` module: Install using `pip install Levenshtein` or the equivalent (`python3 -m pip`, `pip3`, etc.) for your system.
-- `Requests` module: Install using `pip install requests` or the equivalent (`python3 -m pip`, `pip3`, etc.) for your system.
+- `requests` module: Install using `pip install requests` or the equivalent (`python3 -m pip`, `pip3`, etc.) for your system.
 
 ---
 
@@ -24,9 +24,9 @@ A free and open source studying software.
 
 Run `main.py` in the root directory of the project.
 
-Default directory for sets is `~/GreatStudier/`. You can change this in the configurations. **NOTE MAKE SURE TO TYPE TO FULL PATH TO THE DIRECTORY OR IT MIGHT BREAK.**
+Default directory for sets is `~/GreatStudier/`. You can change this in the configurations. **MAKE SURE TO TYPE TO FULL PATH TO THE DIRECTORY OR IT MIGHT BREAK.**
 
-It is suggested to edit the options file though the CLI.
+It is suggested to edit the options file though the CLI, but if you're feeling brave, go ahead and edit it raw.
 
 Leave fields blank to exit.
 
@@ -42,11 +42,13 @@ Learn mode is a mode where you type out the term shown on screen. After typing a
 
 Review mode is used for long term memory, you will be quizzed over the materials in the set after a certain amount of time.
 
-To overwrite an answer as true, type `*`.
+To overwrite an answer that was automatically graded incorrectly, type `*`.
 
 ### Study
 
 Study mode is used for short term memory. Use this mode if you need to remember something before a test.
+
+To overwrite an answer that was automatically graded incorrectly, type `*`.
 
 ---
 
@@ -60,4 +62,6 @@ You can set a custom API key in the config (go to `options`, then `API keys`) to
 
 ## License
 
-This project is Licenced under the GNU General Public Licence v3, or at your option, any later version.
+GreatStudier is Free Software!
+
+This project is licensed under the GNU General Public License v3 or later.
