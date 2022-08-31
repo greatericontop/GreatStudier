@@ -86,7 +86,7 @@ def edit_mode(words) -> None:
                 edit_num = int(input('Enter the number you want to edit (Blank to quit): '))
             except ValueError:
                 break
-            if not edit_num or edit_num >= len(words):
+            if edit_num >= len(words):
                 break
             edit_term = input('Enter the new term (Blank to keep term): ')
             edit_def = input('Enter the new definition (Blank to keep definition): ')
@@ -108,7 +108,7 @@ def edit_mode(words) -> None:
                 remove_num = int(input('Enter the number you want to remove (Blank to quit): '))
             except ValueError:
                 break
-            if not remove_num or remove_num >= len(words):
+            if remove_num >= len(words):
                 break
             remove_confirm = input(f'Are you sure you want to remove term {C.bwhite}{words[remove_num].word}{C.end} [Y/n]. ')
             if remove_confirm.lower() == 'n':
