@@ -126,17 +126,18 @@ def wipe_progress(words) -> None:
 def download_set() -> None:
     link = input('Link: ')
     if not link:
-        return print(f'{CLEAR}Aborted!')
+        print(f'{C.yellow}Nothing was provided!{C.end}')
+        return
     try:
         result, name = uploads.download_set(link)
     except RuntimeError as e:
         print(f'{C.yellow}{e}{C.end}')
-    else:
-        dest = input('Save to (leave blank for default name): ')
-        if not dest:
-            dest = name
-        utils.save_data(result, dest)
-        print(f'{CLEAR}{C.green}Set downloaded successfully.{C.end}')
+        return
+    dest = input(f'Download to ({name}): ')
+    if not dest:
+        dest = name
+    utils.save_data(result, dest)
+    print(f'{CLEAR}{C.green}Set downloaded successfully.{C.end}')
 
 
 def open_settings() -> None:
