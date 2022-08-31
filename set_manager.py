@@ -110,10 +110,6 @@ def edit_mode(words) -> None:
                 break
             if remove_num >= len(words):
                 break
-            remove_confirm = input(f'Are you sure you want to remove term {C.bwhite}{words[remove_num].word}{C.end} [Y/n]. ')
-            if remove_confirm.lower() == 'n':
-                print('Aborted!')
-                break
             del words[remove_num]
     elif mode in {'rename', 'r'}:
         new_name = input('Enter a new name for the set: ')
