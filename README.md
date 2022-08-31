@@ -28,6 +28,8 @@ Default directory for sets is `~/GreatStudier/`. You can change this in the conf
 
 It is suggested to edit the options file though the CLI.
 
+Leave fields blank to exit.
+
 ### Sets
 
 Study sets are stored in a file with the header of `## * greatstudier *`. 

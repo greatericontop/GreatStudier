@@ -37,7 +37,7 @@ def choose_set() -> None:
     sets = [p.name for p in config.get_set_directory().iterdir() if p.is_file()]
     print_sets = '\n'.join(sets)
 
-    if len(sets) == 0:
+    if not sets:
         print(f'\n{C.yellow}You currently have no sets available. Import or create a new set to continue.{C.end}')
         input()
     else:
@@ -55,16 +55,14 @@ def choose_set() -> None:
 
 
 def new_set() -> None:
-    print(f'{CLEAR}{C.green}GreatStudier study set creator.{C.end}\n')
-    print('Leave blank to exit.\n')
-    set_name = input('Name of the set: ')
+    set_name = input('New set name: ')
     if not set_name:
-        return print(f'{CLEAR}Aborted.')
+        print(f'{C.red}Nothing was provided!{C.end}')
+        return
     for c in ILLEGAL_FILENAME_CHARS:
         set_name.replace(c, '_')
     data = []
     add_term_interactively(data)
-    print(CLEAR)
     if data:
         utils.save_words(data, set_name)
         print(f'{C.green}Set successfully created!{C.end}')
@@ -75,10 +73,10 @@ def edit_mode(words) -> None:
     print('--------------------------')
     for i in range(len(words)):
         print(f'{C.magenta}{i}{C.end}: {C.green}"{words[i].word}"{C.end} -> {C.darkblue}"{words[i].definition}"{C.end}')
-    print()
     mode = input(f'{C.darkgreen}Enter a mode [+] add terms, [-] remove terms, [e]dit terms, [r]ename set: {C.end}')
     if not mode:
-        return print(CLEAR)
+        print(f'{C.red}That is not an option.{C.end}')
+        return
     print('Leave blank to exit.\n')
     if mode in {'e', 'edit'}:
         while True:

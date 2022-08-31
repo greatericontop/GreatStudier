@@ -51,12 +51,14 @@ signal.signal(signal.SIGTERM, terminate_handler)
 
 
 def learn(words, new_terms) -> None:
-    if len(new_terms) == 0:
-        return print(f'{CLEAR}You have no new terms to learn.')
+    if not new_terms:
+        print(f'{C.yellow}Nothing to do!{C.end}')
+        return
     random.shuffle(new_terms)
     print(f'{CLEAR}{C.green}LEARN: Type each term once to continue.{C.end}\n')
-    print(f'You are ready to:\nLEARN x{C.darkcyan}{min(NEW_CHUNK_SIZE, len(new_terms))}{C.end}\n')
-    study_indices = list(range(min(NEW_CHUNK_SIZE, len(new_terms))))
+    amount = min(NEW_CHUNK_SIZE, len(new_terms))
+    print(f'You are ready to:\nLEARN x{C.darkcyan}{amount}{C.end}\n')
+    study_indices = list(range(amount))
     for i in study_indices:
         key = new_terms[i]
         print(f'\n\n{C.yellow}{key.word} {C.green}= {C.darkyellow}{key.definition}{C.end}')
@@ -79,11 +81,13 @@ def learn(words, new_terms) -> None:
 
 
 def review(words, review_terms) -> None:
-    if len(review_terms) == 0:
-        return print(f'{CLEAR}You have no terms to review.')
+    if not review_terms:
+        print(f'{C.yellow}Nothing to do!{C.end}')
+        return
     random.shuffle(review_terms)
-    print(f'{CLEAR}You are ready to:\nREVIEW x{C.darkcyan}{min(REVIEW_CHUNK_SIZE, len(review_terms))}{C.end}\n')
-    for i in range(min(REVIEW_CHUNK_SIZE, len(review_terms))):
+    amount = min(REVIEW_CHUNK_SIZE, len(review_terms))
+    print(f'{CLEAR}You are ready to:\nREVIEW x{C.darkcyan}{amount}{C.end}\n')
+    for i in range(amount):
         key = review_terms[i]
         quiz.quiz(key)
     print(f'{CLEAR}You are done!')
@@ -92,7 +96,7 @@ def review(words, review_terms) -> None:
 
 def study(words) -> None:
     if not words:
-        print('Nothing to do!')
+        print(f'{C.yellow}Nothing to do!{C.end}')
         return
     random.shuffle(words)
     total = len(words)
@@ -126,7 +130,7 @@ def wipe_progress(words) -> None:
 def download_set() -> None:
     link = input('Link: ')
     if not link:
-        print(f'{C.yellow}Nothing was provided!{C.end}')
+        print(f'{C.red}Nothing was provided!{C.end}')
         return
     try:
         result, name = uploads.download_set(link)
