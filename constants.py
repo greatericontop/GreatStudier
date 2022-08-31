@@ -20,9 +20,8 @@ VERSION = '1.0.0-rc2'
 
 
 SPACED_REPETITION = [
-    1,  # the default state that unstudied words can also go into
-    60, 60,  # initial learnings
-    14400,  # 4h
+    -2147483648,  # default state (0); unstudied words go here
+    14400,  # 4h (can review after first learning)
     86400,  # 1d
     259200,  # 3d
     604800,  # 7d
@@ -31,19 +30,22 @@ SPACED_REPETITION = [
     2592000,  # 30d
     3888000,  # 45d
     5184000,  # 60d
-    7776000,  # 90d
-    7776000,
-    7776000,
-    7776000,
-    7776000,
-    7776000,
-    7776000,
-    7776000,
+    5184000,
+    5184000,
+    5184000,
+    5184000,
+    5184000,
+    5184000,
+    5184000,
+    5184000,
+    5184000,
+    5184000,
+    5184000,
     2147483647
 ]
 NEW_CHUNK_SIZE = 8
 REVIEW_CHUNK_SIZE = 15
-AFTER_WRONG_RETURN_REP_TO = 2
+AFTER_WRONG_RETURN_REP_TO = 1
 CLEAR = '\n\n\n\n\n\n\n\n\n\n\n\n\033[H\033[2J\033[3J'  # this ansi sequence *should* clear the screen
 
 ILLEGAL_FILENAME_CHARS = [

@@ -102,7 +102,7 @@ def dashboard() -> str:
 def gamify_correct_answer(level: int = 0) -> None:
     """Register a correct answer."""
     gamify_data['correct_answers'] += 1
-    gamify_data['xp'] += 20 + 10*level
+    gamify_data['xp'] += 30 + 10*level
 
 
 def gamify_wrong_answer() -> None:
