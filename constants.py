@@ -36,10 +36,13 @@ SPACED_REPETITION = [
     7776000,
     7776000,
     7776000,
+    7776000,
+    7776000,
+    7776000,
     2147483647
 ]
-NEW_CHUNK_SIZE = 5
-REVIEW_CHUNK_SIZE = 18
+NEW_CHUNK_SIZE = 8
+REVIEW_CHUNK_SIZE = 15
 AFTER_WRONG_RETURN_REP_TO = 2
 CLEAR = '\n\n\n\n\n\n\n\n\n\n\n\n\033[H\033[2J\033[3J'  # this ansi sequence *should* clear the screen
 
