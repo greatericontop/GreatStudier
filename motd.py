@@ -55,6 +55,7 @@ motd = [
     'Free as in Freedom!',
     'ALL WRONGS RESERVED!',
     'Task failed successfully!',
+    'Finally not beta anymore!',
 ]
 
 
