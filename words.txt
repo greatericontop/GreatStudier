@@ -1,4 +1,0 @@
-matar, to kill, 1661464859, 3
-asesino, murderer/assassin, 1661464855, 3
-disparar, to shoot, 1661464849, 3
-morir, to die, 1661464851, 3

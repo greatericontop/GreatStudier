@@ -17,14 +17,19 @@
 
 import dataclasses
 import enum
+import os
+import pathlib as pl
 import time
 import Levenshtein
 
+import config
 from constants import *
 
 
 class C:
     bwhite = '\033[1;97m'
+    no = '\033[9;91m'
+    #
     white = '\033[0;97m'
     yellow = '\033[0;93m'
     green = '\033[0;92m'
@@ -44,6 +49,10 @@ class C:
     end = '\033[0;0m'
 
 
+class InvalidFileFormatError(RuntimeError):
+    pass
+
+
 @dataclasses.dataclass
 class KeyData:
     word: str
@@ -52,14 +61,25 @@ class KeyData:
     repetition_spot: int
 
 
-def load_words(name: str):
-    with open(name, 'r') as f:
+def file_check(contents: list[str]) -> bool:
+    return contents[0].lower().startswith('## * greatstudier *')
+
+
+def load_words(name: str) -> list:
+    path = pl.Path(config.get_set_directory()) / name
+    if not path.exists():
+        print(f'{C.red}The set file does not exist! Please choose a valid set.{C.end}')
+        config.config['set'] = None
+        os.kill(os.getpid(), 15)
+    with path.open('r') as f:
         contents = f.read().split('\n')
+    if not file_check(contents):
+        raise InvalidFileFormatError(f'Expected first line "## * greatstudier *"; got "{contents[0].lower()}" instead')
     tokenized = []
     for line in contents:
         if len(line) == 0 or line.startswith('#'):
             continue
-        data = [x.strip() for x in line.split(',')]
+        data = [x.strip() for x in line.split('::')]
         # data[0]: Key
         # data[1]: Definition
         # data[2]: Last covered
@@ -74,15 +94,21 @@ def load_words(name: str):
     return tokenized
 
 
-def save_words(keys: list, out: str):
-    with open(out, 'w') as f:
-        data = []
-        for key in keys:
-            data.append(f'{key.word}, {key.definition}, {key.last_covered}, {key.repetition_spot}')
-        f.write('\n'.join(data))
+def save_words(keys: list, output_file_name: str) -> None:
+    data = []
+    for key in keys:
+        data.append(f'{key.word} :: {key.definition} :: {key.last_covered} :: {key.repetition_spot}')
+    data_to_dump = '\n'.join(data)
+    save_data(f'## * greatstudier *\n{data_to_dump}', output_file_name)
 
 
-def get_studyable(keys: list):
+def save_data(data: str, output_file_name: str) -> None:
+    path = pl.Path(config.get_set_directory()) / output_file_name
+    with path.open('w') as f:
+        f.write(data)
+
+
+def get_studyable(keys: list) -> tuple:
     new = []
     review = []
     for key in keys:
@@ -100,7 +126,7 @@ class ValidationResult(enum.Enum):
     INCORRECT = 2
 
 
-def validate(guess, answer):
+def validate(guess, answer) -> ValidationResult:
     guess = guess.lower()
     answer = answer.lower()
     if guess == answer:

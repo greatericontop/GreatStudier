@@ -15,36 +15,50 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import annotations
+
 import time
+from typing import TYPE_CHECKING
 
 import gamify
 import utils
 from utils import C
 from constants import *
 
+if TYPE_CHECKING:
+    from utils import KeyData
 
-def quiz(key) -> bool:
-    print(f'\n\nQUIZ: What is {C.cyan}{key.definition}{C.end}?')
-    guess = input('>')
+
+def correct_answer_increment_knowledge(key: KeyData):
+    key.last_covered = int(time.time())
+    key.repetition_spot += 1
+    gamify.gamify_correct_answer(key.repetition_spot)
+
+
+def correct_answer_study(key: KeyData):
+    """Don't affect spaced repetition."""
+    gamify.gamify_correct_answer(1)
+
+
+def quiz(key: KeyData, extra: str = '', increment_knowledge_level: bool = True) -> bool:
+    on_correct = correct_answer_increment_knowledge if increment_knowledge_level else correct_answer_study
+    print(f'\n\n{extra}QUIZ: What is {C.cyan}{key.definition}{C.end}?')
+    guess = input(f'{C.darkblue}>{C.end} ')
     result = utils.validate(guess, key.word)
 
     if result == utils.ValidationResult.FULL_CORRECT:
         print(f'{C.green}Correct!{C.end}')
         input()
-        key.last_covered = int(time.time())
-        key.repetition_spot += 1
-        gamify.gamify_correct_answer(key.repetition_spot)
+        on_correct(key)
         return True
 
     elif result == utils.ValidationResult.MOSTLY_CORRECT:
         print(f'{C.darkgreen}Mostly correct! It actually was: {C.white}{key.word}{C.end}')
         if input() != '*':
-            key.last_covered = int(time.time())
-            key.repetition_spot += 1
-            gamify.gamify_correct_answer(key.repetition_spot)
+            on_correct(key)
             return True
         else:
-            print(f'{C.magenta}You have overwritten your answer to {C.red}WRONG{C.end}')
+            print(f'You have overwritten your answer to {C.red}WRONG{C.end}')
             key.repetition_spot = min(AFTER_WRONG_RETURN_REP_TO, key.repetition_spot)
             gamify.gamify_wrong_answer()
             return False
@@ -52,10 +66,8 @@ def quiz(key) -> bool:
     else:
         print(f"{C.red}Sorry, that's incorrect! It actually was: {C.white}{key.word}{C.end}")
         if input() == '*':
-            print(f'{C.magenta}You have overwritten your answer to {C.green}CORRECT{C.end}')
-            key.last_covered = int(time.time())
-            key.repetition_spot += 1
-            gamify.gamify_correct_answer(key.repetition_spot)
+            print(f'You have overwritten your answer to {C.green}CORRECT{C.end}')
+            on_correct(key)
             return True
         else:
             key.repetition_spot = min(AFTER_WRONG_RETURN_REP_TO, key.repetition_spot)
