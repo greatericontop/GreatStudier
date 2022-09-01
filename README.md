@@ -2,14 +2,6 @@
 
 A free and open source studying software. 
 
-- [Requirements](#requirements)
-- [Usage](#usage)
-  - [Sets](#sets)
-  - [Learn](#learn)
-  - [Review](#review)
-- [Sharing](#sharing)
-- [License](#license)
-
 ---
 
 ## Requirements
@@ -17,6 +9,8 @@ A free and open source studying software.
 - Python 3.9 (or higher), although 3.6 will probably work.
 - `Levenshtein` module: Install using `pip install Levenshtein` or the equivalent (`python3 -m pip`, `pip3`, etc.) for your system.
 - `requests` module: Install using `pip install requests` or the equivalent (`python3 -m pip`, `pip3`, etc.) for your system.
+
+Some pre-built binaries are available, but they won't work for every system. Use the source code if possible.
 
 ---
 
@@ -56,7 +50,7 @@ To overwrite an answer that was automatically graded incorrectly, type `*`.
 
 GreatStudier uses [`paste.gg`](https://paste.gg) and its API for uploading and downloading sets.
 
-You can set a custom API key in the config (go to `options`, then `API keys`) to link any GreatStudier uploads to your account.
+You can set a custom API key in the config (go to `options`, then `API keys`) to link any GreatStudier uploads to your account, so they're easier to find and manage.
 
 ---
 
