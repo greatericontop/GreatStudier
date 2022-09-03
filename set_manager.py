@@ -79,12 +79,12 @@ def edit_mode(words) -> None:
         else:
             timeleft = int(key.last_covered + SPACED_REPETITION[key.repetition_spot] - time.time())
             if timeleft <= 0:
-                extra_info = 'ready'
+                extra_info = f'ready #{key.repetition_spot}'
             elif timeleft <= 86400:
-                extra_info = f'in {timeleft//3600 % 24}h {timeleft//60 % 60}m'
+                extra_info = f'in {timeleft//3600 % 24}h {timeleft//60 % 60}m{C.end}'
             else:
-                extra_info = f'in {timeleft//86400}d {timeleft//3600 % 24}h {timeleft//60 % 60}m'
-        print(f'{C.magenta}{i}{C.end}: {C.green}"{key.word}"{C.end} -> {C.darkblue}"{key.definition}"{C.end} ({extra_info})')
+                extra_info = f'in {timeleft//86400}d {timeleft//3600 % 24}h {timeleft//60 % 60}m{C.end}'
+        print(f'{C.magenta}{i}{C.end}: {C.green}"{key.word}"{C.end} -> {C.darkblue}"{key.definition}"{C.end} {C.darkwhite}({extra_info}){C.end}')
     mode = input(f'{C.darkgreen}Enter a mode [+] add terms, [-] remove terms, [e]dit terms, [r]ename set: {C.end}')
     if not mode:
         print(f'{C.red}That is not an option.{C.end}')
