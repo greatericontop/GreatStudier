@@ -22,7 +22,13 @@ import pathlib as pl
 from utils import C
 
 
-LEVEL_XP = 20000
+def level_xp(level: int) -> int:
+    """Return required amount to go from the current level to the next."""
+    return {
+        1: 1500,
+        2: 6000,
+        3: 12500,
+    }.get(level, 20000)  # default 20k
 
 
 def load_gamify() -> dict:
@@ -42,8 +48,8 @@ def save_gamify(data: dict) -> None:
 
 def fix_level(print_stuff: bool) -> None:
     """Increment the level if the XP is more than the threshold."""
-    if gamify_data['xp'] >= LEVEL_XP:
-        gamify_data['xp'] -= LEVEL_XP
+    if gamify_data['xp'] >= level_xp(gamify_data['level']):
+        gamify_data['xp'] -= level_xp(gamify_data['level'])
         gamify_data['level'] += 1
         if print_stuff:
             print(f"{C.white}---------- {C.blue}You're now level {C.darkcyan}{gamify_data['level']}{C.blue}! {C.white}----------{C.end}")
@@ -96,13 +102,14 @@ def prestige() -> str:
 def dashboard() -> str:
     """Return the level and progress."""
     xp = gamify_data['xp']
-    return f'{prestige()} {C.black}({xp}/{LEVEL_XP}){C.end}'
+    total = level_xp(gamify_data['level'])
+    return f'{prestige()} {C.black}({xp}/{total}){C.end}'
 
 
 def gamify_correct_answer(level: int = 0) -> None:
     """Register a correct answer."""
     gamify_data['correct_answers'] += 1
-    gamify_data['xp'] += 30 + 10*level
+    gamify_data['xp'] += 10*level
 
 
 def gamify_wrong_answer() -> None:
@@ -124,7 +131,8 @@ def get_skill() -> int:
     radicand = (p_hat*(1-p_hat) + Z*Z/(4*n)) / n
     top = p_hat + (Z*Z)/(2*n) - Z*math.sqrt(radicand)
     bottom = 1 + Z*Z/n
-    return int(3200 * (top / bottom))
+    p = top / bottom
+    return int(1500*p**4 + 700*p**3 + 400*p**2 + 500*p + 100)
 
 
 gamify_data = load_gamify()

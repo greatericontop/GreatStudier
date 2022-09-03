@@ -177,6 +177,8 @@ def main():
           f'{motd.random()}\n'
           f'{gamify.dashboard()}\n')
     while True:
+        if config.config['show_gamify']:
+            gamify.fix_level(print_stuff=True)
         if config.config['set'] is None:
             learning_available = False
             prompt = (f'{C.darkred}It seems you do not have a set chosen!{C.end}\n'
