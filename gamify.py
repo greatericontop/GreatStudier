@@ -52,12 +52,13 @@ def fix_level(print_stuff: bool) -> None:
         gamify_data['xp'] -= level_xp(gamify_data['level'])
         gamify_data['level'] += 1
         if print_stuff:
-            print(f"{C.white}---------- {C.blue}You're now level {C.darkcyan}{gamify_data['level']}{C.blue}! {C.white}----------{C.end}")
+            print(f'---------- LEVEL UP! ----------')
+            print(f"{C.bwhite}---------- {C.blue}You're now level {C.darkcyan}{gamify_data['level']}{C.blue}! {C.bwhite}----------{C.end}")
 
 
 def show_level() -> None:
     """Print out the level."""
-    print(f"{C.white}---------- {C.green}You're currently level {dashboard()}. {C.white}----------{C.end}")
+    print(f"{C.bwhite}---------- {C.green}You're currently level {dashboard()}. {C.bwhite}----------{C.end}")
 
 
 def prestige() -> str:
