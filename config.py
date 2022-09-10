@@ -30,6 +30,8 @@ def update_with_defaults(original_config: dict = None) -> dict:
         original_config['set_directory'] = None
     if 'paste_api_key' not in original_config:
         original_config['paste_api_key'] = None
+    if 'paste_username' not in original_config:
+        original_config['paste_username'] = None
     return original_config
 
 

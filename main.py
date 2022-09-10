@@ -130,15 +130,20 @@ def wipe_progress(words) -> None:
 def upload_set(words) -> None:
     print('Uploading...')
     if config.config['paste_api_key']:
-        set_id = uploads.find_set(config.config['set'])
-        if set_id is not None and (
-                input('Found a paste on account; edit and update it? [Y/n]: ').strip().lower()
-                in {'y', '1', 'yes', 'true', ''}):
-            uploads.edit_set(words, set_id)
-            print(f'{CLEAR}{C.cyan}https://paste.gg/{set_id}{C.end} - Uploaded and updated!')
-            return
+        if config.config['paste_username']:
+            set_id = uploads.find_set(config.config['set'])
+            if set_id is not None:
+                consent = input('Found a paste on account; edit and update it? [Y/n]: ').strip().lower()
+                if consent in {'y', '1', 'yes', 'true', 't', ''}:
+                    uploads.edit_set(words, set_id)
+                    print(f'{C.cyan}https://paste.gg/{set_id}{C.end} - Uploaded and updated!')
+                    return
+        else:
+            print(f"{C.yellow}You haven't set your username in the config! This is required due to limitations in the API.{C.end}")
+    else:
+        print(f"{C.yellow}You haven't set an API key! Use one to group all your uploads under one account.{C.end}")
     url, deletion = uploads.upload_set(words, config.config['set'])
-    print(f'{CLEAR}{C.cyan}{url}{C.end} - Uploaded! {C.black}({deletion}){C.end}')
+    print(f'{C.cyan}{url}{C.end} - Uploaded! {C.black}({deletion}){C.end}')
 
 
 def download_set() -> None:

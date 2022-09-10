@@ -48,7 +48,7 @@ def _paste_make_file(name: str, content: str) -> dict:
 
 def find_set(target_name: str) -> str:
     """Find the set and return its ID if it exists, otherwise return None. Requires a key."""
-    username = ''  # TODO: for testing, remove this when you commit, also add config for this
+    username = config.config['paste_username']
     headers = {'Authorization': f"Key {config.config['paste_api_key']}"}
     resp = requests.get(f'https://api.paste.gg/v1/users/{username}',
                         headers=headers)
