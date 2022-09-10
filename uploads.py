@@ -26,12 +26,60 @@ if TYPE_CHECKING:
     from utils import KeyData
 
 
-def upload_set(data: list[KeyData], name: str) -> tuple[str, str]:
-    """Upload the given data and name to paste.gg, and return a tuple of the url to it and key to delete it."""
+def encode_set(data: list[KeyData]) -> str:
+    """Encode the set data into a string to be uploaded later."""
     text = []
     for key in data:
         text.append(f'{key.word} :: {key.definition} :: -1 :: 0')
-    text = '## * greatstudier * upload *\n' + '\n'.join(text)
+    return '## * greatstudier * upload *\n' + '\n'.join(text)
+
+
+def _paste_make_file(name: str, content: str) -> dict:
+    """Make a paste.gg API file object with given name and content (as a string encoded in utf-8)."""
+    return {
+        'name': name,
+        'content': {
+            'format': 'text',
+            'highlight_language': 'python',
+            'value': content
+        }
+    }
+
+
+def find_set(target_name: str) -> str:
+    """Find the set and return its ID if it exists, otherwise return None. Requires a key."""
+    username = ''  # TODO: for testing, remove this when you commit, also add config for this
+    headers = {'Authorization': f"Key {config.config['paste_api_key']}"}
+    resp = requests.get(f'https://api.paste.gg/v1/users/{username}',
+                        headers=headers)
+    for paste in resp.json()['result']:
+        if paste['name'] == target_name: # TODO: can this be combined with :edit_set:?
+            return paste['id']
+    return None
+
+
+def edit_set(data: list[KeyData], paste_id: str) -> None:
+    """Instead of uploading, edit an already existing paste.gg paste. Requires a key."""
+    text = encode_set(data)
+    headers = {'Authorization': f"Key {config.config['paste_api_key']}"}
+    # get the file id
+    resp = requests.get(f'https://api.paste.gg/v1/pastes/{paste_id}',
+                        headers=headers)
+    main_file_id = resp.json()['result']['files'][0]['id']
+    new_file = _paste_make_file('__', text)
+    del new_file['name']
+    # patch the specified file
+    resp = requests.patch(f'https://api.paste.gg/v1/pastes/{paste_id}/files/{main_file_id}',
+                          json=new_file,
+                          headers=headers)
+    if resp.status_code != 204:
+        print(resp.json())
+        raise requests.exceptions.ConnectionError(f'status code {resp.status_code} is not 200')
+
+
+def upload_set(data: list[KeyData], name: str) -> tuple[str, str]:
+    """Upload the given data and name to paste.gg, and return a tuple of the url to it and key to delete it."""
+    text = encode_set(data)
     headers = {'Content-Type': 'application/json'}
     if config.config['paste_api_key'] is not None:
         headers['Authorization'] = f"Key {config.config['paste_api_key']}"
@@ -41,14 +89,7 @@ def upload_set(data: list[KeyData], name: str) -> tuple[str, str]:
                              'description': f'Set {name} for GreatStudier',
                              'visibility': 'unlisted',
                              'files': [
-                                 {
-                                     'name': name,
-                                     'content': {
-                                         'format': 'text',
-                                         'highlight_language': 'python',
-                                         'value': text
-                                     }
-                                 }
+                                 _paste_make_file(name, text),
                              ]
                          },
                          headers=headers)

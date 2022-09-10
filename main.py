@@ -127,6 +127,20 @@ def wipe_progress(words) -> None:
     print(CLEAR)
 
 
+def upload_set(words) -> None:
+    print('Uploading...')
+    if config.config['paste_api_key']:
+        set_id = uploads.find_set(config.config['set'])
+        if set_id is not None and (
+                input('Found a paste on account; edit and update it? [Y/n]: ').strip().lower()
+                in {'y', '1', 'yes', 'true', ''}):
+            uploads.edit_set(words, set_id)
+            print(f'{CLEAR}{C.cyan}https://paste.gg/{set_id}{C.end} - Uploaded and updated!')
+            return
+    url, deletion = uploads.upload_set(words, config.config['set'])
+    print(f'{CLEAR}{C.cyan}{url}{C.end} - Uploaded! {C.black}({deletion}){C.end}')
+
+
 def download_set() -> None:
     link = input('Link: ')
     if not link:
@@ -149,7 +163,7 @@ def open_settings() -> None:
     for key, value in config.config.items():
         if key == 'set':
             continue
-        if key == 'paste_api_key' and value is not None:
+        if key == 'paste_api_key' and value is not None:  # TODO: have a way for things to be set back to None
             value = value[:4] + '**********'
         settings += f'{C.darkgreen}{key}{C.end} = {C.darkgreen}{value}{C.end}\n'
     print(settings)
@@ -216,10 +230,8 @@ def main():
         elif cmd in {'modify', 'm'} and learning_available:
             edit_mode(words)
         elif cmd in {'upload', 'u'} and learning_available:
-            print('Uploading...')
             try:
-                url, deletion = uploads.upload_set(words, config.config['set'])
-                print(f'{CLEAR}{C.cyan}{url}{C.end} - Uploaded! {C.black}({deletion}){C.end}')
+                upload_set(words)
             except requests.exceptions.ConnectionError:
                 print(f'{CLEAR}{C.red}Connection error, unable to connect to paste.gg{C.end}')
         # end learning available
