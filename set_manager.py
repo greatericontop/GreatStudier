@@ -19,7 +19,6 @@ import time
 
 import config
 import utils
-from utils import C
 from constants import *
 
 

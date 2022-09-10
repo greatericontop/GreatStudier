@@ -29,7 +29,6 @@ import quiz
 import uploads
 import utils
 from set_manager import choose_set, new_set, edit_mode
-from utils import C
 from constants import *
 
 try:

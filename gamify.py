@@ -19,7 +19,7 @@ import ast
 import math
 import pathlib as pl
 
-from utils import C
+from constants import C
 
 
 def level_xp(level: int) -> int:

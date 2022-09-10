@@ -22,7 +22,6 @@ from typing import TYPE_CHECKING
 
 import gamify
 import utils
-from utils import C
 from constants import *
 
 if TYPE_CHECKING:

@@ -18,7 +18,7 @@
 import os
 import random as _random
 
-from utils import C
+from constants import C
 
 
 motd = [
