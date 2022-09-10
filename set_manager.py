@@ -40,19 +40,20 @@ def choose_set() -> None:
 
     if not sets:
         print(f'\n{C.yellow}You currently have no sets available. Import or create a new set to continue.{C.end}')
-        input()
-    else:
-        print(f'{CLEAR}{C.darkcyan}Available Study Sets{C.end}\n{print_sets}\n\n{C.darkgreen}Leave blank to exit.{C.end}')
-        while True:
-            word_set = input('Choose a set: ')
-            if not word_set:
-                config.config['set'] = None
-                break
-            if word_set in sets:
-                config.config['set'] = word_set
-                break
-            else:
-                print(f'{C.red}Invalid Set! Please choose a valid set.{C.end}')
+        input(CONTINUE)
+        print(CLEAR)
+        return
+    print(f'{CLEAR}{C.darkcyan}Available Study Sets{C.end}\n{print_sets}\n\n{C.darkgreen}Leave blank to exit.{C.end}')
+    while True:
+        word_set = input('Choose a set: ')
+        if not word_set:
+            config.config['set'] = None
+            break
+        if word_set in sets:
+            config.config['set'] = word_set
+            break
+        print(f'{C.red}Invalid Set! Please choose a valid set.{C.end}')
+    print(CLEAR)
 
 
 def new_set() -> None:
@@ -67,6 +68,8 @@ def new_set() -> None:
     if data:
         utils.save_words(data, set_name)
         print(f'{C.green}Set successfully created!{C.end}')
+        input(CONTINUE)
+    print(CLEAR)
 
 
 def edit_mode(words) -> None:
@@ -84,37 +87,32 @@ def edit_mode(words) -> None:
             else:
                 extra_info = f'in {timeleft//86400}d {timeleft//3600 % 24}h {timeleft//60 % 60}m{C.end}'
         print(f'{C.magenta}{i}{C.end}: {C.green}"{key.word}"{C.end} -> {C.darkblue}"{key.definition}"{C.end} {C.darkwhite}({extra_info}){C.end}')
-    mode = input(f'{C.darkgreen}Enter a mode [+] add terms, [-] remove terms, [e]dit terms, [r]ename set: {C.end}')
-    if not mode:
-        print(f'{C.red}That is not an option.{C.end}')
-        return
+    mode = input(f'{C.darkgreen}[+] add terms, [-] remove terms, [E]dit terms, [R]ename set: {C.end}').lower()
     print('Leave blank to exit.\n')
     if mode in {'e', 'edit'}:
         while True:
             try:
-                edit_num = int(input('Enter the number you want to edit (Blank to quit): '))
+                edit_num = int(input('Enter the number you want to edit: '))
             except ValueError:
                 break
             if edit_num >= len(words):
                 break
-            edit_term = input('Enter the new term (Blank to keep term): ')
-            edit_def = input('Enter the new definition (Blank to keep definition): ')
+            edit_term = input(f'Enter the new term (blank to keep): ')
+            edit_def = input(f'Enter the new definition (blank to keep): ')
             if edit_term:
                 words[edit_num].word = edit_term
             if edit_def:
                 words[edit_num].definition = edit_def
             print()
-        print(CLEAR)
     elif mode in {'+', 'add'}:
         add_term_interactively(words)
-        print(CLEAR)
     elif mode in {'-', 'remove'}:
         while True:
             if len(words) == 1:
                 print(f'{CLEAR}{C.yellow}You may not remove a set with 1 term.{C.end}')
                 break
             try:
-                remove_num = int(input('Enter the number you want to remove (Blank to quit): '))
+                remove_num = int(input('Number to remove: '))
             except ValueError:
                 break
             if remove_num >= len(words):
@@ -128,5 +126,12 @@ def edit_mode(words) -> None:
         new_set_path = config.get_set_directory() / new_name
         old_set_path.rename(new_set_path)
         config.config['set'] = new_name
+    else:
+        print(f'{C.red}That is not an option.{C.end}')
+        input(CONTINUE)
+        print(CLEAR)
+        return
     utils.save_words(words, config.config['set'])
     print(f'{C.green}All changes saved!{C.end}')
+    input(CONTINUE)
+    print(CLEAR)

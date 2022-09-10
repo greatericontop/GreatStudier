@@ -76,8 +76,10 @@ def learn(words, new_terms) -> None:
             key = new_terms[i]
             if quiz.quiz(key):
                 study_indices.remove(i)
-    print(f'{CLEAR}You are done!')
     utils.save_words(words, config.config['set'])
+    print('You are done!')
+    input(CONTINUE)
+    print(CLEAR)
 
 
 def review(words, review_terms) -> None:
@@ -90,8 +92,10 @@ def review(words, review_terms) -> None:
     for i in range(amount):
         key = review_terms[i]
         quiz.quiz(key)
-    print(f'{CLEAR}You are done!')
     utils.save_words(words, config.config['set'])
+    print('You are done!')
+    input(CONTINUE)
+    print(CLEAR)
 
 
 def study(words) -> None:
@@ -104,6 +108,8 @@ def study(words) -> None:
     print(f'{CLEAR}You are ready to:\nSTUDY x{C.darkcyan}{total}{C.end}\n')
     for i, word in enumerate(words):
         quiz.quiz(word, extra=f'#{i+1}/{total} ', increment_knowledge_level=False)
+    print('You are done!')
+    input(CONTINUE)
     print(CLEAR)
 
 
@@ -116,15 +122,21 @@ def stats() -> None:
         print(f"Answer Ratio: {data['correct_answers'] / data['wrong_answers']:.2f}")
     print(f'{C.cyan}Skill Score: {gamify.get_skill()}{C.end}')
     print(f"{C.green}You're currently level {gamify.dashboard()}\n\n")
+    input(CONTINUE)
+    print(CLEAR)
 
 
 def wipe_progress(words) -> None:
-    print(f'{C.red}Clearing ALL progress for this set! Continue only if you are sure.{C.end}')
-    input()
+    confirm = input(f'{C.red}Clearing ALL progress for this set?{C.end} [y/N]: ')
+    if confirm not in YES_DEFAULT_NO:
+        print(CLEAR)
+        return
     for key in words:
         key.last_covered = -1
         key.repetition_spot = 0
     utils.save_words(words, config.config['set'])
+    print('Successfully deleted all progress in your current set!')
+    input(CONTINUE)
     print(CLEAR)
 
 
@@ -145,6 +157,8 @@ def upload_set(words) -> None:
         print(f"{C.yellow}You haven't set an API key! Use one to group all your uploads under one account.{C.end}")
     url, deletion = uploads.upload_set(words, config.config['set'])
     print(f'{C.cyan}{url}{C.end} - Uploaded! {C.black}({deletion}){C.end}')
+    input(CONTINUE)
+    print(CLEAR)
 
 
 def download_set() -> None:
@@ -161,7 +175,9 @@ def download_set() -> None:
     if not dest:
         dest = name
     utils.save_data(result, dest)
-    print(f'{CLEAR}{C.green}Set downloaded successfully.{C.end}')
+    print(f'{C.green}Set downloaded successfully.{C.end}')
+    input(CONTINUE)
+    print(CLEAR)
 
 
 def open_settings() -> None:
@@ -195,7 +211,9 @@ def open_settings() -> None:
         config.config[settings_change] = new_value
     config.reload_config()
     config.save_config(config.config)
-    print(f'{CLEAR}{C.green}All changes saved!')
+    print(f'{C.green}All changes saved!')
+    input(CONTINUE)
+    print(CLEAR)
 
 
 def main():

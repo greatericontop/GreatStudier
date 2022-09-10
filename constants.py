@@ -19,6 +19,29 @@
 VERSION = '1.0.0-nightly'
 
 
+class C:
+    bwhite = '\033[1;97m'
+    no = '\033[9;91m'
+    #
+    white = '\033[0;97m'
+    yellow = '\033[0;93m'
+    green = '\033[0;92m'
+    blue = '\033[0;94m'
+    cyan = '\033[0;96m'
+    red = '\033[0;91m'
+    magenta = '\033[0;95m'
+    black = '\033[0;90m'
+    darkwhite = '\033[0;37m'
+    darkyellow = '\033[0;33m'
+    darkgreen = '\033[0;32m'
+    darkblue = '\033[0;34m'
+    darkcyan = '\033[0;36m'
+    darkred = '\033[0;31m'
+    darkmagenta = '\033[0;35m'
+    darkblack = '\033[0;30m'
+    end = '\033[0;0m'
+
+
 SPACED_REPETITION = [
     -2147483648,  # default state (0); unstudied words go here
     14400,  # 4h (can review after first learning)
@@ -47,8 +70,9 @@ SPACED_REPETITION = [
 NEW_CHUNK_SIZE = 8
 REVIEW_CHUNK_SIZE = 15
 AFTER_WRONG_RETURN_REP_TO = 1
-CLEAR = '\n\n\n\n\n\n\n\n\n\n\n\n\033[H\033[2J'  # this ansi sequence *should* clear the screen
 
+CLEAR = '\n\n\n\n\n\n\n\n\n\n\n\n\033[H\033[2J'  # this ansi sequence *should* clear the screen
+CONTINUE = f'{C.black}...{C.end}'
 YES_DEFAULT_YES = {'y', '1', 'yes', 'true', 't', ''}
 YES_DEFAULT_NO = {'y', '1', 'yes', 'true', 't'}
 
@@ -70,27 +94,4 @@ ILLEGAL_FILENAME_CHARS = [
     '@',
     '`',
 ]
-
-
-class C:
-    bwhite = '\033[1;97m'
-    no = '\033[9;91m'
-    #
-    white = '\033[0;97m'
-    yellow = '\033[0;93m'
-    green = '\033[0;92m'
-    blue = '\033[0;94m'
-    cyan = '\033[0;96m'
-    red = '\033[0;91m'
-    magenta = '\033[0;95m'
-    black = '\033[0;90m'
-    darkwhite = '\033[0;37m'
-    darkyellow = '\033[0;33m'
-    darkgreen = '\033[0;32m'
-    darkblue = '\033[0;34m'
-    darkcyan = '\033[0;36m'
-    darkred = '\033[0;31m'
-    darkmagenta = '\033[0;35m'
-    darkblack = '\033[0;30m'
-    end = '\033[0;0m'
 
