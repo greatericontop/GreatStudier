@@ -28,8 +28,6 @@ def update_with_defaults(original_config: dict = None) -> dict:
         original_config['set'] = None
     if 'set_directory' not in original_config:
         original_config['set_directory'] = None
-    if 'show_gamify' not in original_config:
-        original_config['show_gamify'] = True
     if 'paste_api_key' not in original_config:
         original_config['paste_api_key'] = None
     return original_config
