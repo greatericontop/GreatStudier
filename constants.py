@@ -43,10 +43,14 @@ SPACED_REPETITION = [
     5184000,
     2147483647
 ]
+
 NEW_CHUNK_SIZE = 8
 REVIEW_CHUNK_SIZE = 15
 AFTER_WRONG_RETURN_REP_TO = 1
 CLEAR = '\n\n\n\n\n\n\n\n\n\n\n\n\033[H\033[2J\033[3J'  # this ansi sequence *should* clear the screen
+
+YES_DEFAULT_YES = {'y', '1', 'yes', 'true', 't', ''}
+YES_DEFAULT_NO = {'y', '1', 'yes', 'true', 't'}
 
 ILLEGAL_FILENAME_CHARS = [
     '/',

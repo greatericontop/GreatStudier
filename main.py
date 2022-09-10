@@ -134,7 +134,7 @@ def upload_set(words) -> None:
             set_id = uploads.find_set(config.config['set'])
             if set_id is not None:
                 consent = input('Found a paste on account; edit and update it? [Y/n]: ').strip().lower()
-                if consent in {'y', '1', 'yes', 'true', 't', ''}:
+                if consent in YES_DEFAULT_YES:
                     uploads.edit_set(words, set_id)
                     print(f'{C.cyan}https://paste.gg/{set_id}{C.end} - Uploaded and updated!')
                     return
@@ -168,14 +168,20 @@ def open_settings() -> None:
     for key, value in config.config.items():
         if key == 'set':
             continue
-        if key == 'paste_api_key' and value is not None:  # TODO: have a way for things to be set back to None
+        if key == 'paste_api_key' and value is not None:
             value = value[:4] + '**********'
+        # distinguish between the actual None and a string called that
+        if value is None:
+            value = '<None>'
         settings += f'{C.darkgreen}{key}{C.end} = {C.darkgreen}{value}{C.end}\n'
     print(settings)
     settings_change = input('Option to change: ').lower()
     if not settings_change:
         return
-    if settings_change not in config.config:  # you can manually change the set if you really want to
+    if settings_change == 'reset':
+        if input('Do you really want to reset the config? [y/N]: ') in YES_DEFAULT_YES:
+            config.config = config.update_with_defaults()
+    if settings_change not in config.config:  # you can manually change hidden settings if you really want to
         print(f'{C.red}That is not a valid option.{C.end}')
         return
     if type(config.config[settings_change]) is bool:
@@ -183,6 +189,8 @@ def open_settings() -> None:
         print(f'Toggled option to {config.config[settings_change]}.')
     else:
         new_value = input('New value: ')
+        if not new_value:
+            new_value = None
         config.config[settings_change] = new_value
     config.reload_config()
     config.save_config(config.config)
