@@ -21,7 +21,7 @@ import os
 import pathlib as pl
 import sys
 import time
-import Levenshtein
+import rapidfuzz_damerau_levenshtein as lev
 
 import config
 from constants import *
@@ -133,7 +133,7 @@ def validate(guess, answer) -> ValidationResult:
     answer = answer.lower()
     if guess == answer:
         return ValidationResult.FULL_CORRECT
-    lev_threshold = min(max(len(answer)//3, 1), 4)
-    if Levenshtein.distance(guess, answer) <= lev_threshold:
+    mistakes_allowed = min(max(len(answer)//4, 1), 4)  # 1..4 depending on the length of the answer
+    if lev.distance(guess, answer) <= mistakes_allowed:
         return ValidationResult.MOSTLY_CORRECT
     return ValidationResult.INCORRECT
