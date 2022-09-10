@@ -19,6 +19,7 @@ import dataclasses
 import enum
 import os
 import pathlib as pl
+import sys
 import time
 import Levenshtein
 
@@ -68,9 +69,10 @@ def file_check(contents: list[str]) -> bool:
 def load_words(name: str) -> list:
     path = pl.Path(config.get_set_directory()) / name
     if not path.exists():
-        print(f'{C.red}The set file does not exist! Please choose a valid set.{C.end}')
+        print(f'{C.red}The set file does not exist! Please choose a valid set.{C.end}\n'
+              f'{C.red}Relaunch and try again to select a different set.{C.end}')
         config.config['set'] = None
-        os.kill(os.getpid(), 15)
+        sys.exit(10)
     with path.open('r') as f:
         contents = f.read().split('\n')
     if not file_check(contents):

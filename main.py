@@ -15,6 +15,7 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import atexit
 import os
 import random
 import requests
@@ -39,15 +40,15 @@ except ModuleNotFoundError:
     pass
 
 
-def terminate_handler(sig, frame):
-    print(f'\n{C.red}Exiting...')
+def on_exit():
     gamify.save_gamify(gamify.gamify_data)
     config.save_config(config.config)
+def terminate_handler(sig, frame):
+    print(f'\n{C.red}Exiting...')
     sys.exit(0)
-
-
 signal.signal(signal.SIGINT, terminate_handler)
 signal.signal(signal.SIGTERM, terminate_handler)
+atexit.register(on_exit)
 
 
 def learn(words, new_terms) -> None:
@@ -229,8 +230,9 @@ def main():
         cmd = input(prompt).lower().strip()
 
         if cmd in {'quit', 'q'}:
-            print('Exiting...')
-            break
+            gamify.fix_level(print_stuff=True)
+            gamify.show_level()
+            sys.exit(0)
         # begin learning available
         if cmd in {'learn', 'l'} and learning_available:
             learn(words, new_terms)
@@ -264,12 +266,6 @@ def main():
         else:
             print(f'{CLEAR}That is not an option.')
         print(f'{C.green}GreatStudier{C.end}')
-
-    gamify.fix_level(print_stuff=True)
-    gamify.show_level()
-    # SAVE STUFF
-    gamify.save_gamify(gamify.gamify_data)
-    config.save_config(config.config)
 
 
 if __name__ == '__main__':
