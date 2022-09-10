@@ -99,6 +99,7 @@ def study(words) -> None:
     if not words:
         print(f'{C.yellow}Nothing to do!{C.end}')
         return
+    words = words.copy()  # maintain references to the actual elements, but shuffling them won't affect the other one
     random.shuffle(words)
     total = len(words)
     print(f'{CLEAR}You are ready to:\nSTUDY x{C.darkcyan}{total}{C.end}\n')
