@@ -56,6 +56,11 @@ motd = [
     'ALL WRONGS RESERVED!',
     'Task failed successfully!',
     'Finally not beta anymore!',
+    '99 bugs on the wall. Take one down, pass it around, 2147483647 bugs on the wall!',
+    '6e 65 76 65 72 20 67 6f 6e 6e 61 20 67 69 76 65 20 79 6f 75 20 75 70!',
+    'GREATSTUDIER IS GREAT!!!',
+    'A binary is source code if you try hard enough!',
+    'Your free trial of GreatStudier has expired!',
 ]
 
 
