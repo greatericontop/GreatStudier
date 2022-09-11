@@ -1,12 +1,9 @@
 # Run me to compile to a binary using PyInstaller.
 # The output file should be in the 'dist' directory.
+# This script should work for both Windows and Linux.
 
 # NOTES:
 # - Weakly encrypt/obfuscate the code to hopefully prevent antivirus falses. (GreatStudier is still GPL3)
-# - Both `rapidfuzz` and its dependency `jarowinkler` need to be all-submodule-imported.
+# - To do a clean build, remove everything in this directory except for this file.
 
-if [ "$1" == "clean" ]; then
-  pyinstaller --onefile --key GREATSTUDIER --clean ../main.py
-else
-  pyinstaller --onefile --key GREATSTUDIER ../main.py
-fi
+pyinstaller --onefile --key GREATSTUDIER ../main.py
