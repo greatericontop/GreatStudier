@@ -76,6 +76,10 @@ def load_words(name: str) -> list:
 def save_words(keys: list, output_file_name: str) -> None:
     data = []
     for key in keys:
+        if '::' in key.word or '::' in key.definition:
+            print(f'{C.yellow}Your set contained some special characters used by GreatStudier, so we were forced to remove them. Sorry!{C.end}')
+            key.word = key.word.replace('::', ' ')
+            key.definition = key.definition.replace('::', ' ')
         data.append(f'{key.word} :: {key.definition} :: {key.last_covered} :: {key.repetition_spot}')
     data_to_dump = '\n'.join(data)
     save_data(f'## * greatstudier *\n{data_to_dump}', output_file_name)
