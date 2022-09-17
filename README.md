@@ -16,9 +16,9 @@ Some pre-built binaries are available, but they won't work for every system. Use
 
 ## Usage
 
-Run `main.py` in the root directory of the project.
+Run `main.py` in the `greatstudier` directory.
 
-Default directory for sets is `~/GreatStudier/`. You can change this in the configurations. **MAKE SURE TO TYPE TO FULL PATH TO THE DIRECTORY OR IT MIGHT BREAK.**
+Default directory for sets is `~/GreatStudier/`. You can change this in the configurations. You will need to enter the full path, but the home folder `~` is supported.
 
 It is suggested to edit the options file though the CLI, but if you're feeling brave, go ahead and edit it raw.
 
