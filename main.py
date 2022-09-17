@@ -108,7 +108,7 @@ def study(words) -> None:
     total = len(words)
     print(f'{CLEAR}You are ready to:\nSTUDY x{C.darkcyan}{total}{C.end}\n')
     for i, word in enumerate(words):
-        quiz.quiz(word, extra=f'#{i+1}/{total} ', increment_knowledge_level=False)
+        quiz.quiz(word, extra=f'#{i + 1}/{total} ', increment_knowledge_level=False)
     print('You are done!')
     input(CONTINUE)
     print(CLEAR)
