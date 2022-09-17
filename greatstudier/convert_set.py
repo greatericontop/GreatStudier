@@ -1,3 +1,5 @@
+"""Convert Quizlet sets into GreatStudier format."""
+
 #  Copyright (C) 2022-present greateric.
 #
 #  This program is free software: you can redistribute it and/or modify
@@ -13,14 +15,6 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import gamify
 
-
-def main():
-    for lvl in [1, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 150]:
-        gamify.gamify_data = {'level': lvl, 'xp': 11222}
-        print(gamify.prestige())
-
-
-if __name__ == '__main__':
-    main()
+def convert_set():
+    ...
