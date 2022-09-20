@@ -64,7 +64,7 @@ def learn(words, new_terms) -> None:
         key = new_terms[i]
         print(f'\n\n{C.yellow}{key.word} {C.green}= {C.darkyellow}{key.definition}{C.end}')
         while True:
-            if input().lower() == key.word.lower():
+            if input().strip().lower() == key.word.lower():
                 break
     print(f'{CLEAR}Ready for the quiz?')
     quiz_number = 0
