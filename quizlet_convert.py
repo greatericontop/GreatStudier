@@ -33,6 +33,9 @@ def convert_quizlet_set():
               'Copy the resulting text and enter it below.\n'
               '> ')
     quizlet_set = input(prompt)
+    if not quizlet_set:
+        print(f'{C.red}Nothing was provided!{C.end}')
+        return
     quizlet_items = quizlet_set.split(LINE_SEPARATOR)
     converted = []
     for quizlet_item in quizlet_items:
