@@ -142,6 +142,7 @@ def wipe_progress(words) -> None:
 
 
 def upload_set(words) -> None:
+    print(CLEAR)
     print('Uploading...')
     if config.config['paste_api_key']:
         if config.config['paste_username']:
@@ -151,6 +152,8 @@ def upload_set(words) -> None:
                 if consent in YES_DEFAULT_YES:
                     uploads.edit_set(words, set_id)
                     print(f'{C.cyan}https://paste.gg/{set_id}{C.end} - Uploaded and updated!')
+                    input(CONTINUE)
+                    print(CLEAR)
                     return
         else:
             print(f"{C.yellow}You haven't set your username in the config! This is required due to limitations in the API.{C.end}")
@@ -163,6 +166,7 @@ def upload_set(words) -> None:
 
 
 def download_set() -> None:
+    print(CLEAR)
     link = input('Link: ')
     if not link:
         print(f'{C.red}Nothing was provided!{C.end}')
@@ -182,6 +186,7 @@ def download_set() -> None:
 
 
 def open_settings() -> None:
+    print(CLEAR)
     settings = 'Options\n'
     for key, value in config.config.items():
         if key == 'set':
@@ -195,6 +200,7 @@ def open_settings() -> None:
     print(settings)
     settings_change = input('Option to change: ').lower()
     if not settings_change:
+        print(f'{C.red}Nothing was provided!{C.end}')
         return
     if settings_change == 'reset':
         if input('Do you really want to reset the config? [y/N]: ') in YES_DEFAULT_YES:
@@ -285,7 +291,7 @@ def main():
         elif cmd in {'stats', 'st'}:
             stats()
         else:
-            print(f'{CLEAR}That is not an option.')
+            print(f'{CLEAR}{C.red}That is not an option.{C.end}')
         print(f'{C.green}GreatStudier{C.end}')
 
 

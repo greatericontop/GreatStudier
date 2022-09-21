@@ -57,6 +57,7 @@ def choose_set() -> None:
 
 
 def new_set() -> None:
+    print(CLEAR)
     set_name = input('New set name: ')
     if not set_name:
         print(f'{C.red}Nothing was provided!{C.end}')
@@ -73,7 +74,7 @@ def new_set() -> None:
 
 
 def edit_mode(words) -> None:
-    print(f'{CLEAR}{C.yellow}Terms\n{C.magenta}Number{C.end}: {C.green}Term{C.end} -> {C.darkblue}Definition{C.end}')
+    print(f'{CLEAR}{C.yellow}TERMS\n{C.magenta}Number{C.end}: {C.green}Term{C.end} -> {C.darkblue}Definition{C.end}')
     print('--------------------------')
     for i, key in enumerate(words):
         if key.repetition_spot == 0:

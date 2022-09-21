@@ -27,6 +27,7 @@ ITEM_SEPARATOR = '==$=='
 
 
 def convert_quizlet_set():
+    print(CLEAR)
     prompt = ('In the Quizlet dashboard, select the EXPORT option.\n'
               f'Between the term and definition, choose CUSTOM and set it to {C.black}{ITEM_SEPARATOR}{C.end}.\n'
               f'Between rows, choose CUSTOM and set it to {C.black}{LINE_SEPARATOR}{C.end}.\n'
