@@ -89,8 +89,8 @@ def edit_mode(words) -> None:
                 extra_info = f'in {timeleft//86400}d {timeleft//3600 % 24}h {timeleft//60 % 60}m{C.end}'
         print(f'{C.magenta}{i}{C.end}: {C.green}"{key.word}"{C.end} -> {C.darkblue}"{key.definition}"{C.end} {C.darkwhite}({extra_info}){C.end}')
     mode = input(f'{C.darkgreen}[+] add terms, [-] remove terms, [E]dit terms, [R]ename set: {C.end}').lower()
-    print('Leave blank to exit.\n')
     if mode in {'e', 'edit'}:
+        print('Leave blank to exit.\n')
         while True:
             try:
                 edit_num = int(input('Enter the number you want to edit: '))
@@ -106,8 +106,10 @@ def edit_mode(words) -> None:
                 words[edit_num].definition = edit_def
             print()
     elif mode in {'+', 'add'}:
+        print('Leave blank to exit.\n')
         add_term_interactively(words)
     elif mode in {'-', 'remove'}:
+        print('Leave blank to exit.\n')
         while True:
             if len(words) == 1:
                 print(f'{CLEAR}{C.yellow}You may not remove a set with 1 term.{C.end}')
