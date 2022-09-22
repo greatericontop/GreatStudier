@@ -54,6 +54,8 @@ atexit.register(on_exit)
 def learn(words, new_terms) -> None:
     if not new_terms:
         print(f'{C.yellow}Nothing to do!{C.end}')
+        input(CONTINUE)
+        print(CLEAR)
         return
     random.shuffle(new_terms)
     print(f'{CLEAR}{C.green}LEARN: Type each term once to continue.{C.end}\n')
@@ -86,6 +88,8 @@ def learn(words, new_terms) -> None:
 def review(words, review_terms) -> None:
     if not review_terms:
         print(f'{C.yellow}Nothing to do!{C.end}')
+        input(CONTINUE)
+        print(CLEAR)
         return
     random.shuffle(review_terms)
     amount = min(REVIEW_CHUNK_SIZE, len(review_terms))
@@ -102,6 +106,8 @@ def review(words, review_terms) -> None:
 def study(words) -> None:
     if not words:
         print(f'{C.yellow}Nothing to do!{C.end}')
+        input(CONTINUE)
+        print(CLEAR)
         return
     words = words.copy()  # maintain references to the actual elements, but shuffling them won't affect the other one
     random.shuffle(words)
