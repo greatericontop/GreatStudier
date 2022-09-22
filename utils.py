@@ -86,7 +86,7 @@ def save_words(keys: list, output_file_name: str) -> None:
 
 def save_data(data: str, output_file_name: str) -> None:
     path = pl.Path(config.get_set_directory()) / output_file_name
-    with path.open('w') as f:
+    with path.open('w', encoding='utf-8') as f:
         f.write(data)
 
 
