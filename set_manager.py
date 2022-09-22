@@ -126,11 +126,12 @@ def edit_mode(words) -> None:
         for c in ILLEGAL_FILENAME_CHARS:
             new_name.replace(c, '_')
         if not new_name:
-            print('Nothing was provided!')
-        old_set_path = config.get_set_directory() / config.config['set']
-        new_set_path = config.get_set_directory() / new_name
-        old_set_path.rename(new_set_path)
-        config.config['set'] = new_name
+            print('Nothing was provided! Keeping the current name!')
+        else:
+            old_set_path = config.get_set_directory() / config.config['set']
+            new_set_path = config.get_set_directory() / new_name
+            old_set_path.rename(new_set_path)
+            config.config['set'] = new_name
     else:
         print(f'{C.red}That is not an option.{C.end}')
         input(CONTINUE)
