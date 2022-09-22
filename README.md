@@ -2,6 +2,8 @@
 
 A free and open source studying software. 
 
+[**Get the releases here!**](https://github.com/greatericontop/GreatStudier/releases)
+
 ---
 
 ## Requirements
