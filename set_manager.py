@@ -61,6 +61,8 @@ def new_set() -> None:
     set_name = input('New set name: ')
     if not set_name:
         print(f'{C.red}Nothing was provided!{C.end}')
+        input(CONTINUE)
+        print(CLEAR)
         return
     for c in ILLEGAL_FILENAME_CHARS:
         set_name.replace(c, '_')
@@ -69,7 +71,9 @@ def new_set() -> None:
     if data:
         utils.save_words(data, set_name)
         print(f'{C.green}Set successfully created!{C.end}')
-        input(CONTINUE)
+    else:
+        print(f"{C.red}You can't make an empty set.{C.end}")
+    input(CONTINUE)
     print(CLEAR)
 
 
@@ -126,7 +130,7 @@ def edit_mode(words) -> None:
         for c in ILLEGAL_FILENAME_CHARS:
             new_name.replace(c, '_')
         if not new_name:
-            print('Nothing was provided! Keeping the current name!')
+            print(f'{C.red}Nothing was provided! Keeping the current name!{C.end}')
         else:
             old_set_path = config.get_set_directory() / config.config['set']
             new_set_path = config.get_set_directory() / new_name
