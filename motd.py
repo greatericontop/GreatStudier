@@ -62,6 +62,7 @@ motd = [
     'A binary is source code if you try hard enough!',
     'Your free trial of GreatStudier has expired!',
     'Update 99.99% complete!',
+    'No memes!',
 ]
 
 
