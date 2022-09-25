@@ -152,21 +152,29 @@ def upload_set(words) -> None:
     print('Uploading...')
     if config.config['paste_api_key']:
         if config.config['paste_username']:
-            set_id = uploads.find_set(config.config['set'])
-            if set_id is not None:
-                consent = input('Found a paste on account; edit and update it? [Y/n]: ').strip().lower()
-                if consent in YES_DEFAULT_YES:
-                    uploads.edit_set(words, set_id)
-                    print(f'{C.cyan}https://paste.gg/{set_id}{C.end} - Uploaded and updated!')
-                    input(CONTINUE)
-                    print(CLEAR)
-                    return
+            try:
+                set_id = uploads.find_set(config.config['set'])
+            except uploads.FailedRequestError as e:
+                print(f'{C.yellow}Failed to find set! {e}{C.end}')
+            else:
+                if set_id is not None:
+                    consent = input('Found a paste on account; edit and update it? [Y/n]: ').strip().lower()
+                    if consent in YES_DEFAULT_YES:
+                        uploads.edit_set(words, set_id)
+                        print(f'{C.cyan}https://paste.gg/{set_id}{C.end} - Uploaded and updated!')
+                        input(CONTINUE)
+                        print(CLEAR)
+                        return
         else:
             print(f"{C.yellow}You haven't set your username in the config! This is required due to limitations in the API.{C.end}")
     else:
         print(f"{C.yellow}You haven't set an API key! Use one to group all your uploads under one account.{C.end}")
-    url, deletion = uploads.upload_set(words, config.config['set'])
-    print(f'{C.cyan}{url}{C.end} - Uploaded! {C.black}({deletion}){C.end}')
+    try:
+        url, deletion = uploads.upload_set(words, config.config['set'])
+    except uploads.FailedRequestError as e:
+        print(f'{C.red}Failed to upload set! {e}{C.end}')
+    else:
+        print(f'{C.cyan}{url}{C.end} - Uploaded! {C.black}({deletion}){C.end}')
     input(CONTINUE)
     print(CLEAR)
 
@@ -176,11 +184,15 @@ def download_set() -> None:
     link = input('Link: ')
     if not link:
         print(f'{C.red}Nothing was provided!{C.end}')
+        input(CONTINUE)
+        print(CLEAR)
         return
     try:
         result, name = uploads.download_set(link)
-    except RuntimeError as e:
-        print(f'{C.yellow}{e}{C.end}')
+    except uploads.FailedRequestError as e:
+        print(f'{C.red}Failed to download set! {e}{C.end}')
+        input(CONTINUE)
+        print(CLEAR)
         return
     dest = input(f'Download to ({name}): ')
     if not dest:
@@ -276,16 +288,10 @@ def main():
         elif cmd in {'modify', 'm'} and learning_available:
             edit_mode(words)
         elif cmd in {'upload', 'u'} and learning_available:
-            try:
-                upload_set(words)
-            except requests.exceptions.ConnectionError:
-                print(f'{CLEAR}{C.red}Connection error, unable to connect to paste.gg{C.end}')
+            upload_set(words)
         # end learning available
         elif cmd in {'download', 'd'}:
-            try:
-                download_set()
-            except requests.exceptions.ConnectionError:
-                print(f'{CLEAR}{C.red}Connection error, unable to connect to paste.gg{C.end}')
+            download_set()
         elif cmd in {'quizlet', 'qu'}:
             convert_quizlet_set()
         elif cmd in {'choose', 'c'}:
