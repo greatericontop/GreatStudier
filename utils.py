@@ -1,4 +1,4 @@
-"""Spanish Vocabulary Studying"""
+"""Utilities"""
 
 #  Copyright (C) 2022-present greateric.
 #
