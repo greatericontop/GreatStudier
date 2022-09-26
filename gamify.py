@@ -18,6 +18,7 @@
 import ast
 import math
 import pathlib as pl
+import datetime as dt
 
 from constants import C
 
@@ -35,7 +36,20 @@ def load_gamify() -> dict:
     """Load the gamify files."""
     try:
         with pl.Path('~/.greatstudier_gamify.py').expanduser().open('r') as f:
-            return ast.literal_eval(f.read())
+            data = ast.literal_eval(f.read())
+        # automatically migrate outdated file
+        if 'quests' not in data:
+            NEVER_RESET = '2000-01-01'
+            data['quests'] = {
+                # daily quests: if 'last_reset' is yesterday and 'completed' is True, reset it
+                # weekly quests: if 'last_reset' is not today and today is FRIDAY and 'completed' is True
+                # after resetting, set 'last_reset' to the current day and 'completed' to False
+                'login_bonus': {'last_reset': NEVER_RESET, 'completed': False},
+                'study_50': {'last_reset': NEVER_RESET, 'completed': False, 'progress': 0},
+                'answer_correct_500': {'last_reset': NEVER_RESET, 'completed': False, 'progress': 0},
+                'review_100': {'last_reset': NEVER_RESET, 'completed': False, 'progress': 0},
+            }
+        return data
     except FileNotFoundError:
         return {'level': 1, 'xp': 0, 'correct_answers': 0, 'wrong_answers': 0}
 
@@ -111,8 +125,6 @@ def gamify_correct_answer(level: int = 0) -> None:
     """Register a correct answer."""
     gamify_data['correct_answers'] += 1
     gamify_data['xp'] += 10*level
-
-
 def gamify_wrong_answer() -> None:
     """Register a wrong."""
     gamify_data['wrong_answers'] += 1
@@ -134,6 +146,105 @@ def get_skill() -> int:
     bottom = 1 + Z*Z/n
     p = top / bottom
     return int(1500*p**4 + 700*p**3 + 400*p**2 + 500*p + 100)
+
+
+def update_quests() -> None:
+    """Update completed daily and weekly quests."""
+    today = dt.date.today()
+    quests = gamify_data['quests']
+    # TODO: try to not repeat yourself & move boilerplate into a method to reduce clutter
+    # daily
+    if dt.date.fromisoformat(quests['login_bonus']['last_reset']) != today and quests['login_bonus']['completed']:
+        quests['login_bonus']['last_reset'] = today
+        quests['login_bonus']['completed'] = False
+    if dt.date.fromisoformat(quests['study_50']['last_reset']) != today and quests['study_50']['completed']:
+        quests['study_50']['last_reset'] = today
+        quests['study_50']['completed'] = False
+        quests['study_50']['progress'] = 0
+    # weekly (only resets on Monday, weekday #4)
+    if today.weekday() == 0:
+        if dt.date.fromisoformat(quests['study_100']['last_reset']) != today and quests['study_100']['completed']:
+            quests['study_100']['last_reset'] = today
+            quests['study_100']['completed'] = False
+            quests['study_100']['progress'] = 0
+        if dt.date.fromisoformat(quests['review_100']['last_reset']) != today and quests['review_100']['completed']:
+            quests['review_100']['last_reset'] = today
+            quests['review_100']['completed'] = False
+            quests['review_100']['progress'] = 0
+
+
+def print_quests() -> None:
+    """Print the current quests."""
+    # login_bonus
+    print(f'Daily Quest: {C.cyan}Study Today{C.end}\n'
+          f'Complete a study session.\n'
+          f'+50 XP\n')
+    print('COMPLETED' if gamify_data['quests']['login_bonus']['completed'] else 'INCOMPLETE')
+    # study_50
+    print(f'\nDaily Quest: {C.cyan}Great Studier{C.end}\n'
+          f'Study 50 cards.\n'
+          f'+100 XP\n')
+    print('COMPLETED' if gamify_data['quests']['study_50']['completed']
+          else f"{gamify_data['quests']['study_50']['progress']}/50")
+    # answer_correct_500
+    print(f'\nWeekly Quest: {C.cyan}Question Solver Co{C.end}\n'
+          f'Answer 500 questions correctly.'
+          f'+1500 XP\n')
+    print('COMPLETED' if gamify_data['quests']['answer_correct_500']['completed']
+          else f"{gamify_data['quests']['answer_correct_500']['progress']}/500")
+    # review_100
+    print(f'\nWeekly Quest: {C.cyan}Memorization Master{C.end}\n'
+          f'Successfully review 100 cards.\n'
+          f'+1500 XP\n')
+    print('COMPLETED' if gamify_data['quests']['review_100']['completed']
+          else f"{gamify_data['quests']['review_100']['progress']}/100")
+
+
+# TODO: also refactor this because it's boilerplate as well, like a :_incr_progress: method
+# TODO: maybe even turn login_bonus into completing 2 study sessions
+#       instead of 1 to make it harder and to be consistent with the other quests
+def complete_login_bonus():
+    """Complete the login bonus if you're able to."""
+    quest = gamify_data['quests']['login_bonus']
+    if not quest['completed']:
+        quest['completed'] = True
+        gamify_data['xp'] += 50
+        print(f'{C.green}----------------------------------------{C.end}\n'
+              f'{C.green}You have completed Study Today! (+50 XP){C.end}\n'
+              f'{C.green}----------------------------------------{C.end}')
+def increment_study():
+    """Increment the study 50 quest if you're able to."""
+    quest = gamify_data['quests']['study_50']
+    if not quest['completed']:
+        quest['progress'] += 1
+        if quest['progress'] >= 50:
+            quest['completed'] = True
+            gamify_data['xp'] += 100
+            print(f'{C.green}-------------------------------------------{C.end}\n'
+                  f'{C.green}You have completed Great Studier! (+100 XP){C.end}\n'
+                  f'{C.green}-------------------------------------------{C.end}')
+def increment_answer_correct():
+    """Increment the answer 500 correctly quest if you're able to."""
+    quest = gamify_data['quests']['answer_correct_500']
+    if not quest['completed']:
+        quest['progress'] += 1
+        if quest['progress'] >= 500:
+            quest['completed'] = True
+            gamify_data['xp'] += 1500
+            print(f'{C.green}-------------------------------------------------{C.end}\n'
+                  f'{C.green}You have completed Question Solver Co! (+1500 XP){C.end}\n'
+                  f'{C.green}-------------------------------------------------{C.end}')
+def increment_review_correct():
+    """Increment the review 100 correctly quest if you're able to."""
+    quest = gamify_data['quests']['review_100']
+    if not quest['completed']:
+        quest['progress'] += 1
+        if quest['progress'] >= 100:
+            quest['completed'] = True
+            gamify_data['xp'] += 1500
+            print(f'{C.green}--------------------------------------------------{C.end}\n'
+                  f'{C.green}You have completed Memorization Master! (+1500 XP){C.end}\n'
+                  f'{C.green}--------------------------------------------------{C.end}')
 
 
 gamify_data = load_gamify()
