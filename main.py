@@ -224,13 +224,14 @@ def open_settings() -> None:
     settings_change = input('Option to change: ').lower()
     if not settings_change:
         print(f'{C.red}Nothing was provided!{C.end}')
+        input(CONTINUE)
+        print(CLEAR)
         return
     if settings_change == 'reset':
-        if input('Do you really want to reset the config? [y/N]: ') in YES_DEFAULT_YES:
+        if input('Do you really want to reset the config? [Y/n]: ') in YES_DEFAULT_YES:
             config.config = config.update_with_defaults()
     if settings_change not in config.config:  # you can manually change hidden settings if you really want to
         print(f'{C.red}That is not a valid option.{C.end}')
-        return
     if type(config.config[settings_change]) is bool:
         config.config[settings_change] = not config.config[settings_change]
         print(f'Toggled option to {config.config[settings_change]}.')
