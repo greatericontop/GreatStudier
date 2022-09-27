@@ -32,11 +32,13 @@ def correct_answer_increment_knowledge(key: KeyData):
     key.last_covered = int(time.time())
     key.repetition_spot += 1
     gamify.gamify_correct_answer(key.repetition_spot)
+    gamify.increment_answer_correct()
 
 
 def correct_answer_study(key: KeyData):
     """Don't affect spaced repetition."""
     gamify.gamify_correct_answer(1)
+    gamify.increment_answer_correct()
 
 
 def quiz(key: KeyData, extra: str = '', increment_knowledge_level: bool = True) -> bool:
@@ -44,6 +46,7 @@ def quiz(key: KeyData, extra: str = '', increment_knowledge_level: bool = True) 
     print(f'\n\n{extra}QUIZ: What is {C.cyan}{key.definition}{C.end}?')
     guess = input(f'{C.darkblue}>{C.end} ')
     result = utils.validate(guess, key.word)
+    gamify.increment_study()
 
     if result == utils.ValidationResult.FULL_CORRECT:
         print(f'{C.green}Correct!{C.end}')

@@ -81,6 +81,7 @@ def learn(words, new_terms) -> None:
                 study_indices.remove(i)
     utils.save_words(words, config.config['set'])
     print('You are done!')
+    gamify.increment_login_bonus()
     input(CONTINUE)
     print(CLEAR)
 
@@ -96,9 +97,11 @@ def review(words, review_terms) -> None:
     print(f'{CLEAR}You are ready to:\nREVIEW x{C.darkcyan}{amount}{C.end}\n')
     for i in range(amount):
         key = review_terms[i]
-        quiz.quiz(key)
+        if quiz.quiz(key):
+            gamify.increment_review_correct()  # in addition to other increments
     utils.save_words(words, config.config['set'])
     print('You are done!')
+    gamify.increment_login_bonus()
     input(CONTINUE)
     print(CLEAR)
 
@@ -116,6 +119,7 @@ def study(words) -> None:
     for i, word in enumerate(words):
         quiz.quiz(word, extra=f'#{i + 1}/{total} ', increment_knowledge_level=False)
     print('You are done!')
+    gamify.increment_login_bonus()
     input(CONTINUE)
     print(CLEAR)
 
@@ -128,7 +132,8 @@ def stats() -> None:
     if data['wrong_answers'] != 0:
         print(f"Answer Ratio: {data['correct_answers'] / data['wrong_answers']:.2f}")
     print(f'{C.cyan}Skill Score: {gamify.get_skill()}{C.end}')
-    print(f"{C.green}You're currently level {gamify.dashboard()}\n\n")
+    gamify.print_quest_progress()
+    print(f"\n{C.green}You're currently level {gamify.dashboard()}\n")
     input(CONTINUE)
     print(CLEAR)
 
@@ -248,6 +253,7 @@ def main():
           f'{motd.random()}\n'
           f'{gamify.dashboard()}\n')
     while True:
+        gamify.update_quests()
         gamify.fix_level(print_stuff=True)
         if config.config['set'] is None:
             learning_available = False
