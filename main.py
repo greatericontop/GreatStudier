@@ -232,6 +232,9 @@ def open_settings() -> None:
             config.config = config.update_with_defaults()
     if settings_change not in config.config:  # you can manually change hidden settings if you really want to
         print(f'{C.red}That is not a valid option.{C.end}')
+        input(CONTINUE)
+        print(CLEAR)
+        return
     if type(config.config[settings_change]) is bool:
         config.config[settings_change] = not config.config[settings_change]
         print(f'Toggled option to {config.config[settings_change]}.')
