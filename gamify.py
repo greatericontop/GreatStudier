@@ -170,8 +170,10 @@ def update_quests() -> None:
 
 def print_quest_progress() -> None:
     """Print the current quest progress."""
+    # header
+    print(f'\n{C.yellow}QUESTS{C.end}')
     # login_bonus
-    print(f'\nDaily Quest: {C.cyan}Study Today{C.end}: Complete a study session. ({C.cyan}+100{C.end})')
+    print(f'Daily Quest: {C.cyan}Study Today{C.end}: Complete a study session. ({C.cyan}+100{C.end})')
     print(f'{C.green}COMPLETED{C.end}' if gamify_data['quests']['login_bonus']['completed']
           else f"{C.cyan}{gamify_data['quests']['login_bonus']['progress']}{C.end}/1")
     # study_50
@@ -179,7 +181,7 @@ def print_quest_progress() -> None:
     print(f'{C.green}COMPLETED{C.end}' if gamify_data['quests']['study_50']['completed']
           else f"{C.cyan}{gamify_data['quests']['study_50']['progress']}{C.end}/50")
     # answer_correct_500
-    print(f'\nWeekly Quest: {C.cyan}Question Solver Co{C.end}: Answer 500 questions correctly. ({C.cyan}+1500{C.end})')
+    print(f'Weekly Quest: {C.cyan}Question Solver Co{C.end}: Answer 500 questions correctly. ({C.cyan}+1500{C.end})')
     print(f'{C.green}COMPLETED{C.end}' if gamify_data['quests']['answer_correct_500']['completed']
           else f"{C.cyan}{gamify_data['quests']['answer_correct_500']['progress']}{C.end}/500")
     # review_100
