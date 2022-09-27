@@ -92,7 +92,7 @@ def edit_mode(words) -> None:
             else:
                 extra_info = f'in {timeleft//86400}d {timeleft//3600 % 24}h {timeleft//60 % 60}m{C.end}'
         print(f'{C.magenta}{i}{C.end}: {C.green}"{key.word}"{C.end} -> {C.darkblue}"{key.definition}"{C.end} {C.darkwhite}({extra_info}){C.end}')
-    mode = input(f'{C.darkgreen}[+] add terms, [-] remove terms, [E]dit terms, [R]ename set: {C.end}').lower()
+    mode = input(f'\n{C.darkgreen}[+] add terms, [-] remove terms, [E]dit terms, [R]ename set: {C.end}').lower()
     if mode in {'e', 'edit'}:
         print('Leave blank to exit.\n')
         while True:
