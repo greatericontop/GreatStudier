@@ -126,7 +126,9 @@ def study(words) -> None:
 
 def stats() -> None:
     data = gamify.gamify_data
-    print(f'{CLEAR}{C.yellow}STATISTICS{C.end}')
+    print(CLEAR)
+    print(f'{gamify.dashboard()}\n')
+    print(f'{C.yellow}STATISTICS{C.end}')
     print(f"{C.green}You have {data['correct_answers']} correct answers.{C.end}")
     print(f"{C.red}You have {data['wrong_answers']} wrong answers.{C.end}")
     if data['wrong_answers'] != 0:
