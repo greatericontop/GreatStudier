@@ -142,7 +142,7 @@ def get_skill() -> int:
     top = p_hat + (Z*Z)/(2*n) - Z*math.sqrt(radicand)
     bottom = 1 + Z*Z/n
     p = top / bottom
-    return int(1500*p**4 + 700*p**3 + 400*p**2 + 500*p + 100)
+    return int(500*p**16 + 500*p**8 + 700*p**6 + 400*p**5 + 400*p**4 + 200*p**3 + 400*p**2 + 100)
 
 
 def _update_quest(quest, today: dt.date) -> None:
