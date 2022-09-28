@@ -88,10 +88,10 @@ def edit_mode(words) -> None:
             if timeleft <= 0:
                 extra_info = f'ready #{key.repetition_spot}'
             elif timeleft <= 86400:
-                extra_info = f'in {timeleft//3600 % 24}h {timeleft//60 % 60}m{C.end}'
+                extra_info = f'in {timeleft//3600 % 24}h {timeleft//60 % 60}m'
             else:
-                extra_info = f'in {timeleft//86400}d {timeleft//3600 % 24}h {timeleft//60 % 60}m{C.end}'
-        print(f'{C.magenta}{i}{C.end}: {C.green}"{key.word}"{C.end} -> {C.darkblue}"{key.definition}"{C.end} {C.darkwhite}({extra_info}){C.end}')
+                extra_info = f'in {timeleft//86400}d {timeleft//3600 % 24}h {timeleft//60 % 60}m'
+        print(f'{C.magenta}{i}{C.end}: {C.green}"{key.word}"{C.end} -> {C.darkblue}"{key.definition}"{C.end} {C.black}({extra_info}){C.end}')
     mode = input(f'\n{C.darkgreen}[+] add terms, [-] remove terms, [E]dit terms, [R]ename set: {C.end}').lower()
     if mode in {'e', 'edit'}:
         print('Leave blank to exit.\n')
