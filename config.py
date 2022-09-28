@@ -32,6 +32,8 @@ def update_with_defaults(original_config: dict = None) -> dict:
         original_config['paste_api_key'] = None
     if 'paste_username' not in original_config:
         original_config['paste_username'] = None
+    if 'remove_language_accents' not in original_config:
+        original_config['remove_language_accents'] = False
     return original_config
 
 

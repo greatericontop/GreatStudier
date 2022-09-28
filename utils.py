@@ -108,9 +108,13 @@ class ValidationResult(enum.Enum):
     INCORRECT = 2
 
 
-def validate(guess, answer) -> ValidationResult:
-    guess = guess.lower()
-    answer = answer.lower()
+def validate(guess: str, answer: str) -> ValidationResult:
+    guess = guess.lower().strip()
+    answer = answer.lower().strip()
+    if config.config['remove_language_accents']:
+        for a, b in ACCENT_TRANSPOSITION_TABLE:
+            guess = guess.replace(a, b)
+            answer = answer.replace(a, b)
     if guess == answer:
         return ValidationResult.FULL_CORRECT
     mistakes_allowed = min(max(len(answer)//4, 1), 4)  # 1..4 depending on the length of the answer
