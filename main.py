@@ -18,7 +18,6 @@
 import atexit
 import os
 import random
-import requests
 import signal
 import sys
 
@@ -35,20 +34,20 @@ from constants import *
 try:
     # Linux only, patches input to allow "fancy" editing
     # Will fail on Windows and OS X
-    import readline as _readline
+    import readline as _
 except ModuleNotFoundError:
     pass
 
 
-def on_exit():
+def exit_task():
     gamify.save_gamify(gamify.gamify_data)
     config.save_config(config.config)
-def terminate_handler(sig, frame):
+def handle_terminate_signal(sig, frame):
     print(f'\n{C.red}Exiting...')
     sys.exit(0)
-signal.signal(signal.SIGINT, terminate_handler)
-signal.signal(signal.SIGTERM, terminate_handler)
-atexit.register(on_exit)
+signal.signal(signal.SIGINT, handle_terminate_signal)
+signal.signal(signal.SIGTERM, handle_terminate_signal)
+atexit.register(exit_task)
 
 
 def learn(words, new_terms) -> None:
