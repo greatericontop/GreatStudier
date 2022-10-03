@@ -107,13 +107,15 @@ def upload_set(data: list[KeyData], name: str) -> tuple[str, str]:
     """Upload the given data and name to paste.gg, and return a tuple of the url to it and key to delete it."""
     text = encode_set(data)
     headers = {'Content-Type': 'application/json'}
+    if config.config['paste_api_key'] is None and config.config['uploaded_set_permission'] == 'private':
+        raise FailedRequestError('You need an account (API Key) to upload private sets.')
     if config.config['paste_api_key'] is not None:
         headers['Authorization'] = f"Key {config.config['paste_api_key']}"
     resp = safely_request(requests.post, 'https://api.paste.gg/v1/pastes',
                           json={
                              'name': name,
                              'description': f'Set {name} for GreatStudier',
-                             'visibility': 'unlisted',
+                             'visibility': config.config['uploaded_set_permission'],
                              'files': [
                                  _paste_make_file(name, text),
                              ]

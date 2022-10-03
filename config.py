@@ -34,6 +34,8 @@ def update_with_defaults(original_config: dict = None) -> dict:
         original_config['paste_username'] = None
     if 'remove_language_accents' not in original_config:
         original_config['remove_language_accents'] = False
+    if 'uploaded_set_permission' not in original_config:
+        original_config['uploaded_set_permission'] = 'unlisted'
     return original_config
 
 

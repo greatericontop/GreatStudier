@@ -148,7 +148,7 @@ def wipe_progress(words) -> None:
         key.last_covered = -1
         key.repetition_spot = 0
     utils.save_words(words, config.config['set'])
-    print('Successfully deleted all progress in your current set!')
+    print(f'{C.green}Successfully deleted all progress in your current set!{C.end}')
     input(CONTINUE)
     print(CLEAR)
 
@@ -231,7 +231,7 @@ def open_settings() -> None:
     if settings_change == 'reset':
         if input('Do you really want to reset the config? [Y/n]: ') in YES_DEFAULT_YES:
             config.config = config.update_with_defaults()
-    if settings_change not in config.config:  # you can manually change hidden settings if you really want to
+    if settings_change not in config.config:
         print(f'{C.red}That is not a valid option.{C.end}')
         input(CONTINUE)
         print(CLEAR)
@@ -243,10 +243,16 @@ def open_settings() -> None:
         new_value = input('New value: ')
         if not new_value:
             new_value = None
+
+        # custom options
+        if settings_change == 'uploaded_set_permission' and new_value not in {'private', 'unlisted', 'public'}:
+            input(CONTINUE)
+            print(CLEAR)
+            return
         config.config[settings_change] = new_value
     config.reload_config()
     config.save_config(config.config)
-    print(f'{C.green}All changes saved!')
+    print(f'{C.green}All changes saved!{C.end}')
     input(CONTINUE)
     print(CLEAR)
 
