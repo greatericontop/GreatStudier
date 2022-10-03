@@ -108,7 +108,7 @@ def upload_set(data: list[KeyData], name: str) -> tuple[str, str]:
     text = encode_set(data)
     headers = {'Content-Type': 'application/json'}
     if config.config['paste_api_key'] is None and config.config['uploaded_set_permission'] == 'private':
-        raise FailedRequestError('You need an account (API Key) to upload private sets.')
+        raise FailedRequestError('You need an account (API Key) to upload private sets. Set uploaded_set_permission to public or unlisted.')
     if config.config['paste_api_key'] is not None:
         headers['Authorization'] = f"Key {config.config['paste_api_key']}"
     resp = safely_request(requests.post, 'https://api.paste.gg/v1/pastes',
