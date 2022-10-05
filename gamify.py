@@ -23,6 +23,9 @@ import datetime as dt
 from constants import C
 
 
+CURRENT_GAMIFY_REVISION = 1
+
+
 def level_xp(level: int) -> int:
     """Return required amount to go from the current level to the next."""
     return {
@@ -38,6 +41,8 @@ def load_gamify() -> dict:
         with pl.Path('~/.greatstudier_gamify.py').expanduser().open('r') as f:
             data = ast.literal_eval(f.read())
         # automatically migrate outdated file
+        if 'rev' not in data:
+            data['rev'] = CURRENT_GAMIFY_REVISION
         if 'quests' not in data:
             NEVER_RESET = '2000-01-01'
             data['quests'] = {
@@ -48,7 +53,7 @@ def load_gamify() -> dict:
             }
         return data
     except FileNotFoundError:
-        return {'level': 1, 'xp': 0, 'correct_answers': 0, 'wrong_answers': 0}
+        return {'level': 1, 'xp': 0, 'correct_answers': 0, 'wrong_answers': 0, 'rev': CURRENT_GAMIFY_REVISION}
 
 
 def save_gamify(data: dict) -> None:
