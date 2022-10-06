@@ -18,6 +18,7 @@
 import dataclasses
 import enum
 import pathlib as pl
+import string
 import sys
 import time
 import rapidfuzz_damerau_levenshtein as lev
@@ -115,6 +116,10 @@ def validate(guess: str, answer: str) -> ValidationResult:
         for a, b in ACCENT_TRANSPOSITION_TABLE:
             guess = guess.replace(a, b)
             answer = answer.replace(a, b)
+    if config.config['alpha_only']:
+        for a in string.punctuation:
+            guess = guess.replace(a, '')
+            answer = answer.replace(a, '')
     if guess == answer:
         return ValidationResult.FULL_CORRECT
     mistakes_allowed = min(max(len(answer)//4, 1), 4)  # 1..4 depending on the length of the answer

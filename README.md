@@ -56,6 +56,22 @@ You can set a custom API key in the config (go to `options`, then `API keys`) to
 
 ---
 
+## Options
+
+`set_directory` >> The directory that the sets are stored in. Defaults to `~/GreatStudier`.
+
+`paste_api_key` >> API key used to upload sets. If none it will upload anonymously. 
+
+`paste_username` >> Needed to update sets.
+
+`remove_language_accents` >> Changes accented letters to non-accented letters in answers for languages.
+
+`upload_set_permissions` >> Permissions used for the paste link. Valid values are `public`, `unlisted`, `private`. `private` option can only be used along with an API key.
+
+`alpha_only` >> Removes punctuation from answers.
+
+---
+
 ## License
 
 GreatStudier is Free Software!
