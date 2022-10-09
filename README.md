@@ -10,7 +10,6 @@ A free and open source studying software.
 
 - Python 3.9 (or higher), although 3.6 will probably work.
 - `requests` module: Install using `pip install requests` or the equivalent (`python3 -m pip`, `pip3`, etc.) for your system.
-- In current versions, a small part of `rapidfuzz` (as of 2.6.1) is included inline, so it isn't required anymore.
 
 Some pre-built binaries are available, but they won't work for every system. Use the source code if possible.
 
@@ -60,15 +59,15 @@ You can set a custom API key in the config (go to `options`, then `API keys`) to
 
 `set_directory` >> The directory that the sets are stored in. Defaults to `~/GreatStudier`.
 
-`paste_api_key` >> API key used to upload sets. If none it will upload anonymously. 
+`paste_api_key` >> API key used to upload sets. Use it to link your uploads to an account. Also necessary to edit uploaded sets.
 
-`paste_username` >> Needed to update sets.
+`paste_username` >> Due to an API limitation the username is needed to edit sets.
 
-`remove_language_accents` >> Changes accented letters to non-accented letters in answers for languages.
+`remove_language_accents` >> Changes most accented letters to non-accented letters in answers for languages. Currently supports Spanish, French, German Chinese.
 
-`upload_set_permissions` >> Permissions used for the paste link. Valid values are `public`, `unlisted`, `private`. `private` option can only be used along with an API key.
+`upload_set_permissions` >> Permissions used for the paste link. Valid values are `public`, `unlisted`, `private`. You need a key to use the `private` option.
 
-`alpha_only` >> Removes punctuation from answers.
+`alpha_only` >> Removes any non-alphanumeric characters (punctuation, unicode, etc.) from answers.
 
 ---
 
