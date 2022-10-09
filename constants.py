@@ -16,7 +16,7 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-VERSION = '1.1.0'
+VERSION = '1.1.0-nightly'
 
 
 class C:
@@ -95,3 +95,58 @@ ILLEGAL_FILENAME_CHARS = [
     '`',
 ]
 
+# Contains all accent transpositions for some languages. Some may be duplicated, but this is intentional.
+ACCENT_TRANSPOSITION_TABLE = [
+    # Spanish
+    ('á', 'a'),
+    ('é', 'e'),
+    ('í', 'i'),
+    ('ó', 'o'),
+    ('ú', 'u'),
+    ('ü', 'u'),
+    ('ñ', 'n'),
+    # French
+    ('ç', 'c'),
+    ('é', 'e'),
+    ('â', 'a'),
+    ('ê', 'e'),
+    ('î', 'i'),
+    ('ô', 'o'),
+    ('û', 'u'),
+    ('à', 'a'),
+    ('è', 'e'),
+    ('ù', 'u'),
+    ('ë', 'e'),
+    ('ï', 'i'),
+    ('ü', 'u'),
+    # German
+    ('ß', 's'),
+    ('ä', 'a'),
+    ('ö', 'o'),
+    ('ü', 'u'),
+    # Chinese
+    ('ā', 'a'),
+    ('á', 'a'),
+    ('ǎ', 'a'),
+    ('à', 'a'),
+    ('ē', 'e'),
+    ('é', 'e'),
+    ('ě', 'e'),
+    ('è', 'e'),
+    ('ī', 'i'),
+    ('í', 'i'),
+    ('ǐ', 'i'),
+    ('ì', 'i'),
+    ('ō', 'o'),
+    ('ó', 'o'),
+    ('ǒ', 'o'),
+    ('ò', 'o'),
+    ('ū', 'u'),
+    ('ú', 'u'),
+    ('ǔ', 'u'),
+    ('ù', 'u'),
+    ('ǖ', 'u'),
+    ('ǘ', 'u'),
+    ('ǚ', 'u'),
+    ('ǜ', 'u'),
+]

@@ -1,4 +1,4 @@
-"""Spanish Vocabulary Studying"""
+"""Utilities"""
 
 #  Copyright (C) 2022-present greateric.
 #
@@ -17,8 +17,8 @@
 
 import dataclasses
 import enum
-import os
 import pathlib as pl
+import string
 import sys
 import time
 import rapidfuzz_damerau_levenshtein as lev
@@ -76,6 +76,10 @@ def load_words(name: str) -> list:
 def save_words(keys: list, output_file_name: str) -> None:
     data = []
     for key in keys:
+        if '::' in key.word or '::' in key.definition:
+            print(f'{C.yellow}Your set contained some special characters used by GreatStudier, so we were forced to remove them. Sorry!{C.end}')
+            key.word = key.word.replace('::', ' ')
+            key.definition = key.definition.replace('::', ' ')
         data.append(f'{key.word} :: {key.definition} :: {key.last_covered} :: {key.repetition_spot}')
     data_to_dump = '\n'.join(data)
     save_data(f'## * greatstudier *\n{data_to_dump}', output_file_name)
@@ -83,7 +87,7 @@ def save_words(keys: list, output_file_name: str) -> None:
 
 def save_data(data: str, output_file_name: str) -> None:
     path = pl.Path(config.get_set_directory()) / output_file_name
-    with path.open('w') as f:
+    with path.open('w', encoding='utf-8') as f:
         f.write(data)
 
 
@@ -105,9 +109,17 @@ class ValidationResult(enum.Enum):
     INCORRECT = 2
 
 
-def validate(guess, answer) -> ValidationResult:
-    guess = guess.lower()
-    answer = answer.lower()
+def validate(guess: str, answer: str) -> ValidationResult:
+    guess = guess.lower().strip()
+    answer = answer.lower().strip()
+    if config.config['remove_language_accents']:
+        for a, b in ACCENT_TRANSPOSITION_TABLE:
+            guess = guess.replace(a, b)
+            answer = answer.replace(a, b)
+    if config.config['alpha_only']:
+        for a in string.punctuation:
+            guess = guess.replace(a, '')
+            answer = answer.replace(a, '')
     if guess == answer:
         return ValidationResult.FULL_CORRECT
     mistakes_allowed = min(max(len(answer)//4, 1), 4)  # 1..4 depending on the length of the answer

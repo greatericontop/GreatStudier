@@ -57,9 +57,12 @@ def choose_set() -> None:
 
 
 def new_set() -> None:
+    print(CLEAR)
     set_name = input('New set name: ')
     if not set_name:
         print(f'{C.red}Nothing was provided!{C.end}')
+        input(CONTINUE)
+        print(CLEAR)
         return
     for c in ILLEGAL_FILENAME_CHARS:
         set_name.replace(c, '_')
@@ -68,12 +71,14 @@ def new_set() -> None:
     if data:
         utils.save_words(data, set_name)
         print(f'{C.green}Set successfully created!{C.end}')
-        input(CONTINUE)
+    else:
+        print(f"{C.red}You can't make an empty set.{C.end}")
+    input(CONTINUE)
     print(CLEAR)
 
 
 def edit_mode(words) -> None:
-    print(f'{CLEAR}{C.yellow}Terms\n{C.magenta}Number{C.end}: {C.green}Term{C.end} -> {C.darkblue}Definition{C.end}')
+    print(f'{CLEAR}{C.yellow}TERMS\n{C.magenta}Number{C.end}: {C.green}Term{C.end} -> {C.darkblue}Definition{C.end}')
     print('--------------------------')
     for i, key in enumerate(words):
         if key.repetition_spot == 0:
@@ -83,13 +88,13 @@ def edit_mode(words) -> None:
             if timeleft <= 0:
                 extra_info = f'ready #{key.repetition_spot}'
             elif timeleft <= 86400:
-                extra_info = f'in {timeleft//3600 % 24}h {timeleft//60 % 60}m{C.end}'
+                extra_info = f'in {timeleft//3600 % 24}h {timeleft//60 % 60}m'
             else:
-                extra_info = f'in {timeleft//86400}d {timeleft//3600 % 24}h {timeleft//60 % 60}m{C.end}'
-        print(f'{C.magenta}{i}{C.end}: {C.green}"{key.word}"{C.end} -> {C.darkblue}"{key.definition}"{C.end} {C.darkwhite}({extra_info}){C.end}')
-    mode = input(f'{C.darkgreen}[+] add terms, [-] remove terms, [E]dit terms, [R]ename set: {C.end}').lower()
-    print('Leave blank to exit.\n')
+                extra_info = f'in {timeleft//86400}d {timeleft//3600 % 24}h {timeleft//60 % 60}m'
+        print(f'{C.magenta}{i}{C.end}: {C.green}"{key.word}"{C.end} -> {C.darkblue}"{key.definition}"{C.end} {C.black}({extra_info}){C.end}')
+    mode = input(f'\n{C.darkgreen}[+] add terms, [-] remove terms, [E]dit terms, [R]ename set: {C.end}').lower()
     if mode in {'e', 'edit'}:
+        print('Leave blank to exit.\n')
         while True:
             try:
                 edit_num = int(input('Enter the number you want to edit: '))
@@ -105,8 +110,10 @@ def edit_mode(words) -> None:
                 words[edit_num].definition = edit_def
             print()
     elif mode in {'+', 'add'}:
+        print('Leave blank to exit.\n')
         add_term_interactively(words)
     elif mode in {'-', 'remove'}:
+        print('Leave blank to exit.\n')
         while True:
             if len(words) == 1:
                 print(f'{CLEAR}{C.yellow}You may not remove a set with 1 term.{C.end}')
@@ -122,10 +129,13 @@ def edit_mode(words) -> None:
         new_name = input('Enter a new name for the set: ')
         for c in ILLEGAL_FILENAME_CHARS:
             new_name.replace(c, '_')
-        old_set_path = config.get_set_directory() / config.config['set']
-        new_set_path = config.get_set_directory() / new_name
-        old_set_path.rename(new_set_path)
-        config.config['set'] = new_name
+        if not new_name:
+            print(f'{C.red}Nothing was provided! Keeping the current name!{C.end}')
+        else:
+            old_set_path = config.get_set_directory() / config.config['set']
+            new_set_path = config.get_set_directory() / new_name
+            old_set_path.rename(new_set_path)
+            config.config['set'] = new_name
     else:
         print(f'{C.red}That is not an option.{C.end}')
         input(CONTINUE)

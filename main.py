@@ -18,7 +18,6 @@
 import atexit
 import os
 import random
-import requests
 import signal
 import sys
 
@@ -28,31 +27,34 @@ import motd
 import quiz
 import uploads
 import utils
+from quizlet_convert import convert_quizlet_set
 from set_manager import choose_set, new_set, edit_mode
 from constants import *
 
 try:
     # Linux only, patches input to allow "fancy" editing
     # Will fail on Windows and OS X
-    import readline as _readline
+    import readline as _
 except ModuleNotFoundError:
     pass
 
 
-def on_exit():
+def exit_task():
     gamify.save_gamify(gamify.gamify_data)
     config.save_config(config.config)
-def terminate_handler(sig, frame):
+def handle_terminate_signal(sig, frame):
     print(f'\n{C.red}Exiting...')
     sys.exit(0)
-signal.signal(signal.SIGINT, terminate_handler)
-signal.signal(signal.SIGTERM, terminate_handler)
-atexit.register(on_exit)
+signal.signal(signal.SIGINT, handle_terminate_signal)
+signal.signal(signal.SIGTERM, handle_terminate_signal)
+atexit.register(exit_task)
 
 
 def learn(words, new_terms) -> None:
     if not new_terms:
         print(f'{C.yellow}Nothing to do!{C.end}')
+        input(CONTINUE)
+        print(CLEAR)
         return
     random.shuffle(new_terms)
     print(f'{CLEAR}{C.green}LEARN: Type each term once to continue.{C.end}\n')
@@ -63,7 +65,7 @@ def learn(words, new_terms) -> None:
         key = new_terms[i]
         print(f'\n\n{C.yellow}{key.word} {C.green}= {C.darkyellow}{key.definition}{C.end}')
         while True:
-            if input().lower() == key.word.lower():
+            if input().strip().lower() == key.word.lower():
                 break
     print(f'{CLEAR}Ready for the quiz?')
     quiz_number = 0
@@ -78,6 +80,7 @@ def learn(words, new_terms) -> None:
                 study_indices.remove(i)
     utils.save_words(words, config.config['set'])
     print('You are done!')
+    gamify.increment_login_bonus()
     input(CONTINUE)
     print(CLEAR)
 
@@ -85,15 +88,19 @@ def learn(words, new_terms) -> None:
 def review(words, review_terms) -> None:
     if not review_terms:
         print(f'{C.yellow}Nothing to do!{C.end}')
+        input(CONTINUE)
+        print(CLEAR)
         return
     random.shuffle(review_terms)
     amount = min(REVIEW_CHUNK_SIZE, len(review_terms))
     print(f'{CLEAR}You are ready to:\nREVIEW x{C.darkcyan}{amount}{C.end}\n')
     for i in range(amount):
         key = review_terms[i]
-        quiz.quiz(key)
+        if quiz.quiz(key):
+            gamify.increment_review_correct()  # in addition to other increments
     utils.save_words(words, config.config['set'])
     print('You are done!')
+    gamify.increment_login_bonus()
     input(CONTINUE)
     print(CLEAR)
 
@@ -101,27 +108,33 @@ def review(words, review_terms) -> None:
 def study(words) -> None:
     if not words:
         print(f'{C.yellow}Nothing to do!{C.end}')
+        input(CONTINUE)
+        print(CLEAR)
         return
     words = words.copy()  # maintain references to the actual elements, but shuffling them won't affect the other one
     random.shuffle(words)
     total = len(words)
     print(f'{CLEAR}You are ready to:\nSTUDY x{C.darkcyan}{total}{C.end}\n')
     for i, word in enumerate(words):
-        quiz.quiz(word, extra=f'#{i+1}/{total} ', increment_knowledge_level=False)
+        quiz.quiz(word, extra=f'#{i + 1}/{total} ', increment_knowledge_level=False)
     print('You are done!')
+    gamify.increment_login_bonus()
     input(CONTINUE)
     print(CLEAR)
 
 
 def stats() -> None:
     data = gamify.gamify_data
-    print(f'{CLEAR}{C.green}Statistics{C.end}')
+    print(CLEAR)
+    print(f'{gamify.dashboard()}\n')
+    print(f'{C.yellow}STATISTICS{C.end}')
     print(f"{C.green}You have {data['correct_answers']} correct answers.{C.end}")
     print(f"{C.red}You have {data['wrong_answers']} wrong answers.{C.end}")
     if data['wrong_answers'] != 0:
         print(f"Answer Ratio: {data['correct_answers'] / data['wrong_answers']:.2f}")
     print(f'{C.cyan}Skill Score: {gamify.get_skill()}{C.end}')
-    print(f"{C.green}You're currently level {gamify.dashboard()}\n\n")
+    gamify.print_quest_progress()
+    print(f"\n{C.green}You're currently level {gamify.dashboard()}\n")
     input(CONTINUE)
     print(CLEAR)
 
@@ -135,41 +148,57 @@ def wipe_progress(words) -> None:
         key.last_covered = -1
         key.repetition_spot = 0
     utils.save_words(words, config.config['set'])
-    print('Successfully deleted all progress in your current set!')
+    print(f'{C.green}Successfully deleted all progress in your current set!{C.end}')
     input(CONTINUE)
     print(CLEAR)
 
 
 def upload_set(words) -> None:
+    print(CLEAR)
     print('Uploading...')
     if config.config['paste_api_key']:
         if config.config['paste_username']:
-            set_id = uploads.find_set(config.config['set'])
-            if set_id is not None:
-                consent = input('Found a paste on account; edit and update it? [Y/n]: ').strip().lower()
-                if consent in YES_DEFAULT_YES:
-                    uploads.edit_set(words, set_id)
-                    print(f'{C.cyan}https://paste.gg/{set_id}{C.end} - Uploaded and updated!')
-                    return
+            try:
+                set_id = uploads.find_set(config.config['set'])
+            except uploads.FailedRequestError as e:
+                print(f'{C.yellow}Failed to find set! {e}{C.end}')
+            else:
+                if set_id is not None:
+                    consent = input('Found a paste on account; edit and update it? [Y/n]: ').strip().lower()
+                    if consent in YES_DEFAULT_YES:
+                        uploads.edit_set(words, set_id)
+                        print(f'{C.cyan}https://paste.gg/{set_id}{C.end} - Uploaded and updated!')
+                        input(CONTINUE)
+                        print(CLEAR)
+                        return
         else:
             print(f"{C.yellow}You haven't set your username in the config! This is required due to limitations in the API.{C.end}")
     else:
         print(f"{C.yellow}You haven't set an API key! Use one to group all your uploads under one account.{C.end}")
-    url, deletion = uploads.upload_set(words, config.config['set'])
-    print(f'{C.cyan}{url}{C.end} - Uploaded! {C.black}({deletion}){C.end}')
+    try:
+        url, deletion = uploads.upload_set(words, config.config['set'])
+    except uploads.FailedRequestError as e:
+        print(f'{C.red}Failed to upload set! {e}{C.end}')
+    else:
+        print(f'{C.cyan}{url}{C.end} - Uploaded! {C.black}({deletion}){C.end}')
     input(CONTINUE)
     print(CLEAR)
 
 
 def download_set() -> None:
+    print(CLEAR)
     link = input('Link: ')
     if not link:
         print(f'{C.red}Nothing was provided!{C.end}')
+        input(CONTINUE)
+        print(CLEAR)
         return
     try:
         result, name = uploads.download_set(link)
-    except RuntimeError as e:
-        print(f'{C.yellow}{e}{C.end}')
+    except uploads.FailedRequestError as e:
+        print(f'{C.red}Failed to download set! {e}{C.end}')
+        input(CONTINUE)
+        print(CLEAR)
         return
     dest = input(f'Download to ({name}): ')
     if not dest:
@@ -181,6 +210,7 @@ def download_set() -> None:
 
 
 def open_settings() -> None:
+    print(CLEAR)
     settings = 'Options\n'
     for key, value in config.config.items():
         if key == 'set':
@@ -194,12 +224,17 @@ def open_settings() -> None:
     print(settings)
     settings_change = input('Option to change: ').lower()
     if not settings_change:
+        print(f'{C.red}Nothing was provided!{C.end}')
+        input(CONTINUE)
+        print(CLEAR)
         return
     if settings_change == 'reset':
-        if input('Do you really want to reset the config? [y/N]: ') in YES_DEFAULT_YES:
+        if input('Do you really want to reset the config? [Y/n]: ') in YES_DEFAULT_YES:
             config.config = config.update_with_defaults()
-    if settings_change not in config.config:  # you can manually change hidden settings if you really want to
+    if settings_change not in config.config:
         print(f'{C.red}That is not a valid option.{C.end}')
+        input(CONTINUE)
+        print(CLEAR)
         return
     if type(config.config[settings_change]) is bool:
         config.config[settings_change] = not config.config[settings_change]
@@ -208,27 +243,33 @@ def open_settings() -> None:
         new_value = input('New value: ')
         if not new_value:
             new_value = None
+
+        # custom options
+        if settings_change == 'uploaded_set_permission' and new_value not in {'private', 'unlisted', 'public'}:
+            input(CONTINUE)
+            print(CLEAR)
+            return
         config.config[settings_change] = new_value
     config.reload_config()
     config.save_config(config.config)
-    print(f'{C.green}All changes saved!')
+    print(f'{C.green}All changes saved!{C.end}')
     input(CONTINUE)
     print(CLEAR)
 
 
 def main():
-    # TODO: fix visually unappealing CLI
     os.system('')  # enables windows ANSI escape
     print(f'{CLEAR}{C.green}GreatStudier Version {VERSION}{C.end}\n'
           f'{motd.random()}\n'
           f'{gamify.dashboard()}\n')
     while True:
+        gamify.update_quests()
         gamify.fix_level(print_stuff=True)
         if config.config['set'] is None:
             learning_available = False
             prompt = (f'{C.darkred}It seems you do not have a set chosen!{C.end}\n'
                       f'{C.no}[L]earn{C.end}               {C.no}[R]eview{C.end}              {C.no}[S]tudy{C.end}\n'
-                      f'{C.no}[U]pload Set{C.end}          [D]ownload Set\n'
+                      f'{C.no}[U]pload Set{C.end}          [D]ownload Set        [Qu]izlet Convert\n'
                       f'[C]hoose Set          [N]ew Set             {C.no}[M]odify Set{C.end}\n'
                       f'[O]ptions             [St]ats               {C.no}[W]ipe Progress{C.end}\n'
                       f'[Q]uit\n'
@@ -236,7 +277,7 @@ def main():
         else:
             learning_available = True
             prompt = (f'[L]earn               [R]eview              [S]tudy\n'
-                      f'[U]pload Set          [D]ownload Set\n'
+                      f'[U]pload Set          [D]ownload Set        [Qu]izlet Convert\n'
                       f'[C]hoose Set          [N]ew Set             [M]odify Set\n'
                       f'[O]ptions             [St]ats               [W]ipe Progress\n'
                       f'[Q]uit\n'
@@ -263,16 +304,12 @@ def main():
         elif cmd in {'modify', 'm'} and learning_available:
             edit_mode(words)
         elif cmd in {'upload', 'u'} and learning_available:
-            try:
-                upload_set(words)
-            except requests.exceptions.ConnectionError:
-                print(f'{CLEAR}{C.red}Connection error, unable to connect to paste.gg{C.end}')
+            upload_set(words)
         # end learning available
         elif cmd in {'download', 'd'}:
-            try:
-                download_set()
-            except requests.exceptions.ConnectionError:
-                print(f'{CLEAR}{C.red}Connection error, unable to connect to paste.gg{C.end}')
+            download_set()
+        elif cmd in {'quizlet', 'qu'}:
+            convert_quizlet_set()
         elif cmd in {'choose', 'c'}:
             choose_set()
         elif cmd in {'new', 'n'}:
@@ -282,7 +319,7 @@ def main():
         elif cmd in {'stats', 'st'}:
             stats()
         else:
-            print(f'{CLEAR}That is not an option.')
+            print(f'{CLEAR}{C.red}That is not an option.{C.end}')
         print(f'{C.green}GreatStudier{C.end}')
 
 

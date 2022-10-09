@@ -2,13 +2,14 @@
 
 A free and open source studying software. 
 
+[**Get the releases here!**](https://github.com/greatericontop/GreatStudier/releases)
+
 ---
 
 ## Requirements
 
 - Python 3.9 (or higher), although 3.6 will probably work.
 - `requests` module: Install using `pip install requests` or the equivalent (`python3 -m pip`, `pip3`, etc.) for your system.
-- In current versions, a small part of `rapidfuzz` (as of 2.6.1) is included inline, so it isn't required anymore.
 
 Some pre-built binaries are available, but they won't work for every system. Use the source code if possible.
 
@@ -16,9 +17,9 @@ Some pre-built binaries are available, but they won't work for every system. Use
 
 ## Usage
 
-Run `main.py` in the root directory of the project.
+Run `main.py`.
 
-Default directory for sets is `~/GreatStudier/`. You can change this in the configurations. **MAKE SURE TO TYPE TO FULL PATH TO THE DIRECTORY OR IT MIGHT BREAK.**
+Default directory for sets is `~/GreatStudier/`. You can change this in the configurations. You will need to enter the full path, but the home folder `~` is supported.
 
 It is suggested to edit the options file though the CLI, but if you're feeling brave, go ahead and edit it raw.
 
@@ -51,6 +52,22 @@ To overwrite an answer that was automatically graded incorrectly, type `*`.
 GreatStudier uses [`paste.gg`](https://paste.gg) and its API for uploading and downloading sets.
 
 You can set a custom API key in the config (go to `options`, then `API keys`) to link any GreatStudier uploads to your account, so they're easier to find and manage.
+
+---
+
+## Options
+
+`set_directory` >> The directory that the sets are stored in. Defaults to `~/GreatStudier`.
+
+`paste_api_key` >> API key used to upload sets. Use it to link your uploads to an account. Also necessary to edit uploaded sets.
+
+`paste_username` >> Due to an API limitation the username is needed to edit sets.
+
+`remove_language_accents` >> Changes most accented letters to non-accented letters in answers for languages. Currently supports Spanish, French, German Chinese.
+
+`upload_set_permissions` >> Permissions used for the paste link. Valid values are `public`, `unlisted`, `private`. You need a key to use the `private` option.
+
+`alpha_only` >> Removes any non-alphanumeric characters (punctuation, unicode, etc.) from answers.
 
 ---
 
