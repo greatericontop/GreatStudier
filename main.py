@@ -211,7 +211,7 @@ def download_set() -> None:
 
 def open_settings() -> None:
     print(CLEAR)
-    settings = 'Options\n'
+    settings = f'{C.yellow}OPTIONS{C.end}\n'
     for key, value in config.config.items():
         if key == 'set':
             continue
@@ -220,36 +220,35 @@ def open_settings() -> None:
         # distinguish between the actual None and a string called that
         if value is None:
             value = '<None>'
-        settings += f'{C.darkgreen}{key}{C.end} = {C.darkgreen}{value}{C.end}\n'
+        settings += f'{C.green}{key}{C.end} = {C.darkblue}{value}{C.end}\n'
     print(settings)
-    settings_change = input('Option to change: ').lower()
-    if not settings_change:
-        print(f'{C.red}Nothing was provided!{C.end}')
-        input(CONTINUE)
-        print(CLEAR)
-        return
-    if settings_change == 'reset':
-        if input('Do you really want to reset the config? [Y/n]: ') in YES_DEFAULT_YES:
-            config.config = config.update_with_defaults()
-    if settings_change not in config.config:
-        print(f'{C.red}That is not a valid option.{C.end}')
-        input(CONTINUE)
-        print(CLEAR)
-        return
-    if type(config.config[settings_change]) is bool:
-        config.config[settings_change] = not config.config[settings_change]
-        print(f'Toggled option to {config.config[settings_change]}.')
-    else:
-        new_value = input('New value: ')
-        if not new_value:
-            new_value = None
+    while True:
+        settings_change = input('Option to change: ').lower()
 
-        # custom options
-        if settings_change == 'uploaded_set_permission' and new_value not in {'private', 'unlisted', 'public'}:
-            input(CONTINUE)
-            print(CLEAR)
-            return
-        config.config[settings_change] = new_value
+        if not settings_change:
+            print(f'{C.red}Nothing was provided!{C.end}')
+            break
+
+        if settings_change == 'reset':
+            if input('Do you really want to reset the config? [Y/n]: ') in YES_DEFAULT_YES:
+                config.config = config.update_with_defaults()
+        if settings_change not in config.config:
+            print(f'{C.red}That is not a valid option.{C.end}')
+            break
+        if type(config.config[settings_change]) is bool:
+            config.config[settings_change] = not config.config[settings_change]
+            print(f'Toggled option to {C.bwhite}{config.config[settings_change]}{C.end}.\n')
+        else:
+            new_value = input('New value: ')
+            if not new_value:
+                new_value = None
+
+            # custom options
+            if settings_change == 'uploaded_set_permission' and new_value not in {'private', 'unlisted', 'public'}:
+                break
+
+            config.config[settings_change] = new_value
+            print(f'Value set to {C.bwhite}{new_value}{C.end}.\n')
     config.reload_config()
     config.save_config(config.config)
     print(f'{C.green}All changes saved!{C.end}')
