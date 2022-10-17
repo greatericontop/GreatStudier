@@ -242,11 +242,6 @@ def open_settings() -> None:
             new_value = input('New value: ')
             if not new_value:
                 new_value = None
-
-            # custom options
-            if settings_change == 'uploaded_set_permission' and new_value not in {'private', 'unlisted', 'public'}:
-                break
-
             config.config[settings_change] = new_value
             print(f'Value set to {C.bwhite}{new_value}{C.end}.\n')
     config.reload_config()

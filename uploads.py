@@ -79,7 +79,7 @@ def find_set(target_name: str) -> str:
     resp = safely_request(requests.get, f'https://api.paste.gg/v1/users/{username}',
                           headers=headers)
     for paste in resp.json()['result']:
-        if paste['name'] == target_name: # TODO: can this be combined with :edit_set:?
+        if paste['name'] == target_name:  # TODO: can this be combined with :edit_set:?
             return paste['id']
     return None
 
@@ -105,6 +105,8 @@ def edit_set(data: list[KeyData], paste_id: str) -> None:
 
 def upload_set(data: list[KeyData], name: str) -> tuple[str, str]:
     """Upload the given data and name to paste.gg, and return a tuple of the url to it and key to delete it."""
+    if config.config['uploaded_set_permission'] not in {'public', 'unlisted', 'private'}:
+        raise FailedRequestError('Invalid set permission! Must be one of public, unlisted, private')
     text = encode_set(data)
     headers = {'Content-Type': 'application/json'}
     if config.config['paste_api_key'] is None and config.config['uploaded_set_permission'] == 'private':
@@ -119,7 +121,7 @@ def upload_set(data: list[KeyData], name: str) -> tuple[str, str]:
                              'files': [
                                  _paste_make_file(name, text),
                              ]
-                         },
+                          },
                           headers=headers)
     # check for errors
     if resp.json()['status'] == 'error':
