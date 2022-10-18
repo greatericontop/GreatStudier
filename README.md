@@ -63,7 +63,7 @@ You can set a custom API key in the config (go to `options`, then `API keys`) to
 
 `paste_username` >> Due to an API limitation the username is needed to edit sets.
 
-`remove_language_accents` >> Changes most accented letters to non-accented letters in answers for languages. Currently supports Spanish, French, German Chinese.
+`remove_language_accents` >> Changes most accented letters to non-accented letters in answers for languages. Currently supports Spanish, French, German, Chinese.
 
 `upload_set_permissions` >> Permissions used for the paste link. Valid values are `public`, `unlisted`, `private`. You need a key to use the `private` option.
 
