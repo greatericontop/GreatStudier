@@ -232,10 +232,9 @@ def open_settings() -> None:
         if settings_change == 'reset':
             if input('Do you really want to reset the config? [Y/n]: ') in YES_DEFAULT_YES:
                 config.config = config.update_with_defaults()
-        if settings_change not in config.config:
-            print(f'{C.red}That is not a valid option.{C.end}')
-            break
-        if type(config.config[settings_change]) is bool:
+        elif settings_change not in config.config:
+            print(f'{C.red}That is not a valid option.{C.end}\n')
+        elif type(config.config[settings_change]) is bool:
             config.config[settings_change] = not config.config[settings_change]
             print(f'Toggled option to {C.bwhite}{config.config[settings_change]}{C.end}.\n')
         else:
