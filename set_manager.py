@@ -36,7 +36,7 @@ def add_term_interactively(word_data: list) -> None:
 
 def choose_set() -> None:
     sets = [p.name for p in config.get_set_directory().iterdir() if p.is_file()]
-    print_sets = '\n'.join(sets)
+    print_sets = '\n'.join(sorted(sets))
 
     if not sets:
         print(f'\n{C.yellow}You currently have no sets available. Import or create a new set to continue.{C.end}')
