@@ -43,7 +43,7 @@ def choose_set() -> None:
         input(CONTINUE)
         print(CLEAR)
         return
-    print(f'{CLEAR}{C.darkcyan}Available Study Sets{C.end}\n{print_sets}\n\n{C.darkgreen}Leave blank to exit.{C.end}')
+    print(f'{CLEAR}{C.yellow}AVAILABLE STUDY SETS:{C.end}\n{print_sets}\n\n{C.darkgreen}Leave blank to exit.{C.end}')
     while True:
         word_set = input('Choose a set: ')
         if not word_set:
@@ -78,7 +78,7 @@ def new_set() -> None:
 
 
 def edit_mode(words) -> None:
-    print(f'{CLEAR}{C.yellow}TERMS\n{C.magenta}Number{C.end}: {C.green}Term{C.end} -> {C.darkblue}Definition{C.end}')
+    print(f'{CLEAR}{C.yellow}TERMS{C.end}\n{C.magenta}Number{C.end}: {C.green}Term{C.end} -> {C.darkblue}Definition{C.end}')
     print('--------------------------')
     for i, key in enumerate(words):
         if key.repetition_spot == 0:
