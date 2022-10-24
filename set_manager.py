@@ -109,10 +109,10 @@ def edit_mode(words) -> None:
             if edit_def:
                 words[edit_num].definition = edit_def
             print()
-    elif mode in {'+', 'add'}:
+    elif mode in {'+', 'a', 'add'}:
         print('Leave blank to exit.\n')
         add_term_interactively(words)
-    elif mode in {'-', 'remove'}:
+    elif mode in {'-', 'r', 'remove'}:
         print('Leave blank to exit.\n')
         while True:
             if len(words) == 1:
@@ -145,3 +145,4 @@ def edit_mode(words) -> None:
     print(f'{C.green}All changes saved!{C.end}')
     input(CONTINUE)
     print(CLEAR)
+
