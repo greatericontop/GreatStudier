@@ -122,7 +122,7 @@ def validate(guess: str, answer: str) -> ValidationResult:
             answer = answer.replace(a, '')
     if guess == answer:
         return ValidationResult.FULL_CORRECT
-    mistakes_allowed = min(max(len(answer)//4, 1), 4)  # 1..4 depending on the length of the answer
+    mistakes_allowed = min(len(answer)//4, 4)  # 0..4 depending on the length of the answer
     if lev.distance(guess, answer) <= mistakes_allowed:
         return ValidationResult.MOSTLY_CORRECT
     return ValidationResult.INCORRECT
