@@ -92,7 +92,7 @@ def edit_mode(words) -> None:
             else:
                 extra_info = f'in {timeleft//86400}d {timeleft//3600 % 24}h {timeleft//60 % 60}m'
         print(f'{C.magenta}{i}{C.end}: {C.green}"{key.word}"{C.end} -> {C.darkblue}"{key.definition}"{C.end} {C.black}({extra_info}){C.end}')
-    mode = input(f'\n{C.darkgreen}[+] add terms, [-] remove terms, [E]dit terms, [R]ename set: {C.end}').lower()
+    mode = input(f'\n{C.darkgreen}[+] add terms, [-] remove terms, [E]dit terms, [R]ename set, [D]elete set: {C.end}').lower()
     if mode in {'e', 'edit'}:
         print('Leave blank to exit.\n')
         while True:
@@ -112,7 +112,7 @@ def edit_mode(words) -> None:
     elif mode in {'+', 'a', 'add'}:
         print('Leave blank to exit.\n')
         add_term_interactively(words)
-    elif mode in {'-', 'r', 'remove'}:
+    elif mode in {'-', 'remove'}:
         print('Leave blank to exit.\n')
         while True:
             if len(words) == 1:
@@ -136,6 +136,15 @@ def edit_mode(words) -> None:
             new_set_path = config.get_set_directory() / new_name
             old_set_path.rename(new_set_path)
             config.config['set'] = new_name
+    elif mode in {'d', 'delete'}:
+        consent = input(f'Are you sure you want to delete this set? \'{config.config["set"]}\' will be lost forever (A long time!) [Y/n] ')
+        if consent in YES_DEFAULT_YES:
+            set_path = config.get_set_directory() / config.config['set']
+            delete_path = config.get_set_directory() / '.trash' / config.config['set']
+            set_path.rename(delete_path)
+            config.config['set'] = None
+            print(CLEAR)
+            return
     else:
         print(f'{C.red}That is not an option.{C.end}')
         input(CONTINUE)
