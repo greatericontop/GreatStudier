@@ -10,6 +10,7 @@ A free and open source studying software.
 
 - Python 3.9 (or higher), although 3.6 will probably work.
 - `requests` module: Install using `pip install requests` or the equivalent (`python3 -m pip`, `pip3`, etc.) for your system.
+- `bs4` module: Install using `pip install requests` or the equivalent (`python3 -m pip`, `pip3`, etc.) for your system.
 
 Some pre-built binaries are available, but they won't work for every system. Use the source code if possible.
 
@@ -52,6 +53,12 @@ To overwrite an answer that was automatically graded incorrectly, type `*`.
 GreatStudier uses [`paste.gg`](https://paste.gg) and its API for uploading and downloading sets.
 
 You can set a custom API key in the config (go to `options`, then `API keys`) to link any GreatStudier uploads to your account, so they're easier to find and manage.
+
+---
+
+## Quizlet Convert
+
+Quizlet sets can convert to GreatStudier using the `Quizlet Convert` Option in the menu. The Quizlet set must be public to be able to be converted.  
 
 ---
 
