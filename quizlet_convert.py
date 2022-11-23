@@ -18,33 +18,48 @@ Quizlet has an API, but it is nonexistent/broken, so we'll have to do some hacky
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from bs4 import BeautifulSoup
+
+import requests
 
 import utils
+import uploads
 from constants import *
 
-LINE_SEPARATOR = ';;$;;'
-ITEM_SEPARATOR = '==$=='
+HEADERS = {'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:107.0) Gecko/20100101 Firefox/107.0'}
 
 
-def convert_quizlet_set():
-    print(CLEAR)
-    prompt = ('In the Quizlet dashboard, select the EXPORT option.\n'
-              f'Between the term and definition, choose CUSTOM and set it to {C.black}{ITEM_SEPARATOR}{C.end}.\n'
-              f'Between rows, choose CUSTOM and set it to {C.black}{LINE_SEPARATOR}{C.end}.\n'
-              'Copy the resulting text and enter it below.\n'
-              '> ')
-    quizlet_set = input(prompt)
-    if not quizlet_set:
-        print(f'{C.red}Nothing was provided!{C.end}')
-        return
-    quizlet_items = quizlet_set.split(LINE_SEPARATOR)
+def get_quizlet_set(link: str) -> list:
+    """Returns the set from quizlet"""
     converted = []
-    for quizlet_item in quizlet_items:
-        if not quizlet_item:  # blank line with no text
-            continue
-        item = quizlet_item.split(ITEM_SEPARATOR)
-        converted.append(utils.KeyData(item[0], item[1], -1, 0))
+    soup = BeautifulSoup(requests.get(link, headers=HEADERS).content, 'html.parser')
+    try:
+        data = soup.find('section', "SetPage-termsList").find_all('div', 'SetPageTerms-term')
+    except AttributeError:
+        raise uploads.FailedRequestError('Make sure that the quizlet set is not private.')
+    for terms in data:
+        term = terms.find_all('span')
+        converted.append(utils.KeyData(term[0].text, term[1].text, -1, 0))
+    return converted
+
+
+def convert_quizlet_set() -> None:
+    print(CLEAR)
+    quizlet_set = input('Enter a Quizlet link to convert: ')
+    if 'quizlet.com' not in quizlet_set:
+        print(f'{C.red}Invalid Quizlet Link!{C.end}')
+        input(CONTINUE)
+        print(CLEAR)
+        return
     target_location = input('Where would you like to save it? ')
+    try:
+        converted = get_quizlet_set(quizlet_set)
+    except uploads.FailedRequestError as e:
+        print(f'{C.red}Failed to download set! {e}{C.end}')
+        input(CONTINUE)
+        print(CLEAR)
+        return
     utils.save_words(converted, target_location)
+    print(f'{C.green}Set downloaded successfully.{C.end}')
     input(CONTINUE)
     print(CLEAR)
