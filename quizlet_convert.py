@@ -46,16 +46,21 @@ def get_quizlet_set(link: str) -> list:
 def convert_quizlet_set() -> None:
     print(CLEAR)
     quizlet_set = input('Enter a Quizlet link to convert: ')
-    if 'quizlet.com' not in quizlet_set:
+    if 'https://quizlet.com/' not in quizlet_set or not quizlet_set:
         print(f'{C.red}Invalid Quizlet Link!{C.end}')
         input(CONTINUE)
         print(CLEAR)
         return
-    target_location = input('Where would you like to save it? ')
     try:
         converted = get_quizlet_set(quizlet_set)
     except uploads.FailedRequestError as e:
         print(f'{C.red}Failed to download set! {e}{C.end}')
+        input(CONTINUE)
+        print(CLEAR)
+        return
+    target_location = input('Where would you like to save it? ')
+    if not target_location:
+        print(f'{C.red}Nothing was provided!{C.end}')
         input(CONTINUE)
         print(CLEAR)
         return
