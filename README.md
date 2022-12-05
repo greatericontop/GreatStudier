@@ -10,7 +10,7 @@ A free and open source studying software.
 
 - Python 3.9 (or higher), although 3.6 will probably work.
 - `requests` module: Install using `pip install requests` or the equivalent (`python3 -m pip`, `pip3`, etc.) for your system.
-- `bs4` module: Install using `pip install requests` or the equivalent (`python3 -m pip`, `pip3`, etc.) for your system.
+- `bs4` module: Install using `pip install bs4` or the equivalent (`python3 -m pip`, `pip3`, etc.) for your system.
 
 Some pre-built binaries are available, but they won't work for every system. Use the source code if possible.
 
