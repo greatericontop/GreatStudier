@@ -19,8 +19,10 @@ import ast
 import math
 import pathlib as pl
 import datetime as dt
+import time
 
-from constants import C
+import utils
+from constants import C, MAX_TIME_PER_QUESTION, SECONDS_PER_XP
 
 
 CURRENT_GAMIFY_REVISION = 1
@@ -51,6 +53,8 @@ def load_gamify() -> dict:
                 'answer_correct_500': {'last_reset': NEVER_RESET, 'completed': False, 'progress': 0},
                 'review_100': {'last_reset': NEVER_RESET, 'completed': False, 'progress': 0},
             }
+        if 'total_time_studied' not in data:
+            data['total_time_studied'] = 0  # Note: this is stored in CENTISECONDS
         return data
     except FileNotFoundError:
         return {'level': 1, 'xp': 0, 'correct_answers': 0, 'wrong_answers': 0, 'rev': CURRENT_GAMIFY_REVISION}
@@ -217,6 +221,41 @@ def increment_answer_correct() -> None:
     _increment_progress('answer_correct_500', 'Question Solver Co', 500, 1500)
 def increment_review_correct() -> None:
     _increment_progress('review_100', 'Memorization Master', 100, 1500)
+
+
+# Timers: run :start_study_clock(): and :end_study_clock():.
+# The globals here feel wrong, but there's no point in adding classes here.
+
+start_time: float = None
+
+
+def start_study_clock() -> None:
+    """Start the study clock."""
+    global start_time
+    if start_time is not None:
+        raise RuntimeError("Can't start study clock while one is running")
+    start_time = time.perf_counter()
+
+
+def end_study_clock() -> None:
+    """End the study clock."""
+    global start_time
+    if start_time is None:
+        raise RuntimeError("Can't end study clock while it is not running")
+    end_time = time.perf_counter()
+    total_time = min(end_time - start_time, MAX_TIME_PER_QUESTION)
+    gamify_data['total_time_studied'] += int(total_time * 100)
+    gamify_data['xp'] += utils.probability_round(total_time / SECONDS_PER_XP)
+    start_time = None
+
+
+def dashboard_time_studied() -> str:
+    """Get the time studied in a human-readable format."""
+    study_time = gamify_data['total_time_studied'] // 100
+    hours = study_time // 3600
+    minutes = (study_time // 60) % 60
+    seconds = study_time % 60
+    return f'{hours}h {minutes}m {seconds}s'
 
 
 gamify_data = load_gamify()

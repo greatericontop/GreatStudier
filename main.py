@@ -133,6 +133,7 @@ def stats() -> None:
     if data['wrong_answers'] != 0:
         print(f"Answer Ratio: {data['correct_answers'] / data['wrong_answers']:.2f}")
     print(f'{C.cyan}Skill Score: {gamify.get_skill()}{C.end}')
+    print(f'{C.magenta}You have studied for {C.green}{gamify.dashboard_time_studied()}{C.magenta}.{C.end}')
     gamify.print_quest_progress()
     print(f"\n{C.green}You're currently level {gamify.dashboard()}\n")
     input(CONTINUE)

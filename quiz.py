@@ -44,7 +44,9 @@ def correct_answer_study(key: KeyData):
 def quiz(key: KeyData, extra: str = '', increment_knowledge_level: bool = True) -> bool:
     on_correct = correct_answer_increment_knowledge if increment_knowledge_level else correct_answer_study
     print(f'\n\n{extra}QUIZ: What is {C.cyan}{key.definition}{C.end}?')
+    gamify.start_study_clock()
     guess = input(f'{C.darkblue}>{C.end} ')
+    gamify.end_study_clock()
     result = utils.validate(guess, key.word)
     gamify.increment_study()
 
