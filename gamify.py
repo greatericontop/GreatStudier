@@ -31,10 +31,11 @@ CURRENT_GAMIFY_REVISION = 1
 def level_xp(level: int) -> int:
     """Return required amount to go from the current level to the next."""
     return {
-        1: 1500,
-        2: 6000,
-        3: 12500,
-    }.get(level, 20000)  # default 20k
+        0: 250,
+        1: 500,
+        2: 1000,
+        3: 1750,
+    }.get(level % 100, 2500)
 
 
 def load_gamify() -> dict:
@@ -84,36 +85,42 @@ def show_level() -> None:
 def prestige() -> str:
     """Return the prestige (with color)."""
     level = gamify_data['level']
-    if level >= 100:
+    if level >= 1000:
         star = '❂'
-        l1, l2, l3 = str(level)
-        return f'{C.red}[{C.yellow}{l1}{C.green}{l2}{C.darkcyan}{l3}{C.blue}{star}{C.darkmagenta}]{C.end}'
-    if level >= 90:
+        l1, l2, l3, l4 = str(level)
+        return (f'{C.red}['
+                f'{C.darkyellow}{l1}'
+                f'{C.yellow}{l2}'
+                f'{C.green}{l3}'
+                f'{C.darkcyan}{l4}'
+                f'{C.blue}{star}'
+                f'{C.darkmagenta}]'
+                f'{C.end}')
+    if level >= 900:
         star = '✦'
-        l1, l2 = str(level)
-        return f'{C.cyan}[{C.darkcyan}{l1}{C.blue}{l2}{C.darkblue}{star}{C.darkmagenta}]{C.end}'
-    if level >= 80:
-        star = '✪'
-        return f'{C.darkred}[{C.red}{level}{C.darkyellow}{star}{C.yellow}]{C.end}'
-    if level >= 70:
+        return f'{C.cyan}[{C.blue}{level}{C.darkblue}{star}{C.darkmagenta}]{C.end}'
+    if level >= 800:
         star = '✸'
+        return f'{C.darkred}[{C.red}{level}{C.darkyellow}{star}{C.yellow}]{C.end}'
+    if level >= 700:
+        star = '✪'
         return f'{C.cyan}[{level}{star}]{C.end}'
-    if level >= 60:
+    if level >= 600:
         star = '✭'
         return f'{C.magenta}[{level}{star}]{C.end}'
-    if level >= 50:
+    if level >= 500:
         star = '✵'
         return f'{C.darkred}[{level}{star}]{C.end}'
-    if level >= 40:
+    if level >= 400:
         star = '✶'
         return f'{C.blue}[{level}{star}]{C.end}'
-    if level >= 30:
+    if level >= 300:
         star = '✰'
         return f'{C.darkgreen}[{level}{star}]{C.end}'
-    if level >= 20:
+    if level >= 200:
         star = '✬'
         return f'{C.darkyellow}[{level}{star}]{C.end}'
-    if level >= 10:
+    if level >= 100:
         star = '★'
         return f'{C.bwhite}[{level}{star}]{C.end}'
     star = '⭑'
