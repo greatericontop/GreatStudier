@@ -45,14 +45,23 @@ def choose_set() -> None:
         return
     print(f'{CLEAR}{C.yellow}AVAILABLE STUDY SETS:{C.end}\n{print_sets}\n\n{C.darkgreen}Leave blank to exit.{C.end}')
     while True:
-        word_set = input('Choose a set: ')
-        if not word_set:
+        set_name = input('Choose a set: ')
+        if not set_name:
+            # clear it if input was blank
             config.config['set'] = None
             break
-        if word_set in sets:
-            config.config['set'] = word_set
+        if set_name in sets:  # if it already matches, then set it there
+            config.config['set'] = set_name
             break
-        print(f'{C.red}Invalid Set! Please choose a valid set.{C.end}')
+        possible_sets = [s for s in sets if s.startswith(set_name)]  # otherwise do partial matches
+        if len(possible_sets) == 1:
+            config.config['set'] = possible_sets[0]
+            break
+        if len(possible_sets) > 1:
+            render = ', '.join([f'{C.yellow}{s[:len(set_name)]}{C.red}{s[len(set_name):]}' for s in possible_sets])
+            print(f'{C.red}Multiple sets match your input. ({render}){C.end}')
+        else:  # no matches
+            print(f'{C.red}Invalid Set! Please choose a valid set.{C.end}')
     print(CLEAR)
 
 
