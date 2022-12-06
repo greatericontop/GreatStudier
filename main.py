@@ -256,6 +256,8 @@ def main():
     print(f'{CLEAR}{C.green}GreatStudier Version {VERSION}{C.end}\n'
           f'{motd.random()}\n'
           f'{gamify.dashboard()}\n')
+    if VERSION.endswith('nightly'):
+        print(f'{C.yellow}You are using a nightly build, which may be unstable.{C.end}\n')
     while True:
         gamify.update_quests()
         gamify.fix_level(print_stuff=True)
