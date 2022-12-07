@@ -18,13 +18,16 @@ Quizlet has an API, but it is nonexistent/broken, so we'll have to do some hacky
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from bs4 import BeautifulSoup
-
 import requests
 
 import utils
 import uploads
 from constants import *
+
+try:
+    from bs4 import BeautifulSoup
+except ModuleNotFoundError:
+    pass
 
 HEADERS = {'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:107.0) Gecko/20100101 Firefox/107.0'}
 
@@ -32,9 +35,17 @@ HEADERS = {'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:107.0) Geck
 def get_quizlet_set(link: str) -> list:
     """Returns the set from quizlet"""
     converted = []
-    soup = BeautifulSoup(requests.get(link, headers=HEADERS).content, 'html.parser')
     try:
-        data = soup.find('section', "SetPage-termsList").find_all('div', 'SetPageTerms-term')
+        soup = BeautifulSoup(requests.get(link, headers=HEADERS).content, 'html.parser')
+    except NameError as e:
+        print(f'{C.yellow}========================================{C.end}\n'
+              f'{C.red}BeautifulSoup is not installed.{C.end}\n'
+              f'{C.red}You can still use the rest of GreatStudier, but you must{C.end}\n'
+              f'{C.red} install BeautifulSoup in order to use this feature.{C.end}\n'
+              f'{C.yellow}========================================{C.end}')
+        raise uploads.FailedRequestError(e)
+    try:
+        data = soup.find('section', 'SetPage-termsList').find_all('div', 'SetPageTerms-term')
     except AttributeError:
         raise uploads.FailedRequestError('Make sure that the quizlet set is not private.')
     for terms in data:
