@@ -58,7 +58,7 @@ def convert_quizlet_set() -> None:
     print(CLEAR)
     quizlet_set = input('Enter a Quizlet link to convert: ')
     if 'https://quizlet.com/' not in quizlet_set or not quizlet_set:
-        print(f'{C.red}Invalid Quizlet Link!{C.end}')
+        print(f'{C.red}Invalid Quizlet Link! Please include the "https://quizlet.com/".{C.end}')
         input(CONTINUE)
         print(CLEAR)
         return
