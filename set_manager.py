@@ -123,6 +123,7 @@ def edit_mode(words) -> None:
         add_term_interactively(words)
     elif mode in {'-', 'remove'}:
         print('Leave blank to exit.\n')
+        remove_list = []
         while True:
             if len(words) == 1:
                 print(f'{CLEAR}{C.yellow}You may not remove a set with 1 term.{C.end}')
@@ -133,7 +134,10 @@ def edit_mode(words) -> None:
                 break
             if remove_num >= len(words):
                 break
-            del words[remove_num]
+            remove_list.append(remove_num)
+        remove_list = sorted(set(remove_list), reverse=True)
+        for num in remove_list:
+            del words[num]
     elif mode in {'rename', 'r'}:
         new_name = input('Enter a new name for the set: ')
         for c in ILLEGAL_FILENAME_CHARS:
