@@ -59,7 +59,7 @@ def load_gamify() -> dict:
     _fill_default(data, 'correct_answers', 0)
     _fill_default(data, 'wrong_answers', 0)
     _fill_default(data, 'rev', CURRENT_GAMIFY_REVISION)
-    _fill_default(data, 'time_studied', 0)  # Note: this is stored in CENTISECONDS
+    _fill_default(data, 'total_time_studied', 0)  # Note: this is stored in CENTISECONDS
     # merge in un-added quests
     NEVER_RESET = '2000-01-01'
     bare_quests = {
