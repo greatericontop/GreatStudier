@@ -19,8 +19,10 @@ import ast
 import math
 import pathlib as pl
 import datetime as dt
+import time
 
-from constants import C
+import utils
+from constants import C, MAX_TIME_PER_QUESTION, SECONDS_PER_XP
 
 
 CURRENT_GAMIFY_REVISION = 1
@@ -29,10 +31,11 @@ CURRENT_GAMIFY_REVISION = 1
 def level_xp(level: int) -> int:
     """Return required amount to go from the current level to the next."""
     return {
-        1: 1500,
-        2: 6000,
-        3: 12500,
-    }.get(level, 20000)  # default 20k
+        0: 250,
+        1: 500,
+        2: 1000,
+        3: 1750,
+    }.get(level % 100, 2500)
 
 
 def load_gamify() -> dict:
@@ -43,14 +46,20 @@ def load_gamify() -> dict:
         # automatically migrate outdated file
         if 'rev' not in data:
             data['rev'] = CURRENT_GAMIFY_REVISION
-        if 'quests' not in data:
-            NEVER_RESET = '2000-01-01'
-            data['quests'] = {
-                'login_bonus': {'last_reset': NEVER_RESET, 'completed': False, 'progress': 0},
-                'study_50': {'last_reset': NEVER_RESET, 'completed': False, 'progress': 0},
-                'answer_correct_500': {'last_reset': NEVER_RESET, 'completed': False, 'progress': 0},
-                'review_100': {'last_reset': NEVER_RESET, 'completed': False, 'progress': 0},
-            }
+        # add study timers
+        if 'total_time_studied' not in data:
+            data['total_time_studied'] = 0  # Note: this is stored in CENTISECONDS
+        # merge in un-added quests
+        NEVER_RESET = '2000-01-01'
+        bare_quests = {
+            'login_bonus': {'last_reset': NEVER_RESET, 'completed': False, 'progress': 0},
+            'study_50': {'last_reset': NEVER_RESET, 'completed': False, 'progress': 0},
+            'answer_correct_500': {'last_reset': NEVER_RESET, 'completed': False, 'progress': 0},
+            'review_100': {'last_reset': NEVER_RESET, 'completed': False, 'progress': 0},
+            'study_hours': {'last_reset': NEVER_RESET, 'completed': False, 'progress': 0},
+        }
+        bare_quests.update(data.get('quests', {}))
+        data['quests'] = bare_quests
         return data
     except FileNotFoundError:
         return {'level': 1, 'xp': 0, 'correct_answers': 0, 'wrong_answers': 0, 'rev': CURRENT_GAMIFY_REVISION}
@@ -80,36 +89,42 @@ def show_level() -> None:
 def prestige() -> str:
     """Return the prestige (with color)."""
     level = gamify_data['level']
-    if level >= 100:
+    if level >= 1000:
         star = '❂'
-        l1, l2, l3 = str(level)
-        return f'{C.red}[{C.yellow}{l1}{C.green}{l2}{C.darkcyan}{l3}{C.blue}{star}{C.darkmagenta}]{C.end}'
-    if level >= 90:
+        l1, l2, l3, l4 = str(level)
+        return (f'{C.red}['
+                f'{C.darkyellow}{l1}'
+                f'{C.yellow}{l2}'
+                f'{C.green}{l3}'
+                f'{C.darkcyan}{l4}'
+                f'{C.blue}{star}'
+                f'{C.darkmagenta}]'
+                f'{C.end}')
+    if level >= 900:
         star = '✦'
-        l1, l2 = str(level)
-        return f'{C.cyan}[{C.darkcyan}{l1}{C.blue}{l2}{C.darkblue}{star}{C.darkmagenta}]{C.end}'
-    if level >= 80:
-        star = '✪'
-        return f'{C.darkred}[{C.red}{level}{C.darkyellow}{star}{C.yellow}]{C.end}'
-    if level >= 70:
+        return f'{C.cyan}[{C.blue}{level}{C.darkblue}{star}{C.darkmagenta}]{C.end}'
+    if level >= 800:
         star = '✸'
+        return f'{C.darkred}[{C.red}{level}{C.darkyellow}{star}{C.yellow}]{C.end}'
+    if level >= 700:
+        star = '✪'
         return f'{C.cyan}[{level}{star}]{C.end}'
-    if level >= 60:
+    if level >= 600:
         star = '✭'
         return f'{C.magenta}[{level}{star}]{C.end}'
-    if level >= 50:
+    if level >= 500:
         star = '✵'
         return f'{C.darkred}[{level}{star}]{C.end}'
-    if level >= 40:
+    if level >= 400:
         star = '✶'
         return f'{C.blue}[{level}{star}]{C.end}'
-    if level >= 30:
+    if level >= 300:
         star = '✰'
         return f'{C.darkgreen}[{level}{star}]{C.end}'
-    if level >= 20:
+    if level >= 200:
         star = '✬'
         return f'{C.darkyellow}[{level}{star}]{C.end}'
-    if level >= 10:
+    if level >= 100:
         star = '★'
         return f'{C.bwhite}[{level}{star}]{C.end}'
     star = '⭑'
@@ -171,6 +186,7 @@ def update_quests() -> None:
     if today.weekday() == 0:
         _update_quest(quests['answer_correct_500'], today)
         _update_quest(quests['review_100'], today)
+        _update_quest(quests['study_hours'], today)
 
 
 def print_quest_progress() -> None:
@@ -182,24 +198,32 @@ def print_quest_progress() -> None:
     print(f'{C.green}COMPLETED{C.end}' if gamify_data['quests']['login_bonus']['completed']
           else f"{C.cyan}{gamify_data['quests']['login_bonus']['progress']}{C.end}/1")
     # study_50
-    print(f'Daily Quest: {C.cyan}Great Studier{C.end}: Study 50 cards. ({C.cyan}+100{C.end})')
+    print(f'Daily Quest: {C.cyan}Great Studier{C.end}: Study 50 cards. ({C.cyan}+150{C.end})')
     print(f'{C.green}COMPLETED{C.end}' if gamify_data['quests']['study_50']['completed']
           else f"{C.cyan}{gamify_data['quests']['study_50']['progress']}{C.end}/50")
     # answer_correct_500
-    print(f'Weekly Quest: {C.cyan}Question Solver Co{C.end}: Answer 500 questions correctly. ({C.cyan}+1500{C.end})')
+    print(f'Weekly Quest: {C.cyan}Question Solver Co{C.end}: Answer 500 questions correctly. ({C.cyan}+2000{C.end})')
     print(f'{C.green}COMPLETED{C.end}' if gamify_data['quests']['answer_correct_500']['completed']
           else f"{C.cyan}{gamify_data['quests']['answer_correct_500']['progress']}{C.end}/500")
     # review_100
-    print(f'Weekly Quest: {C.cyan}Memorization Master{C.end}: Successfully review 100 cards. ({C.cyan}+1500{C.end})')
+    print(f'Weekly Quest: {C.cyan}Memorization Master{C.end}: Successfully review 100 cards. ({C.cyan}+2000{C.end})')
     print(f'{C.green}COMPLETED{C.end}' if gamify_data['quests']['review_100']['completed']
           else f"{C.cyan}{gamify_data['quests']['review_100']['progress']}{C.end}/100")
+    # study_hours
+    print(f'Weekly Quest: {C.cyan}Study Buddy{C.end}: Study for 1 hour. ({C.cyan}+1500{C.end})')
+    seconds = gamify_data['quests']['study_hours']['progress'] // 100
+    print(f'{C.green}COMPLETED{C.end}' if gamify_data['quests']['study_hours']['completed']
+          else f"{C.cyan}{seconds // 60:02}:{seconds % 60:02}{C.end}/60:00")
 
 
-def _increment_progress(quest_id: str, human_name: str, required_amount: int, given_xp: int) -> None:
+def _increment_progress(quest_id: str, human_name: str,
+                        required_amount: int, given_xp: int,
+                        *, amount: int = 1
+                        ) -> None:
     """(Helper) Increment the progress of a quest."""
     quest = gamify_data['quests'][quest_id]
     if not quest['completed']:
-        quest['progress'] += 1
+        quest['progress'] += amount
         if quest['progress'] >= required_amount:
             quest['completed'] = True
             quest['last_reset'] = dt.date.today().isoformat()
@@ -210,13 +234,52 @@ def _increment_progress(quest_id: str, human_name: str, required_amount: int, gi
                   f'{C.green}------------------------------------------------------------{C.end}\n'
                   f'\n\n')
 def increment_login_bonus() -> None:
-    _increment_progress('login_bonus', 'Study Today', 1, 100)
+    _increment_progress('login_bonus', 'Study Today', 1, given_xp=100)
 def increment_study() -> None:
-    _increment_progress('study_50', 'Great Studier', 50, 100)
+    _increment_progress('study_50', 'Great Studier', 50, given_xp=150)
 def increment_answer_correct() -> None:
-    _increment_progress('answer_correct_500', 'Question Solver Co', 500, 1500)
+    _increment_progress('answer_correct_500', 'Question Solver Co', 500, given_xp=2000)
 def increment_review_correct() -> None:
-    _increment_progress('review_100', 'Memorization Master', 100, 1500)
+    _increment_progress('review_100', 'Memorization Master', 100, given_xp=2000)
+def increment_study_hours(centiseconds: int) -> None:
+    _increment_progress('study_hours', 'Study Buddy', 3600_00, given_xp=1500, amount=centiseconds)
+
+
+# Timers: run :start_study_clock(): and :end_study_clock():.
+# The globals here feel wrong, but there's no point in adding classes here.
+
+start_time: float = None
+
+
+def start_study_clock() -> None:
+    """Start the study clock."""
+    global start_time
+    if start_time is not None:
+        raise RuntimeError("Can't start study clock while one is running")
+    start_time = time.perf_counter()
+
+
+def end_study_clock() -> None:
+    """End the study clock."""
+    global start_time
+    if start_time is None:
+        raise RuntimeError("Can't end study clock while it is not running")
+    end_time = time.perf_counter()
+    total_time = min(end_time - start_time, MAX_TIME_PER_QUESTION)
+    centiseconds = int(total_time * 100)
+    increment_study_hours(centiseconds)
+    gamify_data['total_time_studied'] += centiseconds
+    gamify_data['xp'] += utils.probability_round(total_time / SECONDS_PER_XP)
+    start_time = None
+
+
+def dashboard_time_studied() -> str:
+    """Get the time studied in a human-readable format."""
+    study_time = gamify_data['total_time_studied'] // 100
+    hours = study_time // 3600
+    minutes = (study_time // 60) % 60
+    seconds = study_time % 60
+    return f'{hours}h {minutes}m {seconds}s'
 
 
 gamify_data = load_gamify()

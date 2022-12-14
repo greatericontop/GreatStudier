@@ -10,6 +10,7 @@ A free and open source studying software.
 
 - Python 3.9 (or higher), although 3.6 will probably work.
 - `requests` module: Install using `pip install requests` or the equivalent (`python3 -m pip`, `pip3`, etc.) for your system.
+- `bs4` module: Install using `pip install bs4` or the equivalent (`python3 -m pip`, `pip3`, etc.) for your system.
 
 Some pre-built binaries are available, but they won't work for every system. Use the source code if possible.
 
@@ -55,6 +56,12 @@ You can set a custom API key in the config (go to `options`, then `API keys`) to
 
 ---
 
+## Quizlet Convert
+
+Quizlet sets can convert to GreatStudier using the `Quizlet Convert` Option in the menu. The Quizlet set must be public to be able to be converted.  
+
+---
+
 ## Options
 
 `set_directory` >> The directory that the sets are stored in. Defaults to `~/GreatStudier`.
@@ -63,7 +70,7 @@ You can set a custom API key in the config (go to `options`, then `API keys`) to
 
 `paste_username` >> Due to an API limitation the username is needed to edit sets.
 
-`remove_language_accents` >> Changes most accented letters to non-accented letters in answers for languages. Currently supports Spanish, French, German Chinese.
+`remove_language_accents` >> Changes most accented letters to non-accented letters in answers for languages. Currently supports Spanish, French, German, Chinese.
 
 `upload_set_permissions` >> Permissions used for the paste link. Valid values are `public`, `unlisted`, `private`. You need a key to use the `private` option.
 

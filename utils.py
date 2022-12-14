@@ -18,6 +18,7 @@
 import dataclasses
 import enum
 import pathlib as pl
+import random
 import string
 import sys
 import time
@@ -122,7 +123,14 @@ def validate(guess: str, answer: str) -> ValidationResult:
             answer = answer.replace(a, '')
     if guess == answer:
         return ValidationResult.FULL_CORRECT
-    mistakes_allowed = min(max(len(answer)//4, 1), 4)  # 1..4 depending on the length of the answer
+    mistakes_allowed = min(len(answer)//4, 4)  # 0..4 depending on the length of the answer
     if lev.distance(guess, answer) <= mistakes_allowed:
         return ValidationResult.MOSTLY_CORRECT
     return ValidationResult.INCORRECT
+
+
+def probability_round(num: float) -> int:
+    """Probability round float to the nearest integer."""
+    int_part = int(num)
+    frac_part = random.random() < (num - int_part)  # e.g., 40% for 0.4 to round to 1, otherwise 0
+    return int_part + frac_part

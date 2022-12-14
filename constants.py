@@ -16,7 +16,7 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-VERSION = '1.2.0'
+VERSION = '1.3.0'
 
 
 class C:
@@ -94,6 +94,12 @@ ILLEGAL_FILENAME_CHARS = [
     '@',
     '`',
 ]
+
+# Maximum time that you'll get credit for per question.
+# This is to prevent accidental AFKs from adding insane amounts of time.
+MAX_TIME_PER_QUESTION = 75
+# Probability rounded number of seconds of time to get 1 experience point.
+SECONDS_PER_XP = 4.5
 
 # Contains all accent transpositions for some languages. Some may be duplicated, but this is intentional.
 ACCENT_TRANSPOSITION_TABLE = [

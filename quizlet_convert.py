@@ -18,33 +18,64 @@ Quizlet has an API, but it is nonexistent/broken, so we'll have to do some hacky
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import requests
 
 import utils
+import uploads
 from constants import *
 
-LINE_SEPARATOR = ';;$;;'
-ITEM_SEPARATOR = '==$=='
+try:
+    from bs4 import BeautifulSoup
+except ModuleNotFoundError:
+    pass
+
+HEADERS = {'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:107.0) Gecko/20100101 Firefox/107.0'}
 
 
-def convert_quizlet_set():
-    print(CLEAR)
-    prompt = ('In the Quizlet dashboard, select the EXPORT option.\n'
-              f'Between the term and definition, choose CUSTOM and set it to {C.black}{ITEM_SEPARATOR}{C.end}.\n'
-              f'Between rows, choose CUSTOM and set it to {C.black}{LINE_SEPARATOR}{C.end}.\n'
-              'Copy the resulting text and enter it below.\n'
-              '> ')
-    quizlet_set = input(prompt)
-    if not quizlet_set:
-        print(f'{C.red}Nothing was provided!{C.end}')
-        return
-    quizlet_items = quizlet_set.split(LINE_SEPARATOR)
+def get_quizlet_set(link: str) -> list:
+    """Returns the set from quizlet"""
     converted = []
-    for quizlet_item in quizlet_items:
-        if not quizlet_item:  # blank line with no text
-            continue
-        item = quizlet_item.split(ITEM_SEPARATOR)
-        converted.append(utils.KeyData(item[0], item[1], -1, 0))
+    try:
+        soup = BeautifulSoup(requests.get(link, headers=HEADERS).content, 'html.parser')
+    except NameError as e:
+        print(f'{C.yellow}========================================{C.end}\n'
+              f'{C.red}BeautifulSoup is not installed.{C.end}\n'
+              f'{C.red}You can still use the rest of GreatStudier, but you must{C.end}\n'
+              f'{C.red} install BeautifulSoup in order to use this feature.{C.end}\n'
+              f'{C.yellow}========================================{C.end}')
+        raise uploads.FailedRequestError(e)
+    try:
+        data = soup.find('section', 'SetPage-termsList').find_all('div', 'SetPageTerms-term')
+    except AttributeError:
+        raise uploads.FailedRequestError('Make sure that the quizlet set is not private.')
+    for terms in data:
+        term = terms.find_all('span')
+        converted.append(utils.KeyData(term[0].text, term[1].text, -1, 0))
+    return converted
+
+
+def convert_quizlet_set() -> None:
+    print(CLEAR)
+    quizlet_set = input('Enter a Quizlet link to convert: ')
+    if 'https://quizlet.com/' not in quizlet_set or not quizlet_set:
+        print(f'{C.red}Invalid Quizlet Link! Please include the "https://quizlet.com/".{C.end}')
+        input(CONTINUE)
+        print(CLEAR)
+        return
+    try:
+        converted = get_quizlet_set(quizlet_set)
+    except uploads.FailedRequestError as e:
+        print(f'{C.red}Failed to download set! {e}{C.end}')
+        input(CONTINUE)
+        print(CLEAR)
+        return
     target_location = input('Where would you like to save it? ')
+    if not target_location:
+        print(f'{C.red}Nothing was provided!{C.end}')
+        input(CONTINUE)
+        print(CLEAR)
+        return
     utils.save_words(converted, target_location)
+    print(f'{C.green}Set downloaded successfully.{C.end}')
     input(CONTINUE)
     print(CLEAR)

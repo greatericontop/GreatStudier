@@ -36,23 +36,32 @@ def add_term_interactively(word_data: list) -> None:
 
 def choose_set() -> None:
     sets = [p.name for p in config.get_set_directory().iterdir() if p.is_file()]
-    print_sets = '\n'.join(sets)
+    print_sets = '\n'.join(sorted(sets))
 
     if not sets:
         print(f'\n{C.yellow}You currently have no sets available. Import or create a new set to continue.{C.end}')
         input(CONTINUE)
         print(CLEAR)
         return
-    print(f'{CLEAR}{C.darkcyan}Available Study Sets{C.end}\n{print_sets}\n\n{C.darkgreen}Leave blank to exit.{C.end}')
+    print(f'{CLEAR}{C.yellow}AVAILABLE STUDY SETS:{C.end}\n{print_sets}\n\n{C.darkgreen}Leave blank to exit.{C.end}')
     while True:
-        word_set = input('Choose a set: ')
-        if not word_set:
+        set_name = input('Choose a set: ')
+        if not set_name:
+            # clear it if input was blank
             config.config['set'] = None
             break
-        if word_set in sets:
-            config.config['set'] = word_set
+        if set_name in sets:  # if it already matches, then set it there
+            config.config['set'] = set_name
             break
-        print(f'{C.red}Invalid Set! Please choose a valid set.{C.end}')
+        possible_sets = [s for s in sets if s.startswith(set_name)]  # otherwise do partial matches
+        if len(possible_sets) == 1:
+            config.config['set'] = possible_sets[0]
+            break
+        if len(possible_sets) > 1:
+            render = ', '.join([f'{C.yellow}{s[:len(set_name)]}{C.red}{s[len(set_name):]}' for s in possible_sets])
+            print(f'{C.red}Multiple sets match your input. ({render}){C.end}')
+        else:  # no matches
+            print(f'{C.red}Invalid Set! Please choose a valid set.{C.end}')
     print(CLEAR)
 
 
@@ -78,7 +87,7 @@ def new_set() -> None:
 
 
 def edit_mode(words) -> None:
-    print(f'{CLEAR}{C.yellow}TERMS\n{C.magenta}Number{C.end}: {C.green}Term{C.end} -> {C.darkblue}Definition{C.end}')
+    print(f'{CLEAR}{C.yellow}TERMS{C.end}\n{C.magenta}Number{C.end}: {C.green}Term{C.end} -> {C.darkblue}Definition{C.end}')
     print('--------------------------')
     for i, key in enumerate(words):
         if key.repetition_spot == 0:
@@ -92,7 +101,7 @@ def edit_mode(words) -> None:
             else:
                 extra_info = f'in {timeleft//86400}d {timeleft//3600 % 24}h {timeleft//60 % 60}m'
         print(f'{C.magenta}{i}{C.end}: {C.green}"{key.word}"{C.end} -> {C.darkblue}"{key.definition}"{C.end} {C.black}({extra_info}){C.end}')
-    mode = input(f'\n{C.darkgreen}[+] add terms, [-] remove terms, [E]dit terms, [R]ename set: {C.end}').lower()
+    mode = input(f'\n{C.darkgreen}[+] add terms, [-] remove terms, [E]dit terms, [R]ename set, [D]elete set: {C.end}').lower()
     if mode in {'e', 'edit'}:
         print('Leave blank to exit.\n')
         while True:
@@ -109,11 +118,12 @@ def edit_mode(words) -> None:
             if edit_def:
                 words[edit_num].definition = edit_def
             print()
-    elif mode in {'+', 'add'}:
+    elif mode in {'+', 'a', 'add'}:
         print('Leave blank to exit.\n')
         add_term_interactively(words)
     elif mode in {'-', 'remove'}:
         print('Leave blank to exit.\n')
+        remove_list = []
         while True:
             if len(words) == 1:
                 print(f'{CLEAR}{C.yellow}You may not remove a set with 1 term.{C.end}')
@@ -124,7 +134,10 @@ def edit_mode(words) -> None:
                 break
             if remove_num >= len(words):
                 break
-            del words[remove_num]
+            remove_list.append(remove_num)
+        remove_list = sorted(set(remove_list), reverse=True)
+        for num in remove_list:
+            del words[num]
     elif mode in {'rename', 'r'}:
         new_name = input('Enter a new name for the set: ')
         for c in ILLEGAL_FILENAME_CHARS:
@@ -136,6 +149,15 @@ def edit_mode(words) -> None:
             new_set_path = config.get_set_directory() / new_name
             old_set_path.rename(new_set_path)
             config.config['set'] = new_name
+    elif mode in {'d', 'delete'}:
+        consent = input(f'Are you sure you want to delete this set? \'{config.config["set"]}\' will be lost forever (A long time!) [Y/n] ')
+        if consent in YES_DEFAULT_YES:
+            set_path = config.get_set_directory() / config.config['set']
+            delete_path = config.get_set_directory() / '.trash' / config.config['set']
+            set_path.rename(delete_path)
+            config.config['set'] = None
+            print(CLEAR)
+            return
     else:
         print(f'{C.red}That is not an option.{C.end}')
         input(CONTINUE)
@@ -145,3 +167,4 @@ def edit_mode(words) -> None:
     print(f'{C.green}All changes saved!{C.end}')
     input(CONTINUE)
     print(CLEAR)
+
