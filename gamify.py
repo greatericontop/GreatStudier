@@ -20,6 +20,7 @@ import math
 import pathlib as pl
 import datetime as dt
 import time
+from typing import Any
 
 import utils
 from constants import C, MAX_TIME_PER_QUESTION, SECONDS_PER_XP
@@ -34,8 +35,15 @@ def level_xp(level: int) -> int:
         0: 250,
         1: 500,
         2: 1000,
-        3: 1750,
+        3: 1500,
+        4: 2000,
     }.get(level % 100, 2500)
+
+
+def _fill_default(data: dict, key: Any, default_value: Any) -> None:
+    """Set the default value if the key is not in the dict."""
+    if key not in data:
+        data[key] = default_value
 
 
 def load_gamify() -> dict:
@@ -43,26 +51,27 @@ def load_gamify() -> dict:
     try:
         with pl.Path('~/.greatstudier_gamify.py').expanduser().open('r') as f:
             data = ast.literal_eval(f.read())
-        # automatically migrate outdated file
-        if 'rev' not in data:
-            data['rev'] = CURRENT_GAMIFY_REVISION
-        # add study timers
-        if 'total_time_studied' not in data:
-            data['total_time_studied'] = 0  # Note: this is stored in CENTISECONDS
-        # merge in un-added quests
-        NEVER_RESET = '2000-01-01'
-        bare_quests = {
-            'login_bonus': {'last_reset': NEVER_RESET, 'completed': False, 'progress': 0},
-            'study_50': {'last_reset': NEVER_RESET, 'completed': False, 'progress': 0},
-            'answer_correct_500': {'last_reset': NEVER_RESET, 'completed': False, 'progress': 0},
-            'review_100': {'last_reset': NEVER_RESET, 'completed': False, 'progress': 0},
-            'study_hours': {'last_reset': NEVER_RESET, 'completed': False, 'progress': 0},
-        }
-        bare_quests.update(data.get('quests', {}))
-        data['quests'] = bare_quests
-        return data
     except FileNotFoundError:
-        return {'level': 1, 'xp': 0, 'correct_answers': 0, 'wrong_answers': 0, 'rev': CURRENT_GAMIFY_REVISION}
+        data = {}
+    # automatically migrate outdated file
+    _fill_default(data, 'level', 1)
+    _fill_default(data, 'xp', 0)
+    _fill_default(data, 'correct_answers', 0)
+    _fill_default(data, 'wrong_answers', 0)
+    _fill_default(data, 'rev', CURRENT_GAMIFY_REVISION)
+    _fill_default(data, 'total_time_studied', 0)  # Note: this is stored in CENTISECONDS
+    # merge in un-added quests
+    NEVER_RESET = '2000-01-01'
+    bare_quests = {
+        'login_bonus': {'last_reset': NEVER_RESET, 'completed': False, 'progress': 0},
+        'study_50': {'last_reset': NEVER_RESET, 'completed': False, 'progress': 0},
+        'answer_correct_500': {'last_reset': NEVER_RESET, 'completed': False, 'progress': 0},
+        'review_100': {'last_reset': NEVER_RESET, 'completed': False, 'progress': 0},
+        'study_hours': {'last_reset': NEVER_RESET, 'completed': False, 'progress': 0},
+    }
+    bare_quests.update(data.get('quests', {}))
+    data['quests'] = bare_quests
+    return data
 
 
 def save_gamify(data: dict) -> None:
