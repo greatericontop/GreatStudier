@@ -39,7 +39,7 @@ def update_with_defaults(original_config: dict = None) -> dict:
     if 'alpha_only' not in original_config:
         original_config['alpha_only'] = False
     if 'answer_with' not in original_config:
-        orginial_config['answer_with'] = True
+        orginial_config['answer_with'] = 'None'
     return original_config
 
 
