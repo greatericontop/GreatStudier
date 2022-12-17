@@ -38,6 +38,8 @@ def update_with_defaults(original_config: dict = None) -> dict:
         original_config['uploaded_set_permission'] = 'unlisted'
     if 'alpha_only' not in original_config:
         original_config['alpha_only'] = False
+    if 'answer_with' not in original_config:
+        orginial_config['answer_with'] = True
     return original_config
 
 
