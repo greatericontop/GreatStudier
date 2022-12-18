@@ -154,7 +154,7 @@ def edit_mode(words) -> None:
         if consent in YES_DEFAULT_YES:
             set_path = config.get_set_directory() / config.config['set']
             trash_folder = config.get_set_directory() / '.trash'
-            if !trash_folder.exists():
+            if not trash_folder.exists():
                 trash_folder.mkdir()
             delete_path = trash_folder / config.config['set']
             set_path.rename(delete_path)
