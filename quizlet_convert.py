@@ -46,12 +46,12 @@ def get_quizlet_set(link: str) -> list:
               f'{C.yellow}========================================{C.end}')
         raise uploads.FailedRequestError(e)
     try:
-        data = soup.find('section', 'SetPageTerms-termsList').find_all('div', 'SetPageTerms-term')
+        data = soup.find(class_='SetPageTerms-termsList').find_all(class_='SetPageTerms-term')
     except AttributeError as e:
         print(f'{C.black}Error info:\n{traceback.format_exc()}\n')
         raise uploads.FailedRequestError('Make sure that the quizlet set is not private.')
     for terms in data:
-        term = terms.find_all('span')
+        term = terms.find_all(class_='TermText')
         converted.append(utils.KeyData(term[0].text, term[1].text, -1, 0))
     return converted
 
