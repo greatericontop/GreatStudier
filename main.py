@@ -81,6 +81,7 @@ def learn(words, new_terms) -> None:
     utils.save_words(words, config.config['set'])
     print('You are done!')
     gamify.increment_login_bonus()
+    gamify.gamify_data['xp'] += 20 if amount == NEW_CHUNK_SIZE else 10  # session bonus
     input(CONTINUE)
     print(CLEAR)
 
@@ -101,6 +102,7 @@ def review(words, review_terms) -> None:
     utils.save_words(words, config.config['set'])
     print('You are done!')
     gamify.increment_login_bonus()
+    gamify.gamify_data['xp'] += 45 if amount == REVIEW_CHUNK_SIZE else 25  # session bonus
     input(CONTINUE)
     print(CLEAR)
 
@@ -119,6 +121,7 @@ def study(words) -> None:
         quiz.quiz(word, extra=f'#{i + 1}/{total} ', increment_knowledge_level=False)
     print('You are done!')
     gamify.increment_login_bonus()
+    gamify.gamify_data['xp'] += 20 if total >= 10 else 5  # session bonus
     input(CONTINUE)
     print(CLEAR)
 
