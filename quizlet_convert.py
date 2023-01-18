@@ -2,7 +2,6 @@
 Convert Quizlet sets into GreatStudier format.
 Quizlet has an API, but it is nonexistent/broken, so we'll have to do some hacky things.
 """
-import traceback
 
 #  Copyright (C) 2022-present greateric.
 #
@@ -21,6 +20,7 @@ import traceback
 
 import requests
 
+import traceback
 import utils
 import uploads
 from constants import *
