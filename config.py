@@ -18,6 +18,8 @@
 import ast
 import pathlib as pl
 
+import utils
+
 
 def update_with_defaults(original_config: dict = None) -> dict:
     """Update a config dict IN PLACE with default values, and return it as well."""
@@ -39,7 +41,7 @@ def update_with_defaults(original_config: dict = None) -> dict:
     if 'alpha_only' not in original_config:
         original_config['alpha_only'] = False
     if 'answer_with' not in original_config:
-        original_config['answer_with'] = 'None'
+        original_config['answer_with'] = utils.answer_mode.TERM.value
     return original_config
 
 

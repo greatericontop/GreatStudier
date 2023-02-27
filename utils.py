@@ -40,6 +40,11 @@ class KeyData:
     repetition_spot: int
 
 
+class answer_mode(enum.Enum):
+    TERM = 0
+    DEFINITION = 1
+
+
 def file_check(contents: list[str]) -> bool:
     return contents[0].lower().startswith('## * greatstudier *')
 

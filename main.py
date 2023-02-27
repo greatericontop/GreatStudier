@@ -222,6 +222,8 @@ def open_settings() -> None:
         if key == 'paste_api_key' and value is not None:
             value = value[:4] + '**********'
         # distinguish between the actual None and a string called that
+        if key == 'answer_with' and value is not None:
+            value = utils.answer_mode(value).name
         if value is None:
             value = '<None>'
         settings += f'{C.green}{key}{C.end} = {C.darkblue}{value}{C.end}\n'
@@ -236,6 +238,9 @@ def open_settings() -> None:
         if settings_change == 'reset':
             if input('Do you really want to reset the config? [Y/n]: ') in YES_DEFAULT_YES:
                 config.config = config.update_with_defaults()
+        elif settings_change == 'answer_with':
+            config.config[settings_change] = utils.answer_mode((config.config[settings_change] + 1) % 2).value
+            print(f'Value set to {C.bwhite}{utils.answer_mode(config.config[settings_change]).name}{C.end}.\n')
         elif settings_change not in config.config:
             print(f'{C.red}That is not a valid option.{C.end}\n')
         elif type(config.config[settings_change]) is bool:
