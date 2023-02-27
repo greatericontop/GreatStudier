@@ -76,6 +76,8 @@ Quizlet sets can convert to GreatStudier using the `Quizlet Convert` Option in t
 
 `alpha_only` >> Removes any non-alphanumeric characters (punctuation, unicode, etc.) from answers.
 
+`answer_with` >> Choose to answer with `TERM` or `DEFINITION`.
+
 ---
 
 ## License
