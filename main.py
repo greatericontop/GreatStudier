@@ -63,9 +63,14 @@ def learn(words, new_terms) -> None:
     study_indices = list(range(amount))
     for i in study_indices:
         key = new_terms[i]
-        print(f'\n\n{C.yellow}{key.word} {C.green}= {C.darkyellow}{key.definition}{C.end}')
+        question = key.definition
+        answer = key.word
+        if utils.answer_mode(config.config['answer_with']) == utils.answer_mode.DEFINITION:
+            question = key.word
+            answer = key.definition
+        print(f'\n\n{C.yellow}{answer} {C.green}= {C.darkyellow}{question}{C.end}')
         while True:
-            if input().strip().lower() == key.word.lower():
+            if input().strip().lower() == answer.lower():
                 break
     print(f'{CLEAR}Ready for the quiz?')
     quiz_number = 0
@@ -239,6 +244,8 @@ def open_settings() -> None:
             if input('Do you really want to reset the config? [Y/n]: ') in YES_DEFAULT_YES:
                 config.config = config.update_with_defaults()
         elif settings_change == 'answer_with':
+            if config.config[settings_change] == None:
+                config.config[settings_change] = 0
             config.config[settings_change] = utils.answer_mode((config.config[settings_change] + 1) % 2).value
             print(f'Value set to {C.bwhite}{utils.answer_mode(config.config[settings_change]).name}{C.end}.\n')
         elif settings_change not in config.config:
