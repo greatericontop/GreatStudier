@@ -16,7 +16,7 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-VERSION = '1.3.1'
+VERSION = '1.4.0'
 
 
 class C:
