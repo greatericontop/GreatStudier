@@ -20,6 +20,7 @@ from __future__ import annotations
 import time
 from typing import TYPE_CHECKING
 
+import config
 import gamify
 import utils
 from constants import *
@@ -43,11 +44,20 @@ def correct_answer_study(key: KeyData):
 
 def quiz(key: KeyData, extra: str = '', increment_knowledge_level: bool = True) -> bool:
     on_correct = correct_answer_increment_knowledge if increment_knowledge_level else correct_answer_study
-    print(f'\n\n{extra}QUIZ: What is {C.cyan}{key.definition}{C.end}?')
+
+    # default
+    question = key.definition
+    answer = key.word
+
+    if utils.answer_mode(config.config['answer_with']) == utils.answer_mode.DEFINITION:
+        question = key.word
+        answer = key.definition
+
+    print(f'\n\n{extra}QUIZ: What is {C.cyan}{question}{C.end}?')
     gamify.start_study_clock()
     guess = input(f'{C.darkblue}>{C.end} ')
     gamify.end_study_clock()
-    result = utils.validate(guess, key.word)
+    result = utils.validate(guess, answer)
     gamify.increment_study()
 
     if result == utils.ValidationResult.FULL_CORRECT:
@@ -57,7 +67,7 @@ def quiz(key: KeyData, extra: str = '', increment_knowledge_level: bool = True) 
         return True
 
     elif result == utils.ValidationResult.MOSTLY_CORRECT:
-        print(f'{C.darkgreen}Mostly correct! It actually was: {C.white}{key.word}{C.end}')
+        print(f'{C.darkgreen}Mostly correct! It actually was: {C.white}{answer}{C.end}')
         if input() != '*':
             on_correct(key)
             return True
@@ -68,7 +78,7 @@ def quiz(key: KeyData, extra: str = '', increment_knowledge_level: bool = True) 
             return False
 
     else:
-        print(f"{C.red}Sorry, that's incorrect! It actually was: {C.white}{key.word}{C.end}")
+        print(f"{C.red}Sorry, that's incorrect! It actually was: {C.white}{answer}{C.end}")
         if input() == '*':
             print(f'You have overwritten your answer to {C.green}CORRECT{C.end}')
             on_correct(key)

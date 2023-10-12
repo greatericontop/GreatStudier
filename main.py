@@ -27,7 +27,6 @@ import motd
 import quiz
 import uploads
 import utils
-from quizlet_convert import convert_quizlet_set
 from set_manager import choose_set, new_set, edit_mode
 from constants import *
 
@@ -63,9 +62,14 @@ def learn(words, new_terms) -> None:
     study_indices = list(range(amount))
     for i in study_indices:
         key = new_terms[i]
-        print(f'\n\n{C.yellow}{key.word} {C.green}= {C.darkyellow}{key.definition}{C.end}')
+        question = key.definition
+        answer = key.word
+        if utils.answer_mode(config.config['answer_with']) == utils.answer_mode.DEFINITION:
+            question = key.word
+            answer = key.definition
+        print(f'\n\n{C.yellow}{answer} {C.green}= {C.darkyellow}{question}{C.end}')
         while True:
-            if input().strip().lower() == key.word.lower():
+            if input().strip().lower() == answer.lower():
                 break
     print(f'{CLEAR}Ready for the quiz?')
     quiz_number = 0
@@ -81,6 +85,7 @@ def learn(words, new_terms) -> None:
     utils.save_words(words, config.config['set'])
     print('You are done!')
     gamify.increment_login_bonus()
+    gamify.gamify_data['xp'] += 20 if amount == NEW_CHUNK_SIZE else 10  # session bonus
     input(CONTINUE)
     print(CLEAR)
 
@@ -101,6 +106,7 @@ def review(words, review_terms) -> None:
     utils.save_words(words, config.config['set'])
     print('You are done!')
     gamify.increment_login_bonus()
+    gamify.gamify_data['xp'] += 45 if amount == REVIEW_CHUNK_SIZE else 25  # session bonus
     input(CONTINUE)
     print(CLEAR)
 
@@ -119,6 +125,7 @@ def study(words) -> None:
         quiz.quiz(word, extra=f'#{i + 1}/{total} ', increment_knowledge_level=False)
     print('You are done!')
     gamify.increment_login_bonus()
+    gamify.gamify_data['xp'] += 20 if total >= 10 else 5  # session bonus
     input(CONTINUE)
     print(CLEAR)
 
@@ -218,6 +225,8 @@ def open_settings() -> None:
             continue
         if key == 'paste_api_key' and value is not None:
             value = value[:4] + '**********'
+        if key == 'answer_with' and value is not None:
+            value = utils.answer_mode(value).name
         # distinguish between the actual None and a string called that
         if value is None:
             value = '<None>'
@@ -233,6 +242,11 @@ def open_settings() -> None:
         if settings_change == 'reset':
             if input('Do you really want to reset the config? [Y/n]: ') in YES_DEFAULT_YES:
                 config.config = config.update_with_defaults()
+        elif settings_change == 'answer_with':
+            if config.config[settings_change] is None:
+                config.config[settings_change] = 0
+            config.config[settings_change] = (config.config[settings_change] + 1) % 2
+            print(f'Value set to {C.bwhite}{utils.answer_mode(config.config[settings_change]).name}{C.end}.\n')
         elif settings_change not in config.config:
             print(f'{C.red}That is not a valid option.{C.end}\n')
         elif type(config.config[settings_change]) is bool:
@@ -265,18 +279,16 @@ def main():
             learning_available = False
             prompt = (f'{C.darkred}It seems you do not have a set chosen!{C.end}\n'
                       f'{C.no}[L]earn{C.end}               {C.no}[R]eview{C.end}              {C.no}[S]tudy{C.end}\n'
-                      f'{C.no}[U]pload Set{C.end}          [D]ownload Set        [Qu]izlet Convert\n'
-                      f'[C]hoose Set          [N]ew Set             {C.no}[M]odify Set{C.end}\n'
-                      f'[O]ptions             [St]ats               {C.no}[W]ipe Progress{C.end}\n'
-                      f'[Q]uit\n'
+                      f'{C.no}[U]pload Set{C.end}          [D]ownload Set        [C]hoose Set\n'
+                      f'[N]ew Set             {C.no}[M]odify Set{C.end}          [O]ptions\n'
+                      f'[St]ats               {C.no}[W]ipe Progress{C.end}       [Q]uit\n'
                       f'{C.darkblue}>{C.end} ')
         else:
             learning_available = True
             prompt = (f'[L]earn               [R]eview              [S]tudy\n'
-                      f'[U]pload Set          [D]ownload Set        [Qu]izlet Convert\n'
-                      f'[C]hoose Set          [N]ew Set             [M]odify Set\n'
-                      f'[O]ptions             [St]ats               [W]ipe Progress\n'
-                      f'[Q]uit\n'
+                      f'[U]pload Set          [D]ownload Set        [C]hoose Set\n'       
+                      f'[N]ew Set             [M]odify Set          [O]ptions\n'
+                      f'[St]ats               [W]ipe Progress       [Q]uit\n'
                       f'{C.darkblue}>{C.end} ')
             word_set = config.config['set']
             words = utils.load_words(word_set)
@@ -304,8 +316,6 @@ def main():
         # end learning available
         elif cmd in {'download', 'd'}:
             download_set()
-        elif cmd in {'quizlet', 'qu'}:
-            convert_quizlet_set()
         elif cmd in {'choose', 'c'}:
             choose_set()
         elif cmd in {'new', 'n'}:
