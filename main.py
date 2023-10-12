@@ -27,7 +27,6 @@ import motd
 import quiz
 import uploads
 import utils
-from quizlet_convert import convert_quizlet_set
 from set_manager import choose_set, new_set, edit_mode
 from constants import *
 
@@ -280,18 +279,16 @@ def main():
             learning_available = False
             prompt = (f'{C.darkred}It seems you do not have a set chosen!{C.end}\n'
                       f'{C.no}[L]earn{C.end}               {C.no}[R]eview{C.end}              {C.no}[S]tudy{C.end}\n'
-                      f'{C.no}[U]pload Set{C.end}          [D]ownload Set        [Qu]izlet Convert\n'
-                      f'[C]hoose Set          [N]ew Set             {C.no}[M]odify Set{C.end}\n'
-                      f'[O]ptions             [St]ats               {C.no}[W]ipe Progress{C.end}\n'
-                      f'[Q]uit\n'
+                      f'{C.no}[U]pload Set{C.end}          [D]ownload Set        [C]hoose Set\n'
+                      f'[N]ew Set             {C.no}[M]odify Set{C.end}          [O]ptions\n'
+                      f'[St]ats               {C.no}[W]ipe Progress{C.end}       [Q]uit\n'
                       f'{C.darkblue}>{C.end} ')
         else:
             learning_available = True
             prompt = (f'[L]earn               [R]eview              [S]tudy\n'
-                      f'[U]pload Set          [D]ownload Set        [Qu]izlet Convert\n'
-                      f'[C]hoose Set          [N]ew Set             [M]odify Set\n'
-                      f'[O]ptions             [St]ats               [W]ipe Progress\n'
-                      f'[Q]uit\n'
+                      f'[U]pload Set          [D]ownload Set        [C]hoose Set\n'       
+                      f'[N]ew Set             [M]odify Set          [O]ptions\n'
+                      f'[St]ats               [W]ipe Progress       [Q]uit\n'
                       f'{C.darkblue}>{C.end} ')
             word_set = config.config['set']
             words = utils.load_words(word_set)
