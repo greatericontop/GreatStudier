@@ -56,12 +56,6 @@ You can set a custom API key in the config (go to `options`, then `API keys`) to
 
 ---
 
-## Quizlet Convert
-
-Quizlet sets can convert to GreatStudier using the `Quizlet Convert` Option in the menu. The Quizlet set must be public to be able to be converted. **NOTE: you may have to run this multiple times to download the set completely** 
-
----
-
 ## Options
 
 `set_directory` >> The directory that the sets are stored in. Defaults to `~/GreatStudier`.
