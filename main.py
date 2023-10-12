@@ -316,8 +316,6 @@ def main():
         # end learning available
         elif cmd in {'download', 'd'}:
             download_set()
-        elif cmd in {'quizlet', 'qu'}:
-            convert_quizlet_set()
         elif cmd in {'choose', 'c'}:
             choose_set()
         elif cmd in {'new', 'n'}:
